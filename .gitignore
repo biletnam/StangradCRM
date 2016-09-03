@@ -1,0 +1,12 @@
+/server/nbproject/
+/server/configs/DBConnection.php
+/client/StangradCRM/StangradCRM/bin
+/client/StangradCRM/StangradCRM/obj
+
+/client/StangradCRM/StangradCRMLibs/bin
+/client/StangradCRM/StangradCRMLibs/obj
+
+/client/StangradCRM/Launcher/bin
+/client/StangradCRM/Launcher/obj
+
+/client/StangradCRM/libs

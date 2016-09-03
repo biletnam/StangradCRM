@@ -1,0 +1,121 @@
+﻿<UserControl x:Class="StangradCRM.View.Controls.AdministratorControls.MainControlCRMSetting"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Grid Background="White">
+		<DataGrid 
+			x:Name="dgvCRMSetting"
+			ItemsSource="{Binding CRMSettingCollection}"
+			Style="{StaticResource DefaultDataGridStyle}">
+			<DataGrid.Columns>
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="Id"
+					Width="100"
+					Header="Код">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition></RowDefinition>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition></ColumnDefinition>
+									<ColumnDefinition></ColumnDefinition>
+								</Grid.ColumnDefinitions>
+								<TextBlock
+									ToolTip="Запись не сохранена!"
+									Grid.Row="0" Grid.Column="0"
+									Text="!">
+									<TextBlock.Style>
+										<Style TargetType="TextBlock">
+											<Setter Property="FontSize" Value="14"></Setter>
+											<Setter Property="Foreground" Value="Red"></Setter>
+											<Setter Property="VerticalAlignment" Value="Center"></Setter>
+											<Setter Property="HorizontalAlignment" Value="Center"></Setter>
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding Path=IsSaved}" Value="True">
+													<Setter Property="Visibility" Value="Hidden"></Setter>
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</TextBlock.Style>
+								</TextBlock>
+								<TextBlock
+									Grid.Row="0" Grid.Column="1"
+									Text="{Binding Path=Id}"
+									VerticalAlignment="Center" />
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="Setting_name"
+					Width="*"
+					Header="Наименование настройки">
+					<DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                        	<TextBlock 
+                        		TextWrapping="Wrap"
+                    	        VerticalAlignment="Center"
+                    	        Text="{Binding Path=Setting_name}">
+                        	</TextBlock>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="Setting_value"
+					Width="*"
+					Header="Значение настройки">
+					<DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                        	<TextBox 
+                        		x:Name="tbxSettingValue"
+                        		TextWrapping="Wrap"
+                        	         TextChanged="TbxSettingValue_TextChanged"
+                        	         VerticalAlignment="Center"
+                        	         Text="{Binding Path=Setting_value}">
+                        	</TextBox>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>				
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					Width="25">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition></RowDefinition>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition></ColumnDefinition>
+								</Grid.ColumnDefinitions>
+								<Button
+									x:Name="btnSaveRow"
+									Click="BtnSaveRow_Click"
+									Grid.Row="0"
+									Grid.Column="0"
+									Style="{StaticResource ButtonOperationGridAnimateStyle}">
+									<Image
+										VerticalAlignment="Stretch"
+										HorizontalAlignment="Stretch"
+										Source="/StangradCRM;component/Images/save.png"
+										Stretch="Fill"></Image>
+								</Button>
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

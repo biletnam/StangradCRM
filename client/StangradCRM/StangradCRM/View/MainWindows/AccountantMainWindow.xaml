@@ -1,0 +1,24 @@
+﻿<Window x:Class="StangradCRM.View.MainWindows.AccountantMainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Title="StanGradCRM "
+	Height="800"
+	Width="600"
+	WindowState="Maximized">
+	<Grid>
+		<Menu
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Top">
+			<MenuItem
+				Header="Файл">
+				<MenuItem
+					Header="Выход" Click="MenuItem_Click"></MenuItem>
+			</MenuItem>
+		</Menu>
+		<TabControl 
+			x:Name="tcMain" 
+			Margin="0, 20, 0, 0"
+			VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+		</TabControl>
+	</Grid>
+</Window>

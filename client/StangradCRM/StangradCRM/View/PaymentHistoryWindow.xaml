@@ -1,0 +1,80 @@
+﻿<Window x:Class="StangradCRM.View.PaymentHistoryWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Title="История платежей заявки №" Height="600" Width="800" WindowStartupLocation="CenterScreen">
+	<Grid Margin="5">
+		<DataGrid
+			x:Name="dgvPaymentHistory"
+			ItemsSource="{Binding PaymentHistoryCollection}"
+			Style="{StaticResource DefaultDataGridStyle}"
+			Grid.Column="0"
+			Grid.Row="1"
+			Grid.ColumnSpan="2"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch">
+			<DataGrid.Columns>
+
+				<DataGridTemplateColumn 
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+	                CanUserSort="True"
+	                SortMemberPath="Payment_date"
+	                Width="100"
+	                Header="Дата создания">
+	                <DataGridTemplateColumn.CellTemplate>
+	                    <DataTemplate>
+	                        <TextBlock 
+	                        	Margin="5, 0, 0, 0"
+	                        	Text="{Binding Path=Payment_date, StringFormat=\{0:dd.MM.yyyy\}}" VerticalAlignment="Center"/>
+	                    </DataTemplate>
+	                </DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="Paying"
+					Width="*"
+					Header="Сумма">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock
+								Text="{Binding Path=Paying}"
+								VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="Id_bid"
+					Width="*"
+					Header="Код заявки">
+					<DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock 
+                            	VerticalAlignment="Center"
+                            	Text="{Binding Path=Id_bid}"></TextBlock>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="ManagerName"
+					Width="*"
+					Header="Менеджер, добавивший запись">
+					<DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock 
+                            	VerticalAlignment="Center"
+                            	Text="{Binding Path=ManagerName}"></TextBlock>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</Window>

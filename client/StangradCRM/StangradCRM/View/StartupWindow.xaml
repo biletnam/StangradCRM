@@ -1,0 +1,16 @@
+﻿<Window x:Class="StangradCRM.View.StartupWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
+    WindowStartupLocation="CenterScreen"
+	WindowStyle="None"
+	BorderBrush="Transparent"
+   	Background="Transparent"
+    AllowsTransparency="True"
+    Title="Загрузка программы..." Height="240" Width="240">
+	<Grid x:Name="layout">
+		<libs:Loading
+			VerticalAlignment="Stretch"
+			HorizontalAlignment="Stretch"></libs:Loading>
+	</Grid>
+</Window>

@@ -1,0 +1,10 @@
+E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\bin\Release\StangradCRMLibs.dll
+E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\bin\Release\HTTPManager.dll
+E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\bin\Release\Newtonsoft.Json.dll
+E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\ResolveAssemblyReference.cache
+E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\StangradCRMLibs.dll
+E:\project\StangradCRM\client\build\Release\StangradCRMLibs.dll
+E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\Controls\Loading.baml
+E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\Controls\Loading.g.cs
+E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\StangradCRMLibs_MarkupCompile.cache
+E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\StangradCRMLibs.g.resources

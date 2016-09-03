@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteRule !\.(js|gif|css|png|jpg|xml|txt|ico|exe)$ index.php
+<Limit GET POST PUT DELETE HEAD OPTIONS>
+    Order allow,deny
+    Allow from all
+</Limit>
+<LimitExcept GET POST PUT DELETE HEAD OPTIONS>
+    Order deny,allow
+    Deny from all
+</LimitExcept>

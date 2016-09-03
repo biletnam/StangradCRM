@@ -1,0 +1,122 @@
+﻿<Window x:Class="Launcher.MainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    WindowStartupLocation="CenterScreen"
+	Title="Авторизация StanGradCRM" Height="225" Width="400"
+	xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs">
+	<Grid>
+		<Grid Margin="20, 20, 20, 20">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="150"></ColumnDefinition>
+				<ColumnDefinition Width="*"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+
+			<Label
+				Grid.Column="0"
+				Grid.Row="0"
+				Content="Логин пользователя">
+			</Label>
+			<TextBox
+				FontStyle="Italic"
+				Grid.Column="1"
+				Grid.Row="0"
+				Margin="0, 0, 0, 5"
+				Padding="2"
+				HorizontalAlignment="Stretch"
+				x:Name="tbxLogin" />
+			<Label 
+				Grid.Column="0"
+				Grid.Row="1"
+				Content="Пароль пользователя" />
+			<PasswordBox
+				FontStyle="Italic"
+				Grid.Column="1"
+				Grid.Row="1"
+				Margin="0, 5, 0, 0"
+				Padding="2"
+				HorizontalAlignment="Stretch"
+				x:Name="tbxPassword"/>
+			<Grid Grid.Row="2" Grid.Column="1" Margin="0, 5">
+				<Grid.RowDefinitions>
+					<RowDefinition></RowDefinition>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition></ColumnDefinition>
+					<ColumnDefinition Width="Auto"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<Label 
+					x:Name="lblFullSettingToggle"
+					Grid.Row="0" 
+					Grid.Column="0" 
+					VerticalAlignment="Center"
+					HorizontalAlignment="Right"
+					Content="Расширенная настройка">
+				</Label>
+				<CheckBox
+					VerticalContentAlignment="Center"
+					x:Name="cbxFullSettingsToggle"
+					Grid.Column="1"
+					Grid.Row="0"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Center"/>
+			</Grid>
+			<Border HorizontalAlignment="Stretch" Visibility="Collapsed" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="rowSettings">
+				<Grid HorizontalAlignment="Stretch">
+					<Grid.RowDefinitions>
+						<RowDefinition></RowDefinition>
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="150"></ColumnDefinition>
+						<ColumnDefinition Width="*"></ColumnDefinition>
+					</Grid.ColumnDefinitions>
+					<Label Foreground="White" Grid.Row="0" Grid.Column="0" Content="Сервер данных"></Label>
+					<TextBox
+						HorizontalAlignment="Stretch"
+						Grid.Row="0"
+						Grid.Column="1"
+						FontStyle="Italic"
+						Margin="0, 0, 0, 5"
+						Padding="2"
+						x:Name="tbxHost"/>
+				</Grid>
+			</Border>
+		</Grid>
+		<Button
+			Content="Вход"
+			x:Name="btnLogin"
+			Grid.Column="0"
+			Grid.Row="0"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Bottom"
+			Width="75"
+			Height="25"
+			Margin="0,0,20,20">
+		</Button>
+		<Label
+			Visibility="Hidden"
+			Content="Авторизация..."
+			VerticalContentAlignment="Center"
+			x:Name="lblCurrentStatus"
+			Width="209"
+			Height="25"
+			Grid.Column="0"
+			Grid.Row="0"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Bottom"
+			Margin="60, 0, 0, 18" />
+		<libs:Loading
+			x:Name="loadingProgress"
+			Width="40"
+			Height="40"
+			Margin="10, 0, 0, 10"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Bottom"
+			Visibility="Hidden"></libs:Loading>	
+	</Grid>
+</Window>

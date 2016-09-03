@@ -1,0 +1,53 @@
+﻿<Window x:Class="StangradCRM.View.MainWindows.AdministratorMainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Title="StanGradCRM "
+	Height="800"
+	Width="600"
+	WindowState="Maximized">
+	<Grid>
+		<Menu
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Top">
+			<MenuItem
+				Header="Файл">
+				<MenuItem
+					Click="MiExit_Click"
+					x:Name="miExit"
+					Header="Выход"></MenuItem>
+			</MenuItem>
+			<MenuItem
+				Header="Справочники">
+				<MenuItem
+					Header="Оборудование/Модификации"
+					x:Name="menuOpenEquipmentWindow"></MenuItem>
+				<MenuItem
+					Header="Список покупателей"
+					x:Name="menuOpenBuyerWindow"></MenuItem>
+				<MenuItem
+					Header="Список продавцов"
+					x:Name="menuOpenSellerWindow"></MenuItem>
+				<MenuItem
+					Header="Статусы заявок"
+					x:Name="menuOpenBidStatusWindow"></MenuItem>
+				<MenuItem
+					Header="Статусы оплаты"
+					x:Name="menuOpenPaymentStatusWindow"></MenuItem>
+				<MenuItem
+					Header="Транспортные компании"
+					x:Name="menuOpenTransportCompanyWindow"></MenuItem>
+				<MenuItem
+					Header="Менеджеры"
+					x:Name="menuOpenManagerWindow"></MenuItem>
+			</MenuItem>
+		</Menu>
+		<TabControl 
+			x:Name="tcMain" 
+			Margin="0, 20, 0, 0"
+			VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+			<TabItem Header="Настройка CRM" x:Name="tiCRMSetting"></TabItem>
+			<TabItem Header="Заявки" x:Name="tiBid"></TabItem>
+			<TabItem Header="Архив" x:Name="tiArchiveBid"></TabItem>
+		</TabControl>
+	</Grid>
+</Window>
