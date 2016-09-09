@@ -7,10 +7,10 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-
 
 using StangradCRM.Core;
 using StangradCRM.ViewModel;
@@ -21,6 +21,14 @@ namespace StangradCRM.Model
 	/// <summary>
 	/// Description of Bid.
 	/// </summary>
+	/// 
+	
+	public class TempEquipmentBid
+	{
+		public int Id { get; set; }
+		public int SerialNumber { get; set; }
+	}
+	
 	public class Bid : Core.Model
 	{	
 		public int Id_seller { get; set; }
@@ -44,13 +52,18 @@ namespace StangradCRM.Model
 		{
 			set
 			{
-				TSObservableCollection<EquipmentBid> equipmentBid = value;
+				TSObservableCollection<EquipmentBid> equipmentBids = value;
 				EquipmentBidViewModel eb_vm = EquipmentBidViewModel.instance();
-				for(int i = 0; i < equipmentBid.Count; i++)
+				for(int i = 0; i < equipmentBids.Count; i++)
 				{
-					if(eb_vm.getById(equipmentBid[i].Id) == null)
+					EquipmentBid equipmentBid = eb_vm.getById(equipmentBids[i].Id);
+					if(equipmentBid == null)
 					{
-						eb_vm.add(equipmentBid[i]);
+						eb_vm.add(equipmentBids[i]);
+					}
+					else
+					{
+						equipmentBid.replace(equipmentBids[i]);
 					}
 				}
 			}
@@ -60,13 +73,18 @@ namespace StangradCRM.Model
 		{
 			set
 			{
-				TSObservableCollection<Payment> payment = value;
+				TSObservableCollection<Payment> payments = value;
 				PaymentViewModel p_vm = PaymentViewModel.instance();
-				for(int i = 0; i < payment.Count; i++)
+				for(int i = 0; i < payments.Count; i++)
 				{
-					if(p_vm.getById(payment[i].Id) == null)
+					Payment payment = p_vm.getById(payments[i].Id);
+					if(payment == null)
 					{
-						p_vm.add(payment[i]);
+						p_vm.add(payments[i]);
+					}
+					else
+					{
+						payment.replace(payments[i]);
 					}
 				}
 			}
@@ -92,6 +110,19 @@ namespace StangradCRM.Model
 					return buyer.Name;
 				}
 				return "<Не выбрано>";
+			}
+		}
+		
+		public string BuyerInfo
+		{
+			get
+			{
+				Buyer buyer = BuyerViewModel.instance().getById(Id_buyer);
+				if(buyer != null)
+				{
+					return buyer.BuyerInfo;
+				}
+				return "";
 			}
 		}
 		
@@ -185,6 +216,25 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		public string TransportCompanyName
+		{
+			get
+			{
+				if(Id_transport_company != null
+				   && Id_transport_company != 0)
+				{
+					TransportCompany transportCompany =
+						TransportCompanyViewModel.instance().getById((int)Id_transport_company);
+					if(transportCompany == null)
+					{
+						return "";
+					}
+					return transportCompany.Name;
+				}
+				return "";
+			}
+		}
+		
 		public string ShippedYesNo
 		{
 			get
@@ -264,10 +314,7 @@ namespace StangradCRM.Model
 			}
 		}
 		
-		public Bid() 
-		{
-			
-		}
+		public Bid() {}
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
 		{
@@ -282,6 +329,10 @@ namespace StangradCRM.Model
 			if(Id_manager != null)
 			{
 				http.addParameter("id_manager", (int)Id_manager);
+			}
+			if(Shipment_date != null)
+			{
+				http.addParameter("shipment_date", ((DateTime)Shipment_date).ToString("yyyy-MM-dd"));
 			}
 			http.addParameter("account", Account);
 			http.addParameter("amount", Amount);
@@ -319,49 +370,64 @@ namespace StangradCRM.Model
 		{
 			bool result = base.afterSave(parser);
 			if(result)
-			{
-				/*int oldPaymentStatus;
-				try
-				{
-					oldPaymentStatus = (int)oldValues["Id_payment_status"];
-					if(oldPaymentStatus == (int)Classes.PaymentStatus.NotPaid 
-					   && Id_payment_status != (int)Classes.PaymentStatus.NotPaid)
-					{
-						Id_bid_status = (int)Classes.BidStatus.InWork;
-						if(!save())
-						{
-							return false;
-						}
-					}
-				}
-				catch {};
-				
-				try
-				{
-					if((int)oldValues["Id_bid_status"] == (int)Classes.BidStatus.New
-					   && Id_bid_status == (int)Classes.BidStatus.InWork)
-					{
-						equipmentBidCollection.ToList().ForEach(x => x.generateSerialNumber());
-					}
-				}
-				catch {}*/
-				
-				UpdateAllProperties();
+			{				
+				raiseAllProperties();
 			}
 			return result;
+		}
+		
+		
+		public bool generateSerialNumber ()
+		{
+			try {
+			HTTPManager.HTTPRequest http = HTTPManager.HTTPRequest.Create(Settings.uri);
+			http.UseCookie = true;
+			http.addParameter("entity", "Bid/generateEquipmentBidSerialNumber");
+			http.addParameter("id", Id);
+			if(!http.post()) 
+			{
+				LastError = HTTPManager.HTTPRequest.LastError;
+				return false;
+			}
+			ResponseParser parser = ResponseParser.Parse(http.ResponseData);
+			if(!parser.NoError)
+			{
+				LastError = parser.LastError;
+				return false;
+			}
+			if(parser.ServerErrorFlag != 0)
+			{
+				LastError = parser.ToObject<string>();
+				return false;
+			}
+			List<TempEquipmentBid> updatedEquipmentBid = parser.ToObject<List<TempEquipmentBid>>();
+			for(int i = 0; i < updatedEquipmentBid.Count; i++)
+			{
+				EquipmentBid equipmentBid = EquipmentBidViewModel.instance().getById(updatedEquipmentBid[i].Id);
+				if(equipmentBid == null) continue;
+				equipmentBid.setSerialNumber(updatedEquipmentBid[i].SerialNumber);
+			}
+			return true;
+			}
+			catch(Exception ex)
+			{
+				LastError = ex.ToString();
+				return false;
+			}
 		}
 		
 		protected override bool afterRemove(ResponseParser parser, bool soft = false)
 		{
-			bool result = base.afterRemove(parser);
+			bool result = base.afterRemove(parser, soft);
 			if(result)
 			{
 				EquipmentBidCollection.ToList().ForEach(x => {x.remove(true);});
+				PaymentCollection.ToList().ForEach(x => {x.remove(true);});
 			}
 			return result;
 		}
 		
-		public void UpdateAllProperties()
+		public override void raiseAllProperties()
 		{
 			if(oldValues.ContainsKey("Id_bid_status") &&
 			   oldValues["Id_bid_status"] != null)
@@ -394,13 +460,34 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("Is_archive", Is_archive);
 			RaisePropertyChanged("Is_shipped", Is_shipped);
 			RaisePropertyChanged("Debt", null);
-			RaisePropertyChanged("ShippedYesNo", null);
+			RaisePropertyChanged("TransportCompanyName", null);
 		}
 		
 		public override void loadedItemInitProperty ()
 		{
 			RaisePropertyChanged("Id_payment_status", Id_payment_status, true);
 			RaisePropertyChanged("Id_bid_status", Id_bid_status, true);
-		}		
+		}
+		
+		public override void replace(object o)
+		{
+			Bid bid = o as Bid;
+			if(bid == null) return;
+			
+			Id_seller = bid.Id_seller;
+			Id_buyer = bid.Id_buyer;
+			Id_bid_status = bid.Id_bid_status;
+			Id_payment_status = bid.Id_payment_status;
+			Id_transport_company = bid.Id_transport_company;
+			Id_manager = bid.Id_manager;
+			Date_created = bid.Date_created;
+			Shipment_date = bid.Shipment_date;
+			Account = bid.Account;
+			Amount = bid.Amount;
+			Is_archive = bid.Is_archive;
+			Is_shipped = bid.Is_shipped;
+			
+			raiseAllProperties();
+		}
 	}
 }

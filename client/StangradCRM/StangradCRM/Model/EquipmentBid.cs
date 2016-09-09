@@ -32,13 +32,18 @@ namespace StangradCRM.Model
 		{
 			set
 			{
-				TSObservableCollection<Complectation> complectation = value;
-				ComplectationViewModel c_wm = ComplectationViewModel.instance();
-				for(int i = 0; i < complectation.Count; i++)
+				TSObservableCollection<Complectation> complectations = value;
+				ComplectationViewModel c_vm = ComplectationViewModel.instance();
+				for(int i = 0; i < complectations.Count; i++)
 				{
-					if(c_wm.getById(complectation[i].Id) == null)
+					Complectation complectation = c_vm.getById(complectations[i].Id);
+					if(complectation == null)
 					{
-						c_wm.add(complectation[i]);
+						c_vm.add(complectations[i]);
+					}
+					else
+					{
+						complectation.replace(complectations[i]);
 					}
 				}
 			}
@@ -156,13 +161,17 @@ namespace StangradCRM.Model
 			bool result = base.afterSave(parser);
 			if(result)
 			{
-				RaisePropertyChanged("Id_modification", Id_modification);
-				RaisePropertyChanged("Id_bid", Id_bid);
-				RaisePropertyChanged("Serial_number", Serial_number);
-				RaisePropertyChanged("EquipmentName", null);
-				RaisePropertyChanged("ModificationName", null);
+				raiseAllProperties();
 				Bid bid = BidViewModel.instance().getById(Id_bid);
-				if(bid != null && !bid.EquipmentBidCollection.Contains(this))
+				if(bid == null)
+				{
+					Log.WriteError("Bid is null");
+				}
+				else if (bid.EquipmentBidCollection.Contains(this))
+				{
+					Log.WriteError("Item exist");
+				}
+				else 
 				{
 					bid.EquipmentBidCollection.Add(this);
 				}
@@ -172,7 +181,7 @@ namespace StangradCRM.Model
 		
 		protected override bool afterRemove(ResponseParser parser, bool soft = false)
 		{
-			bool result = base.afterRemove(parser);
+			bool result = base.afterRemove(parser, soft);
 			if(result)
 			{
 				Bid bid = BidViewModel.instance().getById(Id_bid);
@@ -185,24 +194,29 @@ namespace StangradCRM.Model
 			return result;
 		}
 		
-		public bool generateSerialNumber ()
+		public void setSerialNumber (int serial_number)
 		{
-			if(Serial_number != null) return true;
-			
-			if(this.Equipment == null) 
-			{
-				LastError = "Оборудование не найдено!";
-				return false;
-			}
-			
-			List<EquipmentBid> equipmentBid = EquipmentBidViewModel.instance().Collection.Where(x => x.Equipment == this.Equipment).ToList();
-			if(equipmentBid.Count == 0)
-			{
-				Serial_number = Equipment.Serial_number+1;
-				return save();
-			}
-			Serial_number = (equipmentBid.Max(x => x.Serial_number) + 1);
-			return save();
+			Serial_number = serial_number;
+			RaisePropertyChanged("Serial_number", Serial_number);
+		}
+		
+		public override void replace(object o)
+		{
+			EquipmentBid equipmentBid = o as EquipmentBid;
+			if(equipmentBid == null) return;
+			Id_modification = equipmentBid.Id_modification;
+			Id_bid = equipmentBid.Id_bid;
+			Serial_number = equipmentBid.Serial_number;
+			raiseAllProperties();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			RaisePropertyChanged("Id_modification", Id_modification);
+			RaisePropertyChanged("Id_bid", Id_bid);
+			RaisePropertyChanged("Serial_number", Serial_number);
+			RaisePropertyChanged("EquipmentName", null);
+			RaisePropertyChanged("ModificationName", null);
 		}
 	}
 }

@@ -32,6 +32,15 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		public string BuyerInfo
+		{
+			get
+			{
+				return Name + " " + Contact_person + " " + Phone
+					+ " " + Email + " " + City;
+			}
+		}
+		
 		public Buyer() {}
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
@@ -72,17 +81,35 @@ namespace StangradCRM.Model
 			bool result = base.afterSave(parser);
 			if(result)
 			{
-				RaisePropertyChanged("Name", Name);
-				RaisePropertyChanged("Contact_person", Contact_person);
-				RaisePropertyChanged("Phone", Phone);
-				RaisePropertyChanged("Email", Email);
-				RaisePropertyChanged("City", City);
-				
+				raiseAllProperties();
 				BidViewModel.instance().Collection.
 					Where(x => x.Id_buyer == Id).All(y => { y.UpdateProperty("BuyerName"); return true; });
 			}
 			return result;
 		}
 		
+		
+		public override void replace(object o)
+		{
+			Buyer buyer = o as Buyer;
+			if(buyer == null) return;
+			
+			Name = buyer.Name;
+			Contact_person = buyer.Contact_person;
+			Phone = buyer.Phone;
+			Email = buyer.Email;
+			City = buyer.City;
+			
+			raiseAllProperties();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			RaisePropertyChanged("Name", Name);
+			RaisePropertyChanged("Contact_person", Contact_person);
+			RaisePropertyChanged("Phone", Phone);
+			RaisePropertyChanged("Email", Email);
+			RaisePropertyChanged("City", City);
+		}
 	}
 }

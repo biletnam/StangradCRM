@@ -81,12 +81,21 @@ namespace StangradCRM.View
 					{
 						bid.Id_payment_status = (int)Classes.PaymentStatus.Paid;
 					}
+					
+					bid.Id_bid_status = (int)Classes.BidStatus.InWork;
+										
 					if(!bid.save())
 					{
-						MessageBox.Show(bid.LastError);
-						return;
+						Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { errorSaveBid(); } ));
 					}
-					Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { successSave(); } ));
+					else if(!bid.generateSerialNumber())
+					{
+						Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { errorSaveBid(); } ));						
+					}
+					else
+					{
+						Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { successSave(); } ));
+					}
 				}
 				else 
 				{
@@ -105,6 +114,13 @@ namespace StangradCRM.View
 			loadingProgress.Visibility = Visibility.Hidden;
 			IsEnabled = true;
 			MessageBox.Show(payment.LastError);
+		}
+		
+		private void errorSaveBid ()
+		{
+			loadingProgress.Visibility = Visibility.Hidden;
+			IsEnabled = true;
+			MessageBox.Show(bid.LastError);
 		}
 		
 		private bool validate ()

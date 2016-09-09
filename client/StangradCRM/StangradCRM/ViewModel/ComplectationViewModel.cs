@@ -99,6 +99,5 @@ namespace StangradCRM.ViewModel
 		{
 			return _collection.Where(x => x.Id == complectationId).FirstOrDefault();
 		}
-		
 	}
 }

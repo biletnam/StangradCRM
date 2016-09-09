@@ -45,5 +45,15 @@ namespace StangradCRM.Model
 				return CRMSettingViewModel.instance();
 			}
 		}
+		
+		public override void replace(object o)
+		{
+			throw new NotImplementedException();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

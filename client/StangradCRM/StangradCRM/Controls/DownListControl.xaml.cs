@@ -68,7 +68,9 @@ namespace StangradCRM.Controls
 				for(int i = 0; i < collection.Count; i++)
 				{
 					var propertyInfo = collection[i].GetType().GetProperty(lbList.DisplayMemberPath);
+					
 					string val = propertyInfo.GetValue(collection[i], null).ToString();
+					
 					if(val.ToLower().IndexOf(tbxInputData.Text.ToLower()) != -1)
 					{
 						ISCollection.Add(collection[i]);
@@ -172,6 +174,19 @@ namespace StangradCRM.Controls
 			}
 		}
 		
+		public bool IsReadOnly
+		{
+			get
+			{
+				return tbxInputData.IsReadOnly;
+			}
+			set
+			{
+				tbxInputData.IsReadOnly = value;
+			}
+		}
+		
+
 		public new Brush Background
 		{
 			get

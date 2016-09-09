@@ -33,7 +33,17 @@ namespace StangradCRM.View.MainWindows
 			InitializeComponent();
 			Title += " v" + Settings.version + ". Пользователь " + Auth.getInstance().Full_name + ". Режим бухгалтера.";
 			
-			Classes.BidUpdateTask.Start(Dispatcher);
+			int updateTime = 60000;
+			try
+			{
+				updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value);
+			}
+			catch {}
+			 
+			Classes.BidUpdateTask.Start(Dispatcher, updateTime, 
+			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }), 
+			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }));
+			
 			
 			List<BidStatus> bidStatus = BidStatusViewModel.instance().Collection.ToList();
 			for(int i = 0; i < bidStatus.Count; i++)

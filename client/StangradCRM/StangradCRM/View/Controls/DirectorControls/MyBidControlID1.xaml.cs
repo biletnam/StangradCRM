@@ -69,6 +69,8 @@ namespace StangradCRM.View.Controls.DirectorControls
 			
 			BidSaveWindow window = new BidSaveWindow(bid);
 			window.ShowDialog();
+			
+			viewSource.View.Refresh();
 		}
 		
 		void DgvBid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -247,6 +249,8 @@ namespace StangradCRM.View.Controls.DirectorControls
 			if(bid == null) return;
 			PaymentSaveWindow window = new PaymentSaveWindow(bid);
 			window.ShowDialog();
+			
+			viewSource.View.Refresh();
 		}
 		
 		void BtnClearFastSearch_Click(object sender, RoutedEventArgs e)

@@ -11,7 +11,6 @@ class SQLExecutor {
     private $resultCache = [];
     private $queries = [];
     public static $lastError = null;
-    
 
     public function __construct($queries, $connection = null) {
         if($connection == null) {
@@ -84,10 +83,13 @@ class SQLExecutor {
             $type = $this->queries[$i]['type'];
             $sth = $this->dbh->prepare($query);
             for($i = 0; $i < count($values); $i++) {
-                if($values[$i] == 'NULL') {
+                
+                
+                
+                if($values[$i] === 'NULL' || $values[$i] === NULL) {
                     $sth->bindValue($i+1, NULL, \PDO::PARAM_NULL);
                 }
-                else if(is_integer($values[$i])) {
+                else if(is_integer($values[$i]) || $values[$i] === 0) {
                     $sth->bindValue($i+1, $values[$i], \PDO::PARAM_INT);
                 }
                 else {

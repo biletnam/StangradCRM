@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 using StangradCRM.View.Controls.AdministratorControls;
+using StangradCRM.ViewModel;
 using StangradCRMLibs;
 
 namespace StangradCRM.View.MainWindows
@@ -31,7 +32,16 @@ namespace StangradCRM.View.MainWindows
 			InitializeComponent();
 			Title += " v" + Settings.version + ". Пользователь " + Auth.getInstance().Full_name + ". Режим администратора.";
 			
-			Classes.BidUpdateTask.Start(Dispatcher);
+			int updateTime = 60000;
+			try
+			{
+				updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value);
+			}
+			catch {}
+			 
+			Classes.BidUpdateTask.Start(Dispatcher, updateTime, 
+			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }), 
+			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }));
 			
 			menuOpenEquipmentWindow.Click += delegate
 			{

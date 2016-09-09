@@ -41,15 +41,16 @@ namespace StangradCRM.View
 		
 		private Buyer currentBuyer = null;
 		
-		private bool saveEnableFirsrPayment = true;
 		private bool isNew = true;
+		
+		private Action saveCallback = null;
 		
 		public BidSaveWindow ()
 		{
 			InitializeComponent();
 			setBindings();
 			setControlsBehavior();
-			dgvEquipmentBid.Visibility = Visibility.Collapsed;
+			gbxEquipmentBid.Visibility = Visibility.Collapsed;
 			
 			bid = new Bid();
 			
@@ -60,7 +61,7 @@ namespace StangradCRM.View
 			};
 		}
 		
-		public BidSaveWindow(Bid bid)
+		public BidSaveWindow(Bid bid, Action saveCallback = null)
 		{
 			InitializeComponent();
 			setBindings();
@@ -90,6 +91,9 @@ namespace StangradCRM.View
 				EquipmentBidCollection = bid.EquipmentBidCollection
 			};			
 			this.bid = bid;
+			
+			this.saveCallback = saveCallback;
+			
 			EditBidInitialize();
 		}
 		
@@ -116,14 +120,18 @@ namespace StangradCRM.View
 				tbxFirstPayment.Background = defaultBrush;
 			};
 			cbxSeller.SelectionChanged += delegate { cbxSeller.Background = defaultBrush; };
-			dlcBuyer.getTextBoxItem().TextChanged += delegate { dlcBuyer.Background = defaultBrush; };
+			dlcBuyer.getTextBoxItem().TextChanged += delegate 
+			{
+				if(dlcBuyer.Background == errorBrush)
+					dlcBuyer.Background = defaultBrush; 
+			};
 			tbxFirstPayment.TextChanged += delegate { tbxFirstPayment.Background = defaultBrush; };
 		}		
 		
 		//If bid edit -> init data
 		void EditBidInitialize ()
 		{
-			dgvEquipmentBid.Visibility = Visibility.Visible;
+			gbxEquipmentBid.Visibility = Visibility.Visible;
 			Title = "Редактирование заявки №" + bid.Id.ToString();
 			isNew = false;
 			dpDateCreated.IsEnabled = false;
@@ -132,14 +140,13 @@ namespace StangradCRM.View
 			{
 				tbxFirstPayment.Text = payment.Paying.ToString();
 				tbxFirstPayment.IsEnabled = false;
-				saveEnableFirsrPayment = false;
 			}
 			tbxDebt.Text = bid.Debt.ToString();
-
 			if(bid.Id_bid_status == (int)Classes.BidStatus.InWork)
 			{
 				InitializeIfIsWork();
-			}	
+			}
+			SetReadOnlyBuyersControls(true);
 		}
 		
 		//if bid status = is_work
@@ -159,7 +166,6 @@ namespace StangradCRM.View
 				cbxPaymentStatus.ItemsSource = paymentStatuses;
 			}
 			btnIsShipped.Visibility = Visibility.Visible;
-			btnIsArchive.Visibility = Visibility.Visible;
 			setShippedControlsVisibility();
 		}
 		
@@ -195,6 +201,43 @@ namespace StangradCRM.View
 			bid.Id_payment_status = (int)cbxPaymentStatus.SelectedValue;
 			bid.Id_manager = Auth.getInstance().Id;
 			
+			//first pay
+			Payment payment = null;
+			if(bid.Id_payment_status !=
+			   (int)Classes.PaymentStatus.NotPaid)
+			{
+				payment = new Payment();
+				payment.Id_manager = Auth.getInstance().Id;
+				//Если новая заявка: дата платежа = дата создания заявки
+				if(bid.Id == 0)
+				{
+					payment.Payment_date = (DateTime)dpDateCreated.SelectedDate;
+				}
+				else //Иначе дата платежа = текущая дата
+				{
+					payment.Payment_date = DateTime.Now;
+				}
+				
+				//Если частично оплачено
+				if(bid.Id_payment_status
+				   == (int)Classes.PaymentStatus.PartiallyPaid 
+				  && PaymentViewModel.instance().getFirstByBidId(bid.Id) == null)
+				{
+					double pay = double.Parse(tbxFirstPayment.Text);
+					payment.Paying = pay;
+				}
+				//Если полностью оплачено
+				if(bid.Id_payment_status ==
+				   (int)Classes.PaymentStatus.Paid)
+				{
+					//Если уже были внесены платежи
+					if(bid.Debt != 0)
+					{
+						payment.Paying = bid.Debt;
+					}
+				}
+			}
+			
 			//set visual effect
 			loadingProgress.Visibility = Visibility.Visible;
 			IsEnabled = false;
@@ -211,7 +254,19 @@ namespace StangradCRM.View
               	//save bid
               	if(bid.save())
 				{
-              		//Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { firstPaySave(); } ));
+              		//Если есть платеж и его значение > 0
+              		if(payment != null && payment.Paying > 0)
+              		{
+              			payment.Id_bid = bid.Id;
+              			if(!payment.save())
+              			{
+              				MessageBox.Show("Ошибка при сохранении платежа!\n" + payment.LastError);
+              			}
+              			if(!bid.generateSerialNumber())
+              			{
+              				MessageBox.Show("Ошибка генерации серийных номеров!\n" + bid.LastError);
+              			}
+              		}
 					Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { successSave(); } ));
 				}
 				else 
@@ -225,6 +280,7 @@ namespace StangradCRM.View
 		//Success bid save
 		private void successSave()
 		{
+			if(saveCallback != null) saveCallback();
 			if(isNew)
 			{
 				try
@@ -263,6 +319,8 @@ namespace StangradCRM.View
 				tbxBuyerCity.Text = buyer.City;
 				
 				currentBuyer = buyer;
+				
+				SetReadOnlyBuyersControls(true);
 			}
 		}
 		
@@ -274,6 +332,42 @@ namespace StangradCRM.View
 			tbxBuyerEmail.Text = "";
 			tbxBuyerCity.Text = "";
 			dlcBuyer.Clear();
+			
+			currentBuyer = null;
+			
+			SetReadOnlyBuyersControls();
+		}
+		
+		//Set enabled/disabled buyer controls
+		void SetReadOnlyBuyersControls (bool isReadOnly = false)
+		{
+			dlcBuyer.IsReadOnly = isReadOnly;
+			tbxBuyerContactPerson.IsReadOnly = isReadOnly;
+			tbxBuyerPhone.IsReadOnly = isReadOnly;
+			tbxBuyerEmail.IsReadOnly = isReadOnly;
+			tbxBuyerCity.IsReadOnly = isReadOnly;
+			if(!isReadOnly)
+			{
+				SetBuyerControlsColor();
+			}
+			else
+			{
+				SetBuyerControlsColor(new SolidColorBrush(Color.FromRgb(240, 240, 240)));
+			}
+		}
+		
+		//Set buyer conrols color
+		void SetBuyerControlsColor (Brush brush = null)
+		{
+			if(brush == null) brush = defaultBrush;
+			
+			
+			
+			dlcBuyer.Background = brush;
+			tbxBuyerContactPerson.Background = brush;
+			tbxBuyerPhone.Background = brush;
+			tbxBuyerEmail.Background = brush;
+			tbxBuyerCity.Background = brush;
 		}
 		
 		//Validate controls values before save
@@ -296,7 +390,13 @@ namespace StangradCRM.View
 			}
 			try
 			{
-				double.Parse(tbxAmount.Text);
+				double amount = double.Parse(tbxAmount.Text);
+				if(amount < 0)
+				{
+					tbxAmount.Background = errorBrush;
+					MessageBox.Show("Значение суммы должно быть больше 0!");
+					return false;
+				}
 			}
 			catch
 			{
@@ -328,6 +428,18 @@ namespace StangradCRM.View
 				try
 				{
 					double firstPayment = double.Parse(tbxFirstPayment.Text);
+					if(firstPayment <= 0)
+					{
+						tbxFirstPayment.Background = errorBrush;
+						MessageBox.Show("Значение первого платежа должно быть положительным числом!");
+						return false;
+					}
+					if(firstPayment == double.Parse(tbxAmount.Text))
+					{
+						tbxFirstPayment.Background = errorBrush;
+						MessageBox.Show("Значение первого платежа не может быть равно сумме оплаты.\nВыберите статус 'Оплачено'!");
+						return false;
+					}
 					if(firstPayment > double.Parse(tbxAmount.Text))
 					{
 						tbxFirstPayment.Background = errorBrush;
@@ -337,34 +449,12 @@ namespace StangradCRM.View
 				}
 				catch
 				{
-					tbxFirstPayment.Text = "0";
-					return true;
+					tbxFirstPayment.Background = errorBrush;
+					return false;
 				}
 			}
 
 			return true;
-		}
-
-		
-		//Save first pay
-		private void firstPaySave ()
-		{
-			if(saveEnableFirsrPayment == false) return;
-			if((int)cbxPaymentStatus.SelectedValue ==
-			   (int)Classes.PaymentStatus.PartiallyPaid)
-			{
-				double pay = double.Parse(tbxFirstPayment.Text);
-				if(pay == 0) return;
-				Payment payment = new Payment();
-				payment.Id_bid = bid.Id;
-				payment.Id_manager = Auth.getInstance().Id;
-				payment.Paying = pay;
-				payment.Payment_date = (DateTime)dpDateCreated.SelectedDate;
-				if(!payment.save())
-				{
-					MessageBox.Show("Не удалось сохранить значение первого платежа!\n" + payment.LastError);
-				}
-			}
 		}
 		
 		//Open payments history window
@@ -397,29 +487,6 @@ namespace StangradCRM.View
 			}
 		}
 		
-		//Set archive status
-		void BtnIsArchive_Click(object sender, RoutedEventArgs e)
-		{
-			if(bid.Is_shipped == 1
-			   && bid.Id_bid_status == (int)Classes.BidStatus.InWork
-			   && bid.Id_payment_status == (int)Classes.PaymentStatus.Paid)
-			{
-				bid.Is_archive = 1;
-				if(!bid.save())
-				{
-					System.Windows.MessageBox.Show(bid.LastError);
-				}
-				else
-				{
-					Close();
-				}
-			}
-			else
-			{
-				System.Windows.MessageBox.Show("Для перевода заявки в архив должен быть установлен статус 'Отгружено' и 'Оплачено'");
-			}
-		}
-		
 		//EquipmentBid -------------------->
 		//Open add window
 		void BtnAdd_Click(object sender, RoutedEventArgs e)
@@ -427,15 +494,18 @@ namespace StangradCRM.View
 			EquipmentBidSaveWindow window = new EquipmentBidSaveWindow(bid.Id);
 			window.ShowDialog();
 		}
-		//Open edit window
-		void BtnEditRow_Click(object sender, RoutedEventArgs e)
+
+		//Дабл клик по строке таблицы - открывает окно редактирования
+		private void DgvEquipmentBid_RowDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
+			DataGridRow row = sender as DataGridRow;
+			EquipmentBid equipmentBid = row.Item as EquipmentBid;
 			if(equipmentBid == null) return;
+			
 			EquipmentBidSaveWindow window = new EquipmentBidSaveWindow(equipmentBid);
 			window.ShowDialog();
-			
 		}		
+		
 		//Delete row
 		void BtnDeleteRow_Click(object sender, RoutedEventArgs e)
 		{
@@ -445,6 +515,15 @@ namespace StangradCRM.View
 			if(!equipmentBid.remove())
 			{
 				MessageBox.Show(equipmentBid.LastError);
+			}
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void DgvEquipmentBid_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				DgvEquipmentBid_RowDoubleClick(sender, null);
+				e.Handled = true; //Отмена обработки по умолчанию
 			}
 		}
 		

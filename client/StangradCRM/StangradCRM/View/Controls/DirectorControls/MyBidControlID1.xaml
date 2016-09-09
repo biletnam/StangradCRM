@@ -78,6 +78,7 @@
 								Header="История платежей">
 							</MenuItem>
 							<MenuItem
+								Visibility="Collapsed"
 								ItemsSource="{Binding CurrentStatusCollection}"
 								x:Name="contextTransferToStatus"
 								Header="Изменить статус на:">

@@ -147,14 +147,18 @@ namespace StangradCRM.ViewModel
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
 		}
 		
-		public Bid getById (int bidId)
+		public Bid getById (int id)
 		{
-			return _collection.Where(x => x.Id == bidId).FirstOrDefault();
+			return _collection.Where(x => x.Id == id).FirstOrDefault();
 		}
 	
 		public DateTime maxLastModified ()
 		{
-			return _collection.Max(x => x.Last_modified);
+			if(_collection.Count > 0)
+			{
+				return _collection.Max(x => x.Last_modified);
+			}
+			return DateTime.Now;
 		}
 		
 		
@@ -163,14 +167,17 @@ namespace StangradCRM.ViewModel
 			HTTPManager.HTTPRequest http = HTTPManager.HTTPRequest.Create(Settings.uri);
 			http.UseCookie = true;
 			
+			string lastModified = maxLastModified().ToString("yyyy-MM-dd HH:mm:ss");
+			
 			http.addParameter("entity", "Bid/lastmodified");
-			http.addParameter("last_modified", maxLastModified().ToString("yyyy-MM-dd HH:mm:ss"));
+			http.addParameter("last_modified", lastModified);
 			
 			if(!http.post()) return null;
-			
+
 			ResponseParser parser = ResponseParser.Parse(http.ResponseData);
 			if(!parser.NoError)
 			{
+				Log.WriteError(parser.LastError);
 				return null;
 			}
 			return parser.ToObject<List<Bid>>();
@@ -208,23 +215,20 @@ namespace StangradCRM.ViewModel
 					{
 						if(newBid.Id_manager == auth.Id)
 						{
-							int index = _collection.IndexOf(oldBid);
-							_collection[index] = newBid;
+							oldBid.replace(newBid);
 						}
 						else
 						{
-							remove(oldBid);
+							oldBid.remove(true);
 						}
 					}
 					else
 					{
-							int index = _collection.IndexOf(oldBid);
-							_collection[index] = newBid;
+						oldBid.replace(newBid);
 					}
 				}
 			}
 		}
-		
 		
 		
 		public void fastSearch (string searchString, TSObservableCollection<Bid> collection = null)
@@ -241,11 +245,9 @@ namespace StangradCRM.ViewModel
             
             collection.Where(x => (x.Account.ToLower().IndexOf(searchString) != -1) |
                              	(x.Amount.ToString().ToLower().IndexOf(searchString) != -1) |
-                             	(x.BuyerName.ToLower().IndexOf(searchString) != -1 ) |
+                             	(x.BuyerInfo.ToLower().IndexOf(searchString) != -1 ) |
                              	(x.EquipmentBidStringSearch.ToLower().IndexOf(searchString) != -1 )
                              ).ToList().ForEach(y => y.setFilters(properties, true));
 		}
-		
-		
 	}
 }

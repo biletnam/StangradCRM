@@ -143,5 +143,16 @@ class BidController extends \system\controllers\ModelController {
         $query = "select * from bid where last_modified > '" . $params['last_modified'] . "'";
         $equipmentBidSubQuery = "select id from bid where last_modified > '" . $params['last_modified'] . "'";
         return $this->loadBid($query, $equipmentBidSubQuery);
-    }   
+    }
+    
+    public function generateEquipmentBidSerialNumberAction ($params)    
+    {
+        if(!isset($params['id']) || (int)$params['id'] == null)
+        {
+            return [1, 'ID is not found or incorrect'];
+        }
+        $id = (int)$params['id'];
+        return EquipmentBidController::generateSerialNumber($id);
+    }
+    
 }

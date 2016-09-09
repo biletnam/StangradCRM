@@ -68,11 +68,25 @@ namespace StangradCRM.Model
 			bool result = base.afterSave(parser);
 			if(result)
 			{
-				RaisePropertyChanged("Name", Name);
-				RaisePropertyChanged("Id_equipment", Id_equipment);
+				raiseAllProperties();
 			}
 			return result;
 		}
 		
+		
+		public override void replace(object o)
+		{
+			Modification modification = o as Modification;
+			if(modification == null) return;
+			Name = modification.Name;
+			Id_equipment = modification.Id_equipment;
+			raiseAllProperties();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			RaisePropertyChanged("Name", Name);
+			RaisePropertyChanged("Id_equipment", Id_equipment);
+		}
 	}
 }

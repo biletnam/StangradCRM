@@ -52,17 +52,20 @@ namespace StangradCRM.View
 			
 			equipmentBid = new EquipmentBid();
 			equipmentBid.Id_bid = idBid;
-			dgvComplectation.Visibility = Visibility.Hidden;
+			gbxComplectation.Visibility = Visibility.Hidden;
 			DataContext = new 
 			{
 				ComplectationCollection = equipmentBid.ComplectationCollection
-			};	
+			};
+			
+			Title += idBid.ToString();
 		}
 		
 		public EquipmentBidSaveWindow(EquipmentBid equipmentBid)
 		{
 			InitializeComponent();
-			Title = "Редактирование комплектации в заявке";
+			Title = "Редактирование комплектации в заявке №" + equipmentBid.Id_bid.ToString();
+			
 			setViewSources();
 			
 			Modification modification = ModificationViewModel.instance().getById(equipmentBid.Id_modification);
@@ -80,6 +83,7 @@ namespace StangradCRM.View
 			};
 			
 			this.equipmentBid = equipmentBid;
+
 		}
 		
 		void setViewSources ()
@@ -149,11 +153,10 @@ namespace StangradCRM.View
 		private void successSave()
 		{
 			loadingProgress.Visibility = Visibility.Hidden;
-			dgvComplectation.Visibility = Visibility.Visible;
+			gbxComplectation.Visibility = Visibility.Visible;
 			IsEnabled = true;
 			if(!isNew)
 			{
-				//prepareComplectationSave();
 				Close();
 			}
 			else
@@ -208,7 +211,13 @@ namespace StangradCRM.View
 		{
 			Complectation complectation = new Complectation();
 			complectation.Complectation_count = 1;
+			complectation.Commentary = "";
+			
+			
+			complectation.IsSaved = false;
+			
 			equipmentBid.ComplectationCollection.Add(complectation);
+			
 		}
 		
 		void BtnDeleteRow_Click(object sender, RoutedEventArgs e)
@@ -245,6 +254,9 @@ namespace StangradCRM.View
 			if(complectation == null) return;
 			if(equipmentBid == null) return;
 			complectation.Id_equipment_bid = equipmentBid.Id;
+			
+			if(!validate(complectation)) return;
+			
 			complectationSave(complectation);
 		}
 		
@@ -317,8 +329,11 @@ namespace StangradCRM.View
 		
 		void prepareComplectationSave ()
 		{
-			IsEnabled = false;
-			loadingProgress.Visibility = Visibility.Visible;
+			for(int i = 0; i < equipmentBid.ComplectationCollection.Count; i++)
+			{
+				Complectation complectation = equipmentBid.ComplectationCollection[i];
+				if(!validate(complectation)) return;
+			}
 			
 			for(int i = 0; i < equipmentBid.ComplectationCollection.Count; i++)
 			{
@@ -333,6 +348,8 @@ namespace StangradCRM.View
 		
 		void complectationSave (Complectation complectation)
 		{
+			IsEnabled = false;
+			loadingProgress.Visibility = Visibility.Visible;
 			Task.Factory.StartNew(() => {
 				if(complectation.save())
 				{
@@ -355,6 +372,24 @@ namespace StangradCRM.View
 		void complectationErrorSave (Complectation complectation)
 		{
 			System.Windows.MessageBox.Show(complectation.LastError);
+			complectation.IsSaved = true;
+			loadingProgress.Visibility = Visibility.Hidden;
+			IsEnabled = true;
+		}
+		
+		bool validate (Complectation complectation)
+		{
+			if(complectation.Commentary == "")
+			{
+				System.Windows.MessageBox.Show("Поле 'Коментарий' не заполнено у одного или нескольких записей.\nСохранение не возможно!");
+				return false;
+			}
+			if(complectation.Complectation_count < 1)
+			{
+				System.Windows.MessageBox.Show("Поле 'Количество' меньше 1 у одного или нескольких записей.\nСохранение не возможно!");
+				return false;
+			}
+			return true;
 		}
 	}
 }

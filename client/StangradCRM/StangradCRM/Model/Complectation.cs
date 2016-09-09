@@ -59,16 +59,14 @@ namespace StangradCRM.Model
 			bool result = base.afterSave(parser);
 			if(result)
 			{
-				RaisePropertyChanged("Complectation_count", Complectation_count);
-				RaisePropertyChanged("Commentary", Commentary);
-				RaisePropertyChanged("Id_equipment_bid", Id_equipment_bid);
+				raiseAllProperties();
 			}
 			return result;
 		}
 		
 		protected override bool afterRemove(StangradCRMLibs.ResponseParser parser, bool soft = false)
 		{
-			bool result = base.afterRemove(parser);
+			bool result = base.afterRemove(parser, soft);
 			if(result)
 			{
 				EquipmentBid equipmentBid = EquipmentBidViewModel.instance().getById(Id_equipment_bid);
@@ -87,8 +85,9 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("Commentary", Commentary, true);
 		}
 		
-		public void setOldValues ()
+		public override void setOldValues ()
 		{
+			base.setOldValues();
 			try
 			{
 				Complectation_count = (int)oldValues["Complectation_count"];
@@ -97,5 +96,24 @@ namespace StangradCRM.Model
 			catch {}
 		}
 		
+		
+		public override void replace(object o)
+		{
+			Complectation complectation = o as Complectation;
+			if(complectation == null) return;
+			
+			Complectation_count = complectation.Complectation_count;
+			Commentary = complectation.Commentary;
+			Id_equipment_bid = complectation.Id_equipment_bid;
+				
+			raiseAllProperties();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			RaisePropertyChanged("Complectation_count", Complectation_count);
+			RaisePropertyChanged("Commentary", Commentary);
+			RaisePropertyChanged("Id_equipment_bid", Id_equipment_bid);
+		}
 	}
 }

@@ -171,7 +171,7 @@ class Model {
             $error = $operation::lastError();
             return [1, $error->getMessage()];
         }
-        return [0, $result];
+        return [0,  [static::pk() => (int)$result]];
     }
     
     
@@ -189,7 +189,7 @@ class Model {
             $error = $operation::lastError();
             return [1, $error->getMessage()];
         }
-        return [0];
+        return [0, []];
     }
     
     public function delete() {

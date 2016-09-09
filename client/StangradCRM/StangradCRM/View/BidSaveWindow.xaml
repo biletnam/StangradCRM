@@ -163,15 +163,6 @@
 					Grid.Row="6" Grid.Column="1"
 					Content="Отгружено"
 					x:Name="lblIsShipped"></Label>
-			
-				<Button 
-					Visibility="Collapsed"
-					Click="BtnIsArchive_Click"
-					Height="25"
-					x:Name="btnIsArchive"
-					Content="Установить статус 'Архив'"
-					Margin="0, 2, 0, 0"
-					Grid.Row="7" Grid.Column="1"></Button>
 			</Grid>
 			<Grid
 				Grid.Row="0"
@@ -340,128 +331,130 @@
 					</Grid>
 				</GroupBox>
 			</Grid>
-			<DataGrid
-				x:Name="dgvEquipmentBid"
-				ItemsSource="{Binding EquipmentBidCollection}"
-				Style="{StaticResource DefaultDataGridStyle}"
+			<GroupBox 
+				x:Name="gbxEquipmentBid"
 				Grid.Column="0"
 				Grid.Row="1"
 				Grid.ColumnSpan="2"
-				HorizontalAlignment="Stretch"
-				VerticalAlignment="Stretch">
-				<DataGrid.Columns>
-					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
-						CanUserSort="True"
-						SortMemberPath="Id"
-						Width="100"
-						Header="Код">
-						<DataGridTemplateColumn.CellTemplate>
-							<DataTemplate>
-								<TextBlock
-									Text="{Binding Path=Id}"
-									VerticalAlignment="Center" />
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
-					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
-						CanUserSort="True"
-						SortMemberPath="EquipmentName"
-						Width="*"
-						Header="Оборудование">
-						<DataGridTemplateColumn.CellTemplate>
-	                        <DataTemplate>
-	                            <TextBlock 
-	                            	VerticalAlignment="Center"
-	                            	Text="{Binding Path=EquipmentName}"></TextBlock>
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
-					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
-						CanUserSort="True"
-						SortMemberPath="ModificationName"
-						Width="*"
-						Header="Модифкация">
-						<DataGridTemplateColumn.CellTemplate>
-	                        <DataTemplate>
-	                            <TextBlock 
-	                            	VerticalAlignment="Center"
-	                            	Text="{Binding Path=ModificationName}"></TextBlock>
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
-					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
-						CanUserSort="True"
-						SortMemberPath="SerialNumber"
-						Width="*"
-						Header="Серийный номер">
-						<DataGridTemplateColumn.CellTemplate>
-							<DataTemplate>
-								<TextBlock
-									Text="{Binding Path=SerialNumber}"
-									VerticalAlignment="Center" />
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
-					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
-						Width="50">
-						<DataGridTemplateColumn.Header>
-							<Button
-								x:Name="btnAdd"
-								Click="BtnAdd_Click"
-								Grid.Row="0"
-								Grid.Column="0"
-								Style="{StaticResource ButtonOperationGridStyle}">
-								<Image
-									VerticalAlignment="Stretch"
-									HorizontalAlignment="Stretch"
-									Source="/StangradCRM;component/Images/add.png"
-									Stretch="Fill"></Image>
-							</Button>
-						</DataGridTemplateColumn.Header>
-						<DataGridTemplateColumn.CellTemplate>
-							<DataTemplate>
-								<Grid>
-									<Grid.RowDefinitions>
-										<RowDefinition></RowDefinition>
-									</Grid.RowDefinitions>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition></ColumnDefinition>
-										<ColumnDefinition></ColumnDefinition>
-									</Grid.ColumnDefinitions>
-									<Button 
-										x:Name="btnEditRow"
-										Click="BtnEditRow_Click"
-		                            	Grid.Row="0" Grid.Column="0"
-										Style="{StaticResource ButtonOperationGridAnimateStyle}">
-		                                <Image 
-		                                    VerticalAlignment="Stretch"
-		                                    HorizontalAlignment="Stretch"
-		                                    Source="/StangradCRM;component/Images/edit.png"
-											Stretch="Fill"></Image>								
-									</Button>
-									<Button
-										x:Name="btnDeleteRow"
-										Click="BtnDeleteRow_Click"
-										Grid.Row="0"
-										Grid.Column="1"
-										Style="{StaticResource ButtonOperationGridAnimateStyle}">
-										<Image
-											VerticalAlignment="Stretch"
-											HorizontalAlignment="Stretch"
-											Source="/StangradCRM;component/Images/delete.png"
-											Stretch="Fill"></Image>
-									</Button>
-								</Grid>
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
-				</DataGrid.Columns>
-			</DataGrid>
+				Header="Оборудование в заявке">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*"></RowDefinition>
+						<RowDefinition Height="Auto"></RowDefinition>
+					</Grid.RowDefinitions>
+					<DataGrid
+						x:Name="dgvEquipmentBid"
+						ItemsSource="{Binding EquipmentBidCollection}"
+						Style="{StaticResource DefaultDataGridStyle}"
+						Grid.Row="0">
+						<DataGrid.RowStyle>
+							<Style TargetType="DataGridRow">
+								<EventSetter Handler="DgvEquipmentBid_RowDoubleClick" Event="MouseDoubleClick"></EventSetter>
+								<EventSetter Handler="DgvEquipmentBid_PreviewKeyDown" Event="PreviewKeyDown"></EventSetter>
+							</Style>
+						</DataGrid.RowStyle>
+						<DataGrid.Columns>
+							<DataGridTemplateColumn
+								CellStyle="{StaticResource DefaultDataGridCellStyle}"
+								CanUserSort="True"
+								SortMemberPath="Id"
+								Width="100"
+								Header="Код">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBlock
+											Text="{Binding Path=Id}"
+											VerticalAlignment="Center" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTemplateColumn
+								CellStyle="{StaticResource DefaultDataGridCellStyle}"
+								CanUserSort="True"
+								SortMemberPath="EquipmentName"
+								Width="*"
+								Header="Оборудование">
+								<DataGridTemplateColumn.CellTemplate>
+			                        <DataTemplate>
+			                            <TextBlock 
+			                            	VerticalAlignment="Center"
+			                            	Text="{Binding Path=EquipmentName}"></TextBlock>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTemplateColumn
+								CellStyle="{StaticResource DefaultDataGridCellStyle}"
+								CanUserSort="True"
+								SortMemberPath="ModificationName"
+								Width="*"
+								Header="Модифкация">
+								<DataGridTemplateColumn.CellTemplate>
+			                        <DataTemplate>
+			                            <TextBlock 
+			                            	VerticalAlignment="Center"
+			                            	Text="{Binding Path=ModificationName}"></TextBlock>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTemplateColumn
+								CellStyle="{StaticResource DefaultDataGridCellStyle}"
+								CanUserSort="True"
+								SortMemberPath="Serial_number"
+								Width="*"
+								Header="Серийный номер">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBlock
+											Text="{Binding Path=Serial_number}"
+											VerticalAlignment="Center" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTemplateColumn
+								CellStyle="{StaticResource DefaultDataGridCellStyle}"
+								Width="25">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Grid>
+											<Grid.RowDefinitions>
+												<RowDefinition></RowDefinition>
+											</Grid.RowDefinitions>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition></ColumnDefinition>
+											</Grid.ColumnDefinitions>
+											<Button
+												x:Name="btnDeleteRow"
+												Click="BtnDeleteRow_Click"
+												Grid.Row="0"
+												Grid.Column="0"
+												Style="{StaticResource ButtonOperationGridAnimateStyle}">
+												<Image
+													VerticalAlignment="Stretch"
+													HorizontalAlignment="Stretch"
+													Source="/StangradCRM;component/Images/delete.png"
+													Stretch="Fill"></Image>
+											</Button>
+										</Grid>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+						</DataGrid.Columns>
+					</DataGrid>
+					<Grid Grid.Row="1" Margin="5, 0, 0, 2">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"></ColumnDefinition>
+						</Grid.ColumnDefinitions>
+						<Button 
+							x:Name="btnAdd"
+							Click="BtnAdd_Click"
+							HorizontalAlignment="Left"
+							Style="{StaticResource DefaultButtonStyle}"
+							Width="100"
+							Grid.Column="0"
+							Content="Добавить"></Button>
+					</Grid>
+				</Grid>
+			</GroupBox>
 		</Grid>
 
 		<libs:Loading

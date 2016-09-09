@@ -57,8 +57,7 @@ namespace StangradCRM.Model
 			bool result = base.afterSave(parser);
 			if(result)
 			{
-				RaisePropertyChanged("Name", Name);
-				RaisePropertyChanged("Record_color", Record_color);
+				raiseAllProperties();
 				BidViewModel.instance().Collection.
 					Where(x => x.Id_payment_status == Id).All(y => { 
 					                                  	y.UpdateProperty("PaymentStatusColor");
@@ -68,5 +67,20 @@ namespace StangradCRM.Model
 			return result;
 		}
 		
+		
+		public override void replace(object o)
+		{
+			PaymentStatus paymentStatus = o as PaymentStatus;
+			if(paymentStatus == null) return;
+			Name = paymentStatus.Name;
+			Record_color = paymentStatus.Record_color;
+			raiseAllProperties();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			RaisePropertyChanged("Name", Name);
+			RaisePropertyChanged("Record_color", Record_color);
+		}
 	}
 }

@@ -147,7 +147,7 @@
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Id_manager"
-			                Width="120"
+			                Width="*"
 			                Header="Менеджер">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>

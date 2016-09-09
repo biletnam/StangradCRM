@@ -10,7 +10,9 @@ using System;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace StangradCRM.Classes
+using StangradCRM.Classes;
+
+namespace StangradCRM.Extensions
 {
 	/// <summary>
 	/// Description of DataGridExtension.

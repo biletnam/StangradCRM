@@ -18,6 +18,14 @@ namespace StangradCRM.Core
 	/// <summary>
 	/// Description of Model.
 	/// </summary>
+	/// 
+	
+	public class SaveResultData
+	{
+		public int Id { get; set; }
+		public int Row_order { get; set; }
+	}
+	
 	public abstract class Model : INotifyPropertyChanged
 	{
 		private int id = 0;
@@ -103,6 +111,9 @@ namespace StangradCRM.Core
 		protected abstract void prepareSaveData (HTTPRequest http);
 		protected abstract void prepareRemoveData (HTTPRequest http);
 		
+		public abstract void replace (object o);
+		public abstract void raiseAllProperties();
+		
 		protected abstract IViewModel CurrentViewModel { get; }
 		
 		protected virtual bool afterSave(ResponseParser parser)
@@ -114,14 +125,21 @@ namespace StangradCRM.Core
 			}
 			if(Id == 0)
 			{
-				int id = parser.ToObject<Int32>();
-				if(id != 0)
+				SaveResultData saveResult = parser.ToObject<SaveResultData>();
+				if(saveResult == null)
 				{
-					Id = id;
-					return CurrentViewModel.add(this);
+					LastError = "Данные о добавленной строке не были преобразованы";
+					return false;
 				}
-				LastError = "Сервер вернул некорректный идентификатор записи.";
-				return false;
+				if(saveResult.Id == 0)
+				{
+					LastError = "Идентификатор не был получен.";
+					return false;
+				}
+				Id = saveResult.Id;
+				Row_order = saveResult.Row_order;
+				Id = id;
+				return CurrentViewModel.add(this);
 			}
 			return true;
 		}
@@ -140,6 +158,15 @@ namespace StangradCRM.Core
 		public virtual void loadedItemInitProperty ()
 		{
 			RaisePropertyChanged("Id", Id, true);
+		}
+		
+		public virtual void setOldValues ()
+		{
+			try
+			{
+				Id = (int)oldValues["Id"];
+			}
+			catch {}
 		}
 		
 	    protected void RaisePropertyChanged(string name, object v, bool p = false) {

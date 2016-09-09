@@ -16,6 +16,10 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <WarningLevel>4</WarningLevel>
+    <ApplicationIcon>..\..\..\materials\logo_256x256-png.ico</ApplicationIcon>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -88,7 +92,6 @@
     </Compile>
     <Compile Include="Classes\BidStatus.cs" />
     <Compile Include="Classes\BidUpdateTask.cs" />
-    <Compile Include="Classes\DataGridExtension.cs" />
     <Compile Include="Classes\FindItem.cs" />
     <Compile Include="Classes\PaymentStatus.cs" />
     <Compile Include="Classes\PaymentStatusIntConverter.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="Core\IViewModel.cs" />
     <Compile Include="Core\Model.cs" />
     <Compile Include="Core\TSObservableCollection.cs" />
+    <Compile Include="Extensions\DataGridExtension.cs" />
     <Compile Include="Model\Bid.cs" />
     <Compile Include="Model\BidStatus.cs" />
     <Compile Include="Model\Buyer.cs" />
@@ -333,7 +337,9 @@
     <Page Include="View\Controls\ManagerControls\MainControlID1.xaml" />
     <Page Include="View\Controls\ManagerControls\MainControlID2.xaml" />
     <Page Include="View\EquipmentBidSaveWindow.xaml" />
-    <Page Include="View\EquipmentSaveWindow.xaml" />
+    <Page Include="View\EquipmentSaveWindow.xaml">
+      <DependentUpon>EquipmentSelectWindow.xaml</DependentUpon>
+    </Page>
     <Page Include="View\EquipmentSelectWindow.xaml" />
     <Page Include="View\EquipmentWindow.xaml" />
     <Page Include="View\MainWindows\AccountantMainWindow.xaml" />
@@ -369,6 +375,7 @@
     <Folder Include="View\MainWindows" />
     <Folder Include="View\Controls" />
     <Folder Include="View\Helpers" />
+    <Folder Include="Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resource.resx">

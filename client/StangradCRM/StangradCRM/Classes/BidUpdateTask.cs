@@ -19,13 +19,24 @@ namespace StangradCRM.Classes
 	/// </summary>
 	public static class BidUpdateTask
 	{
-		public static void Start (Dispatcher dispatcher)
+		public static void Start (Dispatcher dispatcher, 
+		                          int updateTime = 60000, 
+		                          Action beforeCallback = null, 
+		                          Action afterCallback = null)
 		{
 			Task.Factory.StartNew( () => 
             {
 				while(true) 
 				{
-					System.Threading.Thread.Sleep(40000);
+					if(beforeCallback != null)
+					{
+						dispatcher.BeginInvoke(DispatcherPriority.Background, beforeCallback);
+					}
+					System.Threading.Thread.Sleep(updateTime);
+					if(afterCallback != null)
+					{
+						dispatcher.BeginInvoke(DispatcherPriority.Background, afterCallback);
+					}
 					dispatcher.BeginInvoke(DispatcherPriority.Background, 
 					                       new Action(() => BidViewModel.instance().RemoteLoad()));
 				}

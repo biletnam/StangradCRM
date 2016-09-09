@@ -57,12 +57,22 @@ namespace StangradCRM.Model
 			bool result = base.afterSave(parser);
 			if(result)
 			{
-				RaisePropertyChanged("Name", Name);
+				raiseAllProperties();
 				BidViewModel.instance().Collection.
 					Where(x => x.Id_seller == Id).All(y => { y.UpdateProperty("SellerName"); return true; });
 			}
 			return result;
 		}
 		
+		
+		public override void replace(object o)
+		{
+			throw new NotImplementedException();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			RaisePropertyChanged("Name", Name);
+		}
 	}
 }

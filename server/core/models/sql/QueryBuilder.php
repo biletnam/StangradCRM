@@ -156,7 +156,7 @@ class QueryBuilder extends \core\models\AbstractQueryBuilder {
         array_walk($fields, 'core\models\sql\QueryBuilder::addPostfix', ' = ? ');
         $operation = $this->operation('update');
         for($i = 0; $i < count($values); $i++) {
-            if($values[$i] == 'NULL') {
+            if($values[$i] === 'NULL') {
                 $values[$i] = null;
             }
         }

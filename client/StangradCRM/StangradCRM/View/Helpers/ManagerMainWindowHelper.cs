@@ -24,21 +24,22 @@ namespace StangradCRM.View.Helpers
 		public static UserControl GetControl (int bidStatusId)
 		{
 			UserControl control;
-			CollectionViewSource viewSource = new CollectionViewSource();
-			viewSource.Source = BidViewModel.instance().getCollectionByStatus(bidStatusId);		
-			viewSource.Filter += delegate(object sender, FilterEventArgs e) 
+			CollectionViewSource bidViewSource = new CollectionViewSource();
+			bidViewSource.Source = BidViewModel.instance().getCollectionByStatus(bidStatusId);		
+			bidViewSource.Filter += delegate(object sender, FilterEventArgs e) 
 			{
 				Bid bid = e.Item as Bid;
 				if(bid == null) return;
 				e.Accepted = bid.IsVisible;
 			};
+
 			switch (bidStatusId)
 			{
 					case 1:		
-						control = new MainControlID1(viewSource);
+						control = new MainControlID1(bidViewSource);
 						break;
 					case 2:
-						control = new MainControlID2(viewSource);
+						control = new MainControlID2(bidViewSource);
 						break;
 					default:
 						control = new StangradCRM.View.Controls.DefaultMainControl();

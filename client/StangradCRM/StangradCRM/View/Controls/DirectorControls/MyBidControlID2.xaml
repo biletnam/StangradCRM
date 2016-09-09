@@ -60,6 +60,12 @@
 								Header="Редактировать"
 								Click="ContextMenuOpenEditWindow_Click">
 							</MenuItem>
+							<MenuItem
+								Loaded="ContextAddPayment_Loaded"
+								Click="ContextAddPayment_Click"
+								x:Name="contextAddPayment"
+								Header="Добавить платеж">
+							</MenuItem>
 							<MenuItem 
 								Click="ContextPaymentHistory_Click"
 								x:Name="contextPaymentHistory"
@@ -77,6 +83,7 @@
 								Header="Установить статус 'Архив'">
 							</MenuItem>
 							<MenuItem
+								Visibility="Collapsed"
 								ItemsSource="{Binding CurrentStatusCollection}"
 								x:Name="contextTransferToStatus"
 								Header="Изменить статус на:">
@@ -132,6 +139,21 @@
 			                </DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 							
+						<DataGridTemplateColumn 
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="Date_created"
+			                Width="100"
+			                Header="Дата создания">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=Date_created, StringFormat=\{0:dd.MM.yyyy\}}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
 						<DataGridTemplateColumn
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"

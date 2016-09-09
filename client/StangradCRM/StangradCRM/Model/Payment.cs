@@ -68,5 +68,24 @@ namespace StangradCRM.Model
 				return PaymentViewModel.instance();
 			}
 		}
+		
+		public override void replace(object o)
+		{
+			Payment payment = o as Payment;
+			if(payment == null) return;
+			Paying = payment.Paying;
+			Id_bid = payment.Id_bid;
+			Id_manager = payment.Id_manager;
+			Payment_date = payment.Payment_date;
+			raiseAllProperties();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			RaisePropertyChanged("Paying", Paying);
+			RaisePropertyChanged("Id_bid", Id_bid);
+			RaisePropertyChanged("Id_manager", Id_manager);
+			RaisePropertyChanged("Payment_date", Payment_date);
+		}
 	}
 }

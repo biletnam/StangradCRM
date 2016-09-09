@@ -86,5 +86,9 @@ namespace StangradCRM.ViewModel
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
 		}
 		
+		public TransportCompany getById (int id)
+		{
+			return _collection.Where(x => x.Id == id).FirstOrDefault();
+		}
 	}
 }

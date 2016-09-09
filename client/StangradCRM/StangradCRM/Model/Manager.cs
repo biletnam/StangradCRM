@@ -87,9 +87,7 @@ namespace StangradCRM.Model
 			bool result = base.afterSave(parser);
 			if(result)
 			{
-				RaisePropertyChanged("Name", Name);
-				RaisePropertyChanged("Login", Login);
-				RaisePropertyChanged("Id_role", Id_role);
+				raiseAllProperties();
 			}
 			else
 			{
@@ -107,5 +105,23 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("Id_role", Id_role, true);
 		}
 		
+		
+		public override void replace(object o)
+		{
+			Manager manager = o as Manager;
+			if(manager == null) return;
+			Name = manager.Name;
+			Login = manager.Login;
+			Id_role = manager.Id_role;
+			
+			raiseAllProperties();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			RaisePropertyChanged("Name", Name);
+			RaisePropertyChanged("Login", Login);
+			RaisePropertyChanged("Id_role", Id_role);
+		}
 	}
 }

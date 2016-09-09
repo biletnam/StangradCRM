@@ -328,5 +328,33 @@ namespace StangradCRM.View.Controls.DirectorControls
 			}
 		}
 		
+		void ContextAddPayment_Loaded(object sender, RoutedEventArgs e)
+		{
+			MenuItem mi = sender as MenuItem;
+			if(mi == null) return;
+			
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid ==null) return;
+			
+			if(bid.Id_payment_status == 3)
+			{
+				mi.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				mi.Visibility = Visibility.Visible;
+			}
+		}
+		
+		void ContextAddPayment_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) return;
+			PaymentSaveWindow window = new PaymentSaveWindow(bid);
+			window.ShowDialog();
+			
+			viewSource.View.Refresh();
+		}
+		
 	}
 }

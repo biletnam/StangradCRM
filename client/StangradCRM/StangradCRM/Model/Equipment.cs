@@ -44,6 +44,7 @@ namespace StangradCRM.Model
 		{
 			http.addParameter("name", Name);
 			http.addParameter("serial_number", Serial_number);
+			http.addParameter("row_order", (EquipmentViewModel.instance().getMaxRowOrder()+1));
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
@@ -72,11 +73,26 @@ namespace StangradCRM.Model
 			bool result = base.afterSave(parser);
 			if(result)
 			{
-				RaisePropertyChanged("Name", Name);
-				RaisePropertyChanged("Serial_number", Serial_number);
+				raiseAllProperties();
 			}
 			return result;
 		}
 		
+		
+		public override void replace(object o)
+		{
+			Equipment equipment = o as Equipment;
+			if(equipment == null) return;
+			Name = equipment.Name;
+			Serial_number = equipment.Serial_number;
+			
+			raiseAllProperties();
+		}
+		
+		public override void raiseAllProperties()
+		{
+			RaisePropertyChanged("Name", Name);
+			RaisePropertyChanged("Serial_number", Serial_number);
+		}
 	}
 }

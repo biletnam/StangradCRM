@@ -12,8 +12,29 @@
  * @author Дмитрий
  */
 
-namespace libs\file;
+namespace libs\classes\file;
 
 class Log {
-    //put your code here
+    
+    private function __construct() {
+        ;
+    }
+    private function __clone() {
+        ;
+    }
+    
+    public static function Write ($text)
+    {
+        $log = fopen(\configs\LogPath::path() . 'log.txt', 'a+');
+        fwrite($log, date('d.M.y H:m') . ': ' . $text . PHP_EOL);
+        fclose($log);
+    }
+    
+    public static function WriteError ($text)
+    {
+        $log = fopen(\configs\LogPath::path() . 'error.txt', 'a+');
+        fwrite($log, date('d.M.y H:m') . ': ' . $text . PHP_EOL);
+        fclose($log);
+    }
+    
 }
