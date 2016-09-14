@@ -138,5 +138,29 @@ namespace StangradCRM.View.Controls.ManagerControls
 		{
 			tbxFastSearch.Text = "";
 		}
+		
+		//Дабл клик по строке таблицы - открывает окно редактирования		
+		private void DgvBid_RowDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			Bid bid = row.Item as Bid;
+			if(bid == null) return;
+			
+			BidShipmentSaveWindow window = new BidShipmentSaveWindow(bid);
+			window.ShowDialog();
+			
+			viewSource.View.Refresh();
+          	dgvBid.CurrentCell = new DataGridCellInfo(row.Item, dgvBid.CurrentCell.Column);
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void DgvBid_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				DgvBid_RowDoubleClick(sender, null);
+				e.Handled = true;
+			}
+		}
+		
 	}
 }

@@ -22,7 +22,8 @@ namespace StangradCRM.Model
 	/// </summary>
 	public class EquipmentBid : Core.Model
 	{
-		public int Id_modification { get; set; }
+		public int Id_equipment { get; set; }
+		public int? Id_modification { get; set; }
 		public int Id_bid { get; set; }
 		public int? Serial_number { get; set; }
 		
@@ -57,12 +58,23 @@ namespace StangradCRM.Model
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
 		{
-			http.addParameter("id_modification", Id_modification);
+			
+			http.addParameter("id_equipment", Id_equipment);
 			http.addParameter("id_bid", Id_bid);
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
 			}
+			
+			if(Id_modification != null)
+			{
+				http.addParameter("id_modification", (int)Id_modification);
+			}
+			else
+			{
+				http.addParameter("id_modification", "NULL");
+			}
+			
 			if(Serial_number != null)
 			{
 				http.addParameter("serial_number", Serial_number);
@@ -96,8 +108,11 @@ namespace StangradCRM.Model
 		{
 			get
 			{
-				return ModificationViewModel.instance().getById(Id_modification);
-
+				if(Id_modification != null)
+				{
+					return ModificationViewModel.instance().getById((int)Id_modification);
+				}
+				return null;
 			}
 		}
 		
@@ -105,8 +120,7 @@ namespace StangradCRM.Model
 		{
 			get
 			{
-				if(this.Modification == null) return null;
-				return EquipmentViewModel.instance().getById(this.Modification.Id_equipment);
+				return EquipmentViewModel.instance().getById(Id_equipment);
 			}
 		}
 		
@@ -149,8 +163,12 @@ namespace StangradCRM.Model
 				string resultString = "";
 				foreach(Complectation complectation in ComplectationCollection)
 				{
-					resultString += complectation.Commentary + " " 
-						+ complectation.Complectation_count.ToString();
+					ComplectationItem item = ComplectationItemViewModel.instance().getById(complectation.Id_complectation_item);
+					if(item != null)
+					{
+						resultString += item.Name + " ";
+					}
+					resultString += complectation.Complectation_count.ToString();
 				}
 				return resultString;
 			}
@@ -163,15 +181,7 @@ namespace StangradCRM.Model
 			{
 				raiseAllProperties();
 				Bid bid = BidViewModel.instance().getById(Id_bid);
-				if(bid == null)
-				{
-					Log.WriteError("Bid is null");
-				}
-				else if (bid.EquipmentBidCollection.Contains(this))
-				{
-					Log.WriteError("Item exist");
-				}
-				else 
+				if(bid != null && !bid.EquipmentBidCollection.Contains(this))
 				{
 					bid.EquipmentBidCollection.Add(this);
 				}
@@ -212,6 +222,7 @@ namespace StangradCRM.Model
 		
 		public override void raiseAllProperties()
 		{
+			RaisePropertyChanged("Id_equipment", Id_equipment);
 			RaisePropertyChanged("Id_modification", Id_modification);
 			RaisePropertyChanged("Id_bid", Id_bid);
 			RaisePropertyChanged("Serial_number", Serial_number);

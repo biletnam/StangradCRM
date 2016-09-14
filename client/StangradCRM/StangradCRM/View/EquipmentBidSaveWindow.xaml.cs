@@ -42,6 +42,7 @@ namespace StangradCRM.View
 		
 		bool isNew = false;
 		
+		//Конструктор при добавлении новой комплектации в заявку
 		public EquipmentBidSaveWindow(int idBid)
 		{
 			InitializeComponent();
@@ -61,6 +62,7 @@ namespace StangradCRM.View
 			Title += idBid.ToString();
 		}
 		
+		//Конструктор при редактировании комплектации в заявке
 		public EquipmentBidSaveWindow(EquipmentBid equipmentBid)
 		{
 			InitializeComponent();
@@ -68,24 +70,31 @@ namespace StangradCRM.View
 			
 			setViewSources();
 			
-			Modification modification = ModificationViewModel.instance().getById(equipmentBid.Id_modification);
-			if(modification == null) return;
+			Equipment equipment = EquipmentViewModel.instance().getById(equipmentBid.Id_equipment);
+			if(equipment != null) 
+			{
+				cbxEquipment.SelectedItem = equipment;
+			}
 			
-			Equipment equipment = EquipmentViewModel.instance().getById(modification.Id_equipment);
-			if(equipment == null) return;
+			if(equipmentBid.Id_modification != null)
+			{
+				Modification modification = ModificationViewModel.instance().getById((int)equipmentBid.Id_modification);
+				if(modification != null) 
+				{
+					cbxModification.SelectedItem = modification;
+				}
+			}
 			
-			cbxEquipment.SelectedItem = equipment;
-			cbxModification.SelectedItem = modification;
-						
 			DataContext = new 
 			{
 				ComplectationCollection = equipmentBid.ComplectationCollection
 			};
 			
 			this.equipmentBid = equipmentBid;
-
+			cbxEquipment.IsEnabled = false;
 		}
 		
+		//Установка коллекций
 		void setViewSources ()
 		{
 			defaultBrush = cbxEquipment.Background;
@@ -130,11 +139,28 @@ namespace StangradCRM.View
 			cbxModification.SelectedIndex = -1;
 		}
 		
+		
+		//----> Оборудование/Модификации
+		
+		//Клик на кнопку сброса выбранной модификации
+		void BtnResetModifications_Click(object sender, RoutedEventArgs e)
+		{
+			cbxModification.SelectedIndex = -1;
+		}
+		
+		//Клик на кнопку сохранения оборудования/модификации
 		void BtnSave_Click(object sender, RoutedEventArgs e)
 		{
 			if(!validate()) return;
-			equipmentBid.Id_modification = (int)cbxModification.SelectedValue;
-			
+			equipmentBid.Id_equipment = (int)cbxEquipment.SelectedValue;
+			if(cbxModification.SelectedIndex != -1)
+			{
+				equipmentBid.Id_modification = (int)cbxModification.SelectedValue;
+			}
+			else
+			{
+				equipmentBid.Id_modification = null;
+			}
 			loadingProgress.Visibility = Visibility.Visible;
 			IsEnabled = false;
 			
@@ -150,6 +176,18 @@ namespace StangradCRM.View
 			});
 		}
 		
+		//Ф-я валидации перед сохранением оборудования/модификации
+		private bool validate()
+		{
+			if(cbxEquipment.SelectedIndex == -1)
+			{
+				cbxEquipment.Background = errorBrush;
+				return false;
+			}
+			return true;
+		}
+		
+		//Ф-я обработки успешного сохранения оборудования/модификации
 		private void successSave()
 		{
 			loadingProgress.Visibility = Visibility.Hidden;
@@ -163,9 +201,11 @@ namespace StangradCRM.View
 			{
 				Title = "Редактирование комплектации в заявке";
 				isNew = false;
+				cbxEquipment.IsEnabled = false;
 			}
 		}
 		
+		//Ф-я обработки ошибки при сохранении оборудования/модификации
 		private void errorSave()
 		{
 			loadingProgress.Visibility = Visibility.Hidden;
@@ -173,11 +213,13 @@ namespace StangradCRM.View
 			System.Windows.MessageBox.Show(equipmentBid.LastError);
 		}
 		
+		//Ф-я закрытия окна
 		void BtnCancel_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
 		}
 		
+		//Выбор оборудования из списка оборудования, обновляет список модификаций
 		void CbxEquipment_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			cbxEquipment.Background = defaultBrush;
@@ -187,99 +229,37 @@ namespace StangradCRM.View
 			}
 		}
 		
-		private bool validate()
+		//Обработка события закрытия окна
+		void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if(cbxEquipment.SelectedIndex == -1)
+			List<Complectation> toRemoveComplectation = 
+				equipmentBid.ComplectationCollection.Where(x => x.Id == 0).ToList();
+			foreach(var item in toRemoveComplectation)
 			{
-				cbxEquipment.Background = errorBrush;
-				return false;
+				equipmentBid.ComplectationCollection.Remove(item);
 			}
-			if(cbxModification.SelectedIndex == -1)
+			List<Complectation> toSetOldValues =
+				equipmentBid.ComplectationCollection.Where(x => x.IsSaved == false).ToList();
+			foreach(Complectation item in toSetOldValues)
 			{
-				cbxModification.Background = errorBrush;
-				return false;
+				item.setOldValues();
 			}
-			return true;
 		}
 		
-		void CbxModification_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			cbxModification.Background = defaultBrush;
-		}
 		
+		//----> Комплектации 
+		
+		//Нажатие на кнопку добавления комплектации, создает и добавляет комплектацию в коллекцию
 		void BtnAdd_Click(object sender, RoutedEventArgs e)
 		{
 			Complectation complectation = new Complectation();
 			complectation.Complectation_count = 1;
-			complectation.Commentary = "";
-			
-			
+			complectation.Id_complectation_item = 0;
 			complectation.IsSaved = false;
-			
 			equipmentBid.ComplectationCollection.Add(complectation);
-			
 		}
 		
-		void BtnDeleteRow_Click(object sender, RoutedEventArgs e)
-		{
-			Complectation complectation = dgvComplectation.SelectedItem as Complectation;
-			if(complectation == null) return;
-			if(System.Windows.MessageBox.Show("Удалить комплектацию из оборудования?",
-			                                  "Удалить комплектацию из оборудования?",
-			                                  MessageBoxButton.YesNo) == MessageBoxResult.No)
-				return;
-			if(complectation.Id == 0 
-			   && equipmentBid.ComplectationCollection.Contains(complectation))
-			{
-				equipmentBid.ComplectationCollection.Remove(complectation);
-				return;
-			}
-			if(!complectation.remove())
-			{
-				System.Windows.MessageBox.Show(complectation.LastError);
-				return;
-			}
-			
-		}
-		
-		void BtnSaveRow_Click(object sender, RoutedEventArgs e)
-		{
-			Button saveButton = sender as Button;
-			if(saveButton == null) return;
-			
-			DataGridRow row = FindItem.FindParentItem<DataGridRow>(saveButton);
-			if(row == null) return;
-			
-			Complectation complectation = (Complectation)row.Item;
-			if(complectation == null) return;
-			if(equipmentBid == null) return;
-			complectation.Id_equipment_bid = equipmentBid.Id;
-			
-			if(!validate(complectation)) return;
-			
-			complectationSave(complectation);
-		}
-		
-		void TbxComment_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			TextBox textBox = sender as TextBox;
-			if(textBox == null) return;
-			
-			DataGridRow row = FindItem.FindParentItem<DataGridRow>(textBox);
-			if(row == null) return;
-			
-			Complectation complectation = (Complectation)row.Item;
-			if(complectation == null) return;
-			
-			if(complectation.Commentary == textBox.Text) 
-			{
-				complectation.IsSaved = true;
-				return;
-			}
-			complectation.Commentary = textBox.Text;
-			complectation.IsSaved = false;
-		}
-		
+		//Обработка изменения количества комплектаций (в каждой строке)
 		void DudCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
 			DecimalUpDown decimalUpDown = sender as DecimalUpDown;
@@ -306,27 +286,82 @@ namespace StangradCRM.View
 			complectation.Complectation_count = (int)decimalUpDown.Value;
 		}
 		
-		void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		//Клик по кнопке удаления комплектации, удаляет комплектацию
+		void BtnDeleteRow_Click(object sender, RoutedEventArgs e)
 		{
-			List<Complectation> toRemoveComplectation = 
-				equipmentBid.ComplectationCollection.Where(x => x.Id == 0).ToList();
-			foreach(var item in toRemoveComplectation)
+			Complectation complectation = dgvComplectation.SelectedItem as Complectation;
+			if(complectation == null) return;
+			if(System.Windows.MessageBox.Show("Удалить комплектацию из оборудования?",
+			                                  "Удалить комплектацию из оборудования?",
+			                                  MessageBoxButton.YesNo) == MessageBoxResult.No)
+				return;
+			if(complectation.Id == 0 
+			   && equipmentBid.ComplectationCollection.Contains(complectation))
 			{
-				equipmentBid.ComplectationCollection.Remove(item);
+				equipmentBid.ComplectationCollection.Remove(complectation);
+				return;
 			}
-			List<Complectation> toSetOldValues =
-				equipmentBid.ComplectationCollection.Where(x => x.IsSaved == false).ToList();
-			foreach(Complectation item in toSetOldValues)
+			if(!complectation.remove())
 			{
-				item.setOldValues();
+				System.Windows.MessageBox.Show(complectation.LastError);
+				return;
+			}
+			
+		}
+		
+		//Изменение наименования комплектации, устанавливает статус "Не сохранено"
+		void DlcComplectationItem_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			StangradCRM.Controls.DownListControl downListControl 
+				= sender as StangradCRM.Controls.DownListControl;
+			
+			if(downListControl == null) return;
+			
+			DataGridRow row = FindItem.FindParentItem<DataGridRow>(downListControl);
+			if(row == null) return;
+			
+			Complectation complectation = (Complectation)row.Item;
+			if(complectation == null) return;
+			
+			complectation.NewComplectationItemName = downListControl.Text;
+			
+			complectation.IsSaved = false;
+		}
+		
+		//Выбор существующего наименования из выпадающего списка
+		void DlcComplectationItem_OnSelect(object sender, StangradCRM.Controls.SelectionChanged e)
+		{
+			StangradCRM.Controls.DownListControl downList 
+				= sender as StangradCRM.Controls.DownListControl;
+			if(downList == null) return;
+			
+			DataGridRow row = FindItem.FindParentItem<DataGridRow>(downList);
+			if(row == null) return;
+			
+			Complectation complectation = (Complectation)row.Item;
+			if(complectation == null) return;
+			
+			if(e.Value != null)
+			{
+				int id_complectation_item = (int)e.Value;
+				if(complectation.Id_complectation_item == id_complectation_item)
+				{
+					complectation.IsSaved = true;
+					return;
+				}
+				ComplectationItem item = ComplectationItemViewModel.instance().getById(id_complectation_item);
+				complectation.Id_complectation_item = id_complectation_item;
+				complectation.IsSaved = false;
 			}
 		}
 		
+		//Нажатие на кнпку сохранения комплектаций
 		void BtnSaveAllComplectation_Click(object sender, RoutedEventArgs e)
 		{
 			prepareComplectationSave();
 		}
 		
+		//Ф-я подготовки комплектаций к сохранению
 		void prepareComplectationSave ()
 		{
 			for(int i = 0; i < equipmentBid.ComplectationCollection.Count; i++)
@@ -346,11 +381,40 @@ namespace StangradCRM.View
 			}
 		}
 		
+		//Ф-я валидации комплектации перед сохранением
+		bool validate (Complectation complectation)
+		{
+			if(complectation.Id_complectation_item == 0 
+			   && complectation.NewComplectationItemName == "")
+			{
+				System.Windows.MessageBox.Show("Поле 'Наименование' не заполнено у одного или нескольких записей.\nСохранение не возможно!");
+				return false;
+			}
+			if(complectation.Complectation_count < 1)
+			{
+				System.Windows.MessageBox.Show("Поле 'Количество' меньше 1 у одного или нескольких записей.\nСохранение не возможно!");
+				return false;
+			}
+			return true;
+		}
+		
+		//Ф-я сохранения комплектаций
 		void complectationSave (Complectation complectation)
 		{
 			IsEnabled = false;
 			loadingProgress.Visibility = Visibility.Visible;
 			Task.Factory.StartNew(() => {
+              	if(complectation.Id_complectation_item == 0)
+              	{
+              		ComplectationItem item = new ComplectationItem();
+              		item.Name = complectation.NewComplectationItemName;
+              		if(!item.save())
+              		{
+              			Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { complectationItemErrorSave(item); } ));
+              			return;
+              		}
+          			complectation.Id_complectation_item = item.Id;
+              	}
 				if(complectation.save())
 				{
 					Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { complectationSuccessSave(complectation); } ));
@@ -362,6 +426,7 @@ namespace StangradCRM.View
 			});
 		}
 		
+		//Ф-я обработки успешного сохранения комплектации
 		void complectationSuccessSave (Complectation complectation)
 		{
 			complectation.IsSaved = true;
@@ -369,6 +434,8 @@ namespace StangradCRM.View
 			IsEnabled = true;
 			
 		}
+		
+		//Ф-я обработки ошибочного сохранения комплектации
 		void complectationErrorSave (Complectation complectation)
 		{
 			System.Windows.MessageBox.Show(complectation.LastError);
@@ -377,19 +444,12 @@ namespace StangradCRM.View
 			IsEnabled = true;
 		}
 		
-		bool validate (Complectation complectation)
+		//Ф-я обработки ошибочного сохранения элемента комплектации
+		void complectationItemErrorSave (ComplectationItem item)
 		{
-			if(complectation.Commentary == "")
-			{
-				System.Windows.MessageBox.Show("Поле 'Коментарий' не заполнено у одного или нескольких записей.\nСохранение не возможно!");
-				return false;
-			}
-			if(complectation.Complectation_count < 1)
-			{
-				System.Windows.MessageBox.Show("Поле 'Количество' меньше 1 у одного или нескольких записей.\nСохранение не возможно!");
-				return false;
-			}
-			return true;
+			System.Windows.MessageBox.Show(item.LastError);
+			loadingProgress.Visibility = Visibility.Hidden;
+			IsEnabled = true;
 		}
 	}
 }

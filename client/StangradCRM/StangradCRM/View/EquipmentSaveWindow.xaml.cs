@@ -63,8 +63,14 @@ namespace StangradCRM.View
 		{
 			if(!validate()) return;
 			equipment.Name = tbxName.Text;
-			equipment.Serial_number = Int32.Parse(tbxSerialNumber.Text);
-			
+			if(tbxSerialNumber.Text == "")
+			{
+				equipment.Serial_number = null;
+			}
+			else
+			{
+				equipment.Serial_number = Int32.Parse(tbxSerialNumber.Text);
+			}
 			loadingProgress.Visibility = Visibility.Visible;
 			IsEnabled = false;
 			
@@ -88,13 +94,12 @@ namespace StangradCRM.View
 				tbxName.Background = errorBrush;
 				return false;
 			}
-			if(tbxSerialNumber.Text == "")
-			{
-				tbxSerialNumber.Background = errorBrush;
-				return false;
-			}
 			try
 			{
+				if(tbxSerialNumber.Text == "")
+				{
+					return true;
+				}
 				int serialNumber = Int32.Parse(tbxSerialNumber.Text);
 				return true;
 			}

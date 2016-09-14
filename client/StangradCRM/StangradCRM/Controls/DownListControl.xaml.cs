@@ -45,14 +45,15 @@ namespace StangradCRM.Controls
 	public partial class DownListControl : UserControl
 	{
 		
-		IEnumerable<object> itemsSource = null;
-		ObservableCollection<object> ISCollection = new ObservableCollection<object>();
-		
 		public delegate void SelectedValueChanged (object sender, SelectionChanged e);
-		
 		public event SelectedValueChanged OnSelect;
 		
+		public delegate void _TextChanged (object sender, TextChangedEventArgs e);
+		public event _TextChanged TextChanged;
 		
+		IEnumerable<object> itemsSource = null;
+		ObservableCollection<object> ISCollection = new ObservableCollection<object>();
+
 		public DownListControl()
 		{
 			InitializeComponent();
@@ -60,25 +61,16 @@ namespace StangradCRM.Controls
 			
 			tbxInputData.TextChanged += delegate(object sender, TextChangedEventArgs e) 
 			{ 
-				lbList.IsDropDownOpen = false;
 				ISCollection.Clear();
+				lbList.IsDropDownOpen = false;
 				if(tbxInputData.Text == "") return;
-				
-				List<object> collection = (itemsSource).ToList();				
-				for(int i = 0; i < collection.Count; i++)
-				{
-					var propertyInfo = collection[i].GetType().GetProperty(lbList.DisplayMemberPath);
-					
-					string val = propertyInfo.GetValue(collection[i], null).ToString();
-					
-					if(val.ToLower().IndexOf(tbxInputData.Text.ToLower()) != -1)
-					{
-						ISCollection.Add(collection[i]);
-					}
-				}
-				if(ISCollection.Count > 0)
+				if(FilterItems())
 				{
 					lbList.IsDropDownOpen = true;
+				}
+				if(TextChanged != null)
+				{
+					TextChanged(this, e);
 				}
 			};
 			
@@ -89,27 +81,46 @@ namespace StangradCRM.Controls
 					lbList.Focus();
 				}
 			};
+			
+			lbList.PreviewKeyDown += delegate(object sender, KeyEventArgs e)
+			{ 
+				if(e.Key == Key.Escape)
+				{
+					tbxInputData.Focus();
+					e.Handled = true;
+				}
+			};
+		}
+		
+		private bool FilterItems ()
+		{
+			if(itemsSource == null) return false;
+			List<object> collection = (itemsSource).ToList();				
+			for(int i = 0; i < collection.Count; i++)
+			{
+				var propertyInfo = collection[i].GetType().GetProperty(lbList.DisplayMemberPath);		
+				string val = propertyInfo.GetValue(collection[i], null).ToString();
+				if(val.ToLower().IndexOf(tbxInputData.Text.ToLower()) != -1)
+				{
+					ISCollection.Add(collection[i]);
+				}
+			}
+			if(ISCollection.Count > 0)
+			{
+				return true;
+			}
+			return false;
 		}
 		
 		void LbList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			OnSelect(this, new SelectionChanged(lbList.SelectedValue));
+		{		
+			if(OnSelect != null)
+			{
+				OnSelect(this, new SelectionChanged(lbList.SelectedValue));
+			}
 			tbxInputData.Focus();
 			tbxInputData.Text = lbList.Text;
 			lbList.IsDropDownOpen = false;
-		}
-	
-		
-		public IEnumerable<object> ItemsSource
-		{
-			get
-			{
-				return itemsSource;
-			}
-			set
-			{
-				itemsSource = value;
-			}
 		}
 		
 		public string DisplayMemberPath
@@ -202,7 +213,6 @@ namespace StangradCRM.Controls
 		public void Clear ()
 		{
 			lbList.SelectedIndex = -1;
-			ISCollection.Clear();
 			tbxInputData.Text = "";
 		}
 		
@@ -210,6 +220,79 @@ namespace StangradCRM.Controls
 		{
 			return tbxInputData;
 		}
-	                            
+
+		
+		public string CurrentText
+		{
+			get
+			{
+				return GetValue(CurrentTextProperty).ToString();
+			}
+			set
+			{
+				SetCurrentTextDependencyProperty(CurrentTextProperty, value);
+				Text = value;
+			}
+		}
+		
+        public static readonly DependencyProperty CurrentTextProperty = DependencyProperty.Register("CurrentText", typeof(string),
+                typeof(DownListControl), new FrameworkPropertyMetadata(default(string),
+                FrameworkPropertyMetadataOptions.None,
+				new PropertyChangedCallback(OnCurrentTextChanged)));
+		
+        public event PropertyChangedEventHandler CurrentTextChanged;
+        
+        void SetCurrentTextDependencyProperty (DependencyProperty property, string value)
+        {
+            SetValue(property, value);
+            if(CurrentTextChanged != null)
+            {
+            	CurrentTextChanged(this, new PropertyChangedEventArgs(property.ToString()));
+            }
+        }
+        
+        private static void OnCurrentTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+        	DownListControl downListControl = d as DownListControl;
+            if (downListControl == null) return;
+            downListControl.CurrentText = e.NewValue.ToString();
+		}
+        
+		
+		public IEnumerable<object> ItemsSource
+		{
+			get
+			{
+				return (IEnumerable<object>)GetValue(ItemsSourceProperty);
+			}
+			set
+			{
+				SetItemsSourceDependencyProperty(ItemsSourceProperty, value);
+				itemsSource = value;
+			}
+		}
+		
+        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register("ItemsSource", typeof(IEnumerable<object>),
+                typeof(DownListControl), new FrameworkPropertyMetadata(default(IEnumerable<object>),
+                FrameworkPropertyMetadataOptions.None,
+				new PropertyChangedCallback(OnItemsSourceChanged)));
+		
+        public event PropertyChangedEventHandler ItemsSourceChanged;
+        
+        void SetItemsSourceDependencyProperty (DependencyProperty property, IEnumerable<object> value)
+        {
+            SetValue(property, value);
+            if(ItemsSourceChanged != null)
+            {
+            	ItemsSourceChanged(this, new PropertyChangedEventArgs(property.ToString()));
+            }
+        }
+        
+        private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+        	DownListControl downListControl = d as DownListControl;
+            if (downListControl == null) return;
+            downListControl.ItemsSource = (IEnumerable<object>)e.NewValue;
+		}
 	}
 }

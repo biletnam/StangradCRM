@@ -22,7 +22,7 @@ namespace StangradCRM.Model
 	{
 
 		public string Name { get; set; }
-		public int Serial_number { get; set; }
+		public int? Serial_number { get; set; }
 		
 		protected override string Entity 
 		{ 
@@ -43,11 +43,18 @@ namespace StangradCRM.Model
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
 		{
 			http.addParameter("name", Name);
-			http.addParameter("serial_number", Serial_number);
 			http.addParameter("row_order", (EquipmentViewModel.instance().getMaxRowOrder()+1));
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
+			}
+			if(Serial_number != null)
+			{
+				http.addParameter("serial_number", Serial_number);
+			}
+			else
+			{
+				http.addParameter("serial_number", "NULL");
 			}
 		}
 		

@@ -185,10 +185,12 @@ namespace StangradCRM.View.Controls.ManagerControls
 			equipmentBidViewSource.View.Refresh();
 			buyerViewSource.View.Refresh();
 		}
-
+		
 		//Дабл клик по строке таблицы - открывает окно редактирования		
 		private void DgvBid_RowDoubleClick(object sender, MouseButtonEventArgs e)
 		{
+			try
+			{
 			DataGridRow row = sender as DataGridRow;
 			Bid bid = row.Item as Bid;
 			if(bid == null) return;
@@ -199,6 +201,11 @@ namespace StangradCRM.View.Controls.ManagerControls
 			viewSource.View.Refresh();
 			//Установка текущей ячейки (т.к. после viewSource.View.Refresh() фокус сбрасывается)
           	dgvBid.CurrentCell = new DataGridCellInfo(row.Item, dgvBid.CurrentCell.Column);
+			}
+			catch(Exception ex)
+			{
+				MessageBox.Show(ex.ToString());
+			}
 		}
 		
 		//Обработка события нажатия клавиш на строке таблице
@@ -247,6 +254,51 @@ namespace StangradCRM.View.Controls.ManagerControls
 			}
 		}
 		
+		//Клик по кнопке передачи заявки другому менеджеру, открывает окно передачи заявки другому менеджеру
+		void BtnBidTransferToManager_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) return;
+			
+			TransferToManagerWindow window = new TransferToManagerWindow(bid);
+			window.ShowDialog();
+		}
+		
+		//Клик по кнопке передачи заявки в другой статус, открывает окно передачи заявки в другой статус
+		void BtnBidTransferToStatus_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) return;
+			
+			TransferToStatusWindow window = new TransferToStatusWindow(bid);
+			window.ShowDialog();
+		}
+		
+		//Клик по кнопке просмотра платежей, открывает окно просмотра платежей
+		void BtnPaymentHistory_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Выберите заявку!");
+				return;
+			}
+			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
+			window.ShowDialog();
+		}
+		
+		//Клик по кнопке установки статуса 'отгружено', открывает окно установки статуса
+		void BtnSetShipment_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Выберите заявку!");
+				return;
+			}
+			BidShipmentSaveWindow window = new BidShipmentSaveWindow(bid);
+			window.ShowDialog();
+		}
 		
 		//Контекстное меню в таблице заявок ---->
 		
@@ -266,6 +318,7 @@ namespace StangradCRM.View.Controls.ManagerControls
 		//Контекстное меню передачи заявки в статус
 		void ContextTransferToStatus_Click(object sender, RoutedEventArgs e)
 		{
+			
 			MenuItem mi = sender as MenuItem;
 			if(mi == null) return;
 			
@@ -278,6 +331,10 @@ namespace StangradCRM.View.Controls.ManagerControls
 				MessageBox.Show("Заявка не выбрана!");
 				return;
 			}
+			
+			if(MessageBox.Show("Изменить статус заявки на '" + bidStatus.Name + "'?",
+			                   "Изменить статус заявки?",
+			                   MessageBoxButton.YesNo) != MessageBoxResult.Yes) return; 
 			
 			bid.Id_bid_status = bidStatus.Id;
 			if(!bid.save())
@@ -302,7 +359,9 @@ namespace StangradCRM.View.Controls.ManagerControls
 				MessageBox.Show("Заявка не выбрана!");
 				return;
 			}
-			
+			if(MessageBox.Show("Передать заявку менеджеру " + manager.Name + "?", 
+			                   "Передать заявку другому менеджеру?", 
+			                   MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 			bid.Id_manager = manager.Id;
 			if(!bid.save())
 			{
@@ -380,5 +439,13 @@ namespace StangradCRM.View.Controls.ManagerControls
 		{
 			complectationViewSource.View.Refresh();
 		}
+		
+		//Клик по контекстному меню печати наклейки
+		void MiPrintSticker_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+		
+
 	}
 }

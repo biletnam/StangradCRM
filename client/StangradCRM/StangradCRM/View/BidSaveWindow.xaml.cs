@@ -57,7 +57,9 @@ namespace StangradCRM.View
 			//Set bid data context
 			DataContext = new 
 			{
-				EquipmentBidCollection = bid.EquipmentBidCollection
+				EquipmentBidCollection = bid.EquipmentBidCollection,
+				BuyerCollection = BuyerViewModel.instance().Collection,
+				BID = bid
 			};
 		}
 		
@@ -72,8 +74,6 @@ namespace StangradCRM.View
 			tbxAmount.Text = bid.Amount.ToString();
 			dpDateCreated.SelectedDate = bid.Date_created;
 			cbxSeller.SelectedItem = SellerViewModel.instance().getById(bid.Id_seller);
-			cbxBidStatus.SelectedItem = BidStatusViewModel.instance().getById(bid.Id_bid_status);
-			cbxPaymentStatus.SelectedItem  = PaymentStatusViewModel.instance().getById(bid.Id_payment_status);
 
 			//Set buyer data
 			currentBuyer = BuyerViewModel.instance().getById(bid.Id_buyer);
@@ -88,7 +88,9 @@ namespace StangradCRM.View
 			//Set bid data context
 			DataContext = new 
 			{
-				EquipmentBidCollection = bid.EquipmentBidCollection
+				EquipmentBidCollection = bid.EquipmentBidCollection,
+				BuyerCollection = BuyerViewModel.instance().Collection,
+				BID = bid
 			};			
 			this.bid = bid;
 			
@@ -100,12 +102,7 @@ namespace StangradCRM.View
 		//Set collections in controls
 		private void setBindings ()
 		{
-			dlcBuyer.ItemsSource = BuyerViewModel.instance().Collection;
 			cbxSeller.ItemsSource = SellerViewModel.instance().Collection;
-			cbxBidStatus.ItemsSource = BidStatusViewModel.instance().Collection;
-			cbxPaymentStatus.ItemsSource = PaymentStatusViewModel.instance().Collection;
-			
-			cbxBidStatus.SelectedIndex = 0;
 		}
 		
 		//Behaivior controls
@@ -114,18 +111,13 @@ namespace StangradCRM.View
 			defaultBrush = tbxAccount.Background;
 			dpDateCreated.SelectedDateChanged += delegate { dpDateCreated.Background = defaultBrush; };
 			tbxAccount.TextChanged += delegate { tbxAccount.Background = defaultBrush; };
-			tbxAmount.TextChanged += delegate 
-			{ 
-				tbxAmount.Background = defaultBrush;
-				tbxFirstPayment.Background = defaultBrush;
-			};
+			tbxAmount.TextChanged += delegate { tbxAmount.Background = defaultBrush;};
 			cbxSeller.SelectionChanged += delegate { cbxSeller.Background = defaultBrush; };
 			dlcBuyer.getTextBoxItem().TextChanged += delegate 
 			{
 				if(dlcBuyer.Background == errorBrush)
 					dlcBuyer.Background = defaultBrush; 
 			};
-			tbxFirstPayment.TextChanged += delegate { tbxFirstPayment.Background = defaultBrush; };
 		}		
 		
 		//If bid edit -> init data
@@ -134,13 +126,7 @@ namespace StangradCRM.View
 			gbxEquipmentBid.Visibility = Visibility.Visible;
 			Title = "Редактирование заявки №" + bid.Id.ToString();
 			isNew = false;
-			dpDateCreated.IsEnabled = false;
-			Payment payment = PaymentViewModel.instance().getFirstByBidId(bid.Id);
-			if(payment != null)
-			{
-				tbxFirstPayment.Text = payment.Paying.ToString();
-				tbxFirstPayment.IsEnabled = false;
-			}
+
 			tbxDebt.Text = bid.Debt.ToString();
 			if(bid.Id_bid_status == (int)Classes.BidStatus.InWork)
 			{
@@ -152,19 +138,6 @@ namespace StangradCRM.View
 		//if bid status = is_work
 		void InitializeIfIsWork ()
 		{
-			cbxBidStatus.IsEnabled = false;
-			Model.PaymentStatus paymentStatus = 
-				PaymentStatusViewModel.instance().getById((int)Classes.PaymentStatus.NotPaid);
-			if(paymentStatus != null)
-			{
-				List<Model.PaymentStatus> paymentStatuses
-					= PaymentStatusViewModel.instance().Collection.ToList();
-				if(paymentStatuses.Contains(paymentStatus))
-				{
-					paymentStatuses.Remove(paymentStatus);
-				}
-				cbxPaymentStatus.ItemsSource = paymentStatuses;
-			}
 			btnIsShipped.Visibility = Visibility.Visible;
 			setShippedControlsVisibility();
 		}
@@ -197,45 +170,13 @@ namespace StangradCRM.View
 			bid.Account = tbxAccount.Text;
 			bid.Amount = double.Parse(tbxAmount.Text);
 			bid.Id_seller = (int)cbxSeller.SelectedValue;
-			bid.Id_bid_status = (int)cbxBidStatus.SelectedValue;
-			bid.Id_payment_status = (int)cbxPaymentStatus.SelectedValue;
 			bid.Id_manager = Auth.getInstance().Id;
 			
-			//first pay
-			Payment payment = null;
-			if(bid.Id_payment_status !=
-			   (int)Classes.PaymentStatus.NotPaid)
+			//Если новая заявка - устанавливаем статусы "новая" и  "неоплачено"
+			if(bid.Id == 0)
 			{
-				payment = new Payment();
-				payment.Id_manager = Auth.getInstance().Id;
-				//Если новая заявка: дата платежа = дата создания заявки
-				if(bid.Id == 0)
-				{
-					payment.Payment_date = (DateTime)dpDateCreated.SelectedDate;
-				}
-				else //Иначе дата платежа = текущая дата
-				{
-					payment.Payment_date = DateTime.Now;
-				}
-				
-				//Если частично оплачено
-				if(bid.Id_payment_status
-				   == (int)Classes.PaymentStatus.PartiallyPaid 
-				  && PaymentViewModel.instance().getFirstByBidId(bid.Id) == null)
-				{
-					double pay = double.Parse(tbxFirstPayment.Text);
-					payment.Paying = pay;
-				}
-				//Если полностью оплачено
-				if(bid.Id_payment_status ==
-				   (int)Classes.PaymentStatus.Paid)
-				{
-					//Если уже были внесены платежи
-					if(bid.Debt != 0)
-					{
-						payment.Paying = bid.Debt;
-					}
-				}
+				bid.Id_bid_status = (int)Classes.BidStatus.New;
+				bid.Id_payment_status = (int)Classes.PaymentStatus.NotPaid;
 			}
 			
 			//set visual effect
@@ -254,19 +195,6 @@ namespace StangradCRM.View
               	//save bid
               	if(bid.save())
 				{
-              		//Если есть платеж и его значение > 0
-              		if(payment != null && payment.Paying > 0)
-              		{
-              			payment.Id_bid = bid.Id;
-              			if(!payment.save())
-              			{
-              				MessageBox.Show("Ошибка при сохранении платежа!\n" + payment.LastError);
-              			}
-              			if(!bid.generateSerialNumber())
-              			{
-              				MessageBox.Show("Ошибка генерации серийных номеров!\n" + bid.LastError);
-              			}
-              		}
 					Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { successSave(); } ));
 				}
 				else 
@@ -413,47 +341,6 @@ namespace StangradCRM.View
 				dlcBuyer.Background = errorBrush;
 				return false;
 			}
-			if(cbxBidStatus.SelectedIndex == -1)
-			{
-				cbxBidStatus.Background = errorBrush;
-				return false;
-			}
-			if(cbxPaymentStatus.SelectedIndex == -1)
-			{
-				cbxPaymentStatus.Background = errorBrush;
-				return false;
-			}
-			if(tbxFirstPayment.Visibility == Visibility.Visible)
-			{
-				try
-				{
-					double firstPayment = double.Parse(tbxFirstPayment.Text);
-					if(firstPayment <= 0)
-					{
-						tbxFirstPayment.Background = errorBrush;
-						MessageBox.Show("Значение первого платежа должно быть положительным числом!");
-						return false;
-					}
-					if(firstPayment == double.Parse(tbxAmount.Text))
-					{
-						tbxFirstPayment.Background = errorBrush;
-						MessageBox.Show("Значение первого платежа не может быть равно сумме оплаты.\nВыберите статус 'Оплачено'!");
-						return false;
-					}
-					if(firstPayment > double.Parse(tbxAmount.Text))
-					{
-						tbxFirstPayment.Background = errorBrush;
-						MessageBox.Show("Значение первого платежа не может быть больше всей суммы!");
-						return false;
-					}
-				}
-				catch
-				{
-					tbxFirstPayment.Background = errorBrush;
-					return false;
-				}
-			}
-
 			return true;
 		}
 		
@@ -472,7 +359,15 @@ namespace StangradCRM.View
 		{
 			if(bid != null)
 			{
-				BidShipmentSaveWindow window = new BidShipmentSaveWindow(bid, new Action( () => { setShippedControlsVisibility(); }));
+				BidShipmentSaveWindow window = new BidShipmentSaveWindow(bid, new Action( () => 
+                 { 
+                 	if(bid.Debt == 0)
+                 	{
+                 		Close();
+                 		return;
+                 	}
+                 	setShippedControlsVisibility(); 
+                 }));
 				window.ShowDialog();
 			}
 		}
@@ -483,7 +378,13 @@ namespace StangradCRM.View
 			if(bid != null && bid.Is_shipped == 1)
 			{
 				btnIsShipped.Visibility = Visibility.Collapsed;
-				lblIsShipped.Visibility = Visibility.Visible;					
+				tbIsShipped.Visibility = Visibility.Visible;					
+				if(bid.Shipment_date != null && bid.Id_transport_company != null)
+				{
+					tbIsShipped.Text = "Отгружено, " +
+						((DateTime)bid.Shipment_date).ToString("dd.MM.yyyy") + ", " + bid.TransportCompanyName;
+				}
+				
 			}
 		}
 		
@@ -525,68 +426,6 @@ namespace StangradCRM.View
 				DgvEquipmentBid_RowDoubleClick(sender, null);
 				e.Handled = true; //Отмена обработки по умолчанию
 			}
-		}
-		
-		//Bind bid status and payment status
-		//handler Bid status changed
-		void CbxBidStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if(cbxBidStatus.SelectedIndex == -1 
-			   || cbxBidStatus.SelectedValue == null) return;
-			
-			int bidStatus = (e.AddedItems[0] as Model.BidStatus).Id;
-			
-			if(cbxPaymentStatus.SelectedIndex == -1
-			   || cbxPaymentStatus.SelectedValue == null)
-			{
-				if(bidStatus == (int)Classes.BidStatus.New)
-				{
-					cbxPaymentStatus.SelectedValue = (int)Classes.PaymentStatus.NotPaid;
-				}
-				else
-				{
-					cbxPaymentStatus.SelectedValue = (int)Classes.PaymentStatus.PartiallyPaid;
-				}
-				return;
-			}
-			int paymentStatus = (int)cbxPaymentStatus.SelectedValue;
-			if(bidStatus == (int)Classes.BidStatus.New 
-			   && paymentStatus != (int)Classes.PaymentStatus.NotPaid)
-			{
-				cbxPaymentStatus.SelectedValue = (int)Classes.PaymentStatus.NotPaid;
-				return;
-			}
-			if(bidStatus == (int)Classes.BidStatus.InWork 
-			   && paymentStatus == (int)Classes.PaymentStatus.NotPaid)
-			{
-				cbxPaymentStatus.SelectedValue = (int)Classes.PaymentStatus.PartiallyPaid;
-				return;
-			}
-		}
-		//handler Payment status change
-		void CbxPaymentStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if(cbxPaymentStatus.SelectedIndex == -1
-			  || cbxPaymentStatus.SelectedValue == null) return;
-			if(cbxBidStatus.SelectedIndex == -1
-			   || cbxBidStatus.SelectedValue == null) return;
-			
-			int paymentStatus = (e.AddedItems[0] as Model.PaymentStatus).Id;
-			int bidStatus = (int)cbxBidStatus.SelectedValue;
-			
-			if(paymentStatus == (int)Classes.PaymentStatus.NotPaid
-			   && bidStatus != (int)Classes.BidStatus.New)
-			{
-				cbxBidStatus.SelectedValue = (int)Classes.BidStatus.New;
-				return;
-			}
-			if(paymentStatus != (int)Classes.PaymentStatus.NotPaid
-			   && bidStatus == (int)Classes.BidStatus.New)
-			{
-				cbxBidStatus.SelectedValue = (int)Classes.BidStatus.InWork;
-				return;
-			}
-			
 		}
 	}
 }

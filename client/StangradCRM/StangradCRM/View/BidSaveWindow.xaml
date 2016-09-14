@@ -3,6 +3,7 @@
 	x:Class="StangradCRM.View.BidSaveWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+	xmlns:converters="clr-namespace:StangradCRM.Converters"  
 	xmlns:local="clr-namespace:StangradCRM.Controls"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:classes="clr-namespace:StangradCRM.Classes"      
@@ -12,7 +13,7 @@
 	Height="600"
 	Width="800">
 	<Window.Resources>
-		<classes:PaymentStatusIntConverter x:Key="psic"></classes:PaymentStatusIntConverter>
+		<converters:CostConverter x:Key="CostConverter"></converters:CostConverter>
 	</Window.Resources>
 	<Grid
 		Margin="5">
@@ -52,11 +53,11 @@
 					<RowDefinition
 						Height="Auto"></RowDefinition>
 					<RowDefinition
-						Height="Auto"></RowDefinition>
+						Height="Auto"></RowDefinition>				
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition
-						Width="100"></ColumnDefinition>
+						Width="120"></ColumnDefinition>
 					<ColumnDefinition></ColumnDefinition>
 				</Grid.ColumnDefinitions>
 				<Label
@@ -66,37 +67,22 @@
 					Margin="0, 0, 10, 0"
 					Content="Дата создания"></Label>
 				<DatePicker
+					Style="{StaticResource DefaultDatePickerStyle}"
 					SelectedDate="{x:Static sys:DateTime.Now}"
 					Margin="0, 0, 0, 2"
 					Grid.Row="0"
 					Grid.Column="1"
 					VerticalContentAlignment="Center"
 					x:Name="dpDateCreated"></DatePicker>
-				
+
 				<Label
 					Grid.Row="1"
-					Grid.Column="0"
-					HorizontalAlignment="Right"
-					Margin="0, 0, 10, 0"
-					Content="Заявка"></Label>
-				<ComboBox
-					SelectionChanged="CbxBidStatus_SelectionChanged"
-					Grid.Row="1"
-					Grid.Column="1"
-					Style="{StaticResource DefaultComboBoxStyle}"
-					DisplayMemberPath="Name"
-					SelectedValuePath="Id"
-					x:Name="cbxBidStatus">
-				</ComboBox>
-				
-				<Label
-					Grid.Row="2"
 					Grid.Column="0"
 					HorizontalAlignment="Right"
 					Margin="0, 0, 10, 0"
 					Content="Продавец"></Label>
 				<ComboBox
-					Grid.Row="2"
+					Grid.Row="1"
 					Grid.Column="1"
 					Style="{StaticResource DefaultComboBoxStyle}"
 					DisplayMemberPath="Name"
@@ -104,150 +90,97 @@
 					x:Name="cbxSeller"></ComboBox>
 				
 				<Label
-					Grid.Row="3"
+					Grid.Row="2"
 					Grid.Column="0"
 					HorizontalAlignment="Right"
 					Margin="0, 0, 10, 0"
 					Content="Сумма"></Label>
 				<TextBox
-					Grid.Row="3"
+					Grid.Row="2"
 					Grid.Column="1"
 					Style="{StaticResource DefaultTextBoxStyle}"
 					x:Name="tbxAmount"></TextBox>
 				
 				<Label
-					Grid.Row="4"
+					Grid.Row="3"
 					Grid.Column="0"
 					HorizontalAlignment="Right"
 					Margin="0, 0, 10, 0"
 					Content="Остаток"></Label>
 				<TextBox
-					Grid.Row="4"
+					Grid.Row="3"
 					IsEnabled="False"
 					Grid.Column="1"
 					Text="0"
-					Margin="0, 0, 115, 0"
+					Margin="0, 2, 115, 2"
 					Style="{StaticResource DefaultTextBoxStyle}"
 					x:Name="tbxDebt"></TextBox>
 				<Button 
 					x:Name="btnShowPaymentHistory"
 					Click="BtnShowPaymentHistory_Click"
 					HorizontalAlignment="Right"
-					Grid.Row="4" 
+					Grid.Row="3" 
 					Grid.Column="1" 
-					Width="110" 
+					Width="110"
+					Height="25"
 					Content="История платежей"></Button>
 				<Label
-					Grid.Row="5"
+					Grid.Row="4"
 					Grid.Column="0"
 					HorizontalAlignment="Right"
 					Margin="0, 0, 10, 0"
 					Content="Счет"></Label>
 				<TextBox
-					Grid.Row="5"
+					Grid.Row="4"
 					Grid.Column="1"
 					Style="{StaticResource DefaultTextBoxStyle}"
 					x:Name="tbxAccount"></TextBox>
+
+				<Label
+					Visibility="Collapsed"
+					Grid.Row="5"
+					Grid.Column="0"
+					HorizontalAlignment="Right"
+					Margin="0, 0, 10, 0"
+					Content="Пл. дата отгрузки"></Label>
+				<DatePicker
+					Visibility="Collapsed"
+					Style="{StaticResource DefaultDatePickerStyle}"
+					SelectedDate="{x:Static sys:DateTime.Now}"
+					Grid.Row="5"
+					Grid.Column="1"
+					VerticalContentAlignment="Center"
+					x:Name="dpPlannedShipmentDate"></DatePicker>				
 				
 				<Button 
+					Margin="0, 2, 0, 2"
 					Visibility="Collapsed"
 					Click="BtnIsShipped_Click"
 					Height="25"
 					x:Name="btnIsShipped"
 					Content="Установить статус 'Отгружено'"
 					Grid.Row="6" Grid.Column="1"></Button>
-				<Label
+				<TextBlock
+					Margin="0, 2, 0, 2"
+					FontSize="12"
+					TextWrapping="Wrap"
 					Visibility="Collapsed"
-					Foreground="Green"
-					FontSize="18"
 					Grid.Row="6" Grid.Column="1"
-					Content="Отгружено"
-					x:Name="lblIsShipped"></Label>
+					x:Name="tbIsShipped"></TextBlock>
 			</Grid>
 			<Grid
 				Grid.Row="0"
 				Grid.Column="1">
 				<Grid.RowDefinitions>
 					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
 				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition></ColumnDefinition>
-				</Grid.ColumnDefinitions>
 				<GroupBox
-					Margin="5, 0, 0, 0"
-					Header="Оплата"
-					Grid.Row="0"
-					Grid.Column="0">
-					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition></RowDefinition>
-							<RowDefinition></RowDefinition>
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition
-								Width="120"></ColumnDefinition>
-							<ColumnDefinition></ColumnDefinition>
-						</Grid.ColumnDefinitions>
-						<Label
-							Grid.Row="0"
-							Grid.Column="0"
-							HorizontalAlignment="Right"
-							Margin="0, 0, 10, 0"
-							Content="Статус оплаты"></Label>
-						<ComboBox
-							Grid.Row="0"
-							Grid.Column="1"
-							Style="{StaticResource DefaultComboBoxStyle}"
-							DisplayMemberPath="Name"
-							SelectedValuePath="Id"
-							SelectionChanged="CbxPaymentStatus_SelectionChanged"
-							x:Name="cbxPaymentStatus">
-						</ComboBox>
-						<Label 
-							Content="Первая оплата"
-							HorizontalAlignment="Right"
-							Margin="0, 0, 10, 0"
-							Grid.Row="1"
-					       	Grid.Column="0">
-							<Label.Style>
-								<Style TargetType="Label">
-									<Setter Property="Visibility" Value="Hidden"></Setter>
-									<Style.Triggers>
-										<DataTrigger
-											Value="2"
-											Binding="{Binding ElementName=cbxPaymentStatus, Path=SelectedValue}">
-											<Setter Property="Visibility" Value="Visible"></Setter>
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</Label.Style>
-						</Label>
-						<TextBox 
-							Grid.Row="1" 
-							x:Name="tbxFirstPayment"
-							Grid.Column="1">
-							<TextBox.Style>
-								<Style BasedOn="{StaticResource DefaultTextBoxStyle}" TargetType="TextBox">
-									<Setter Property="Visibility" Value="Hidden"></Setter>
-									<Style.Triggers>
-										<DataTrigger
-											Value="2"
-											Binding="{Binding ElementName=cbxPaymentStatus, Path=SelectedValue}">
-											<Setter Property="Visibility" Value="Visible"></Setter>
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</TextBox.Style>
-						</TextBox>
-					</Grid>
-				</GroupBox>
-				<GroupBox
+					VerticalAlignment="Stretch"
 					Margin="5, 0, 0, 0"
 					Header="Покупатель"
-					Grid.Row="1"
+					Grid.Row="0"
 					Grid.Column="0">
-					<Grid>
+					<Grid VerticalAlignment="Top">
 						<Grid.RowDefinitions>
 							<RowDefinition></RowDefinition>
 							<RowDefinition></RowDefinition>
@@ -269,6 +202,7 @@
 						<local:DownListControl
 							OnSelect="DlcBuyer_OnSelect"
 							x:Name="dlcBuyer"
+							ItemsSource="{Binding BuyerCollection}"
 							TextFieldStyle="{StaticResource DefaultTextBoxStyle}"
 							SelectedValuePath="Id"
 							DisplayMemberPath="Name"

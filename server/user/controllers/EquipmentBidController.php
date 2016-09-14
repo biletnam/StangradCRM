@@ -32,9 +32,13 @@ class EquipmentBidController extends \system\controllers\ModelController {
             {
                 continue;
             }
+            
+            $serialNumber = self::getSerialNumber($equipmentBid[$i]);
+            if($serialNumber === null) continue;
+            
             $equipmentBids[] = [
                 "Id" => (int)$equipmentBid[$i]->Id, 
-                "SerialNumber" => (int)self::getSerialNumber($equipmentBid[$i])
+                "SerialNumber" => (int)$serialNumber
             ];
         }
         return [0, $equipmentBids];
@@ -43,7 +47,7 @@ class EquipmentBidController extends \system\controllers\ModelController {
     private static function getSerialNumber ($equipmentBid)
     {
         if($equipmentBid->SerialNumber != 0) return $equipmentBid->SerialNumber;
-        $query = "select max(serial_number) as next_serial_number from equipment_bid where id_modification = " . $equipmentBid->IdModification;
+        $query = "select max(serial_number) as next_serial_number from equipment_bid where id_equipment = " . $equipmentBid->IdEquipment;
         $db = \configs\Connection::db();
         $sth = $db->prepare($query);
         $sth->execute();
@@ -51,10 +55,15 @@ class EquipmentBidController extends \system\controllers\ModelController {
         $next_serial_number = 1;
         if(!isset($result['next_serial_number']))
         {
-            $modification = \user\models\Modification::get()->where('id', $equipmentBid->IdModification)->one();
-            if($modification == null) return $next_serial_number;
-            $equipment = \user\models\Equipment::get()->where('id', $modification->IdEquipment)->one();
-            if($equipment == null) return $next_serial_number;
+            $equipment = \user\models\Equipment::get()->where('id', $equipmentBid->IdEquipment)->one();
+            if($equipment === null) 
+            {
+                return null;
+            }
+            if($equipment->SerialNumber === null) 
+            {
+                return null;
+            }
             $next_serial_number = $equipment->SerialNumber + 1;
         }
         else 

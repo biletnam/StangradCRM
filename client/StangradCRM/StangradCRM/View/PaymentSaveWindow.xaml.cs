@@ -18,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
+using StangradCRM.Converters;
 using StangradCRM.Model;
 using StangradCRMLibs;
 
@@ -36,21 +37,28 @@ namespace StangradCRM.View
 		
 		private Payment payment;
 		
+		private int old_bid_status;
+		
+		CostConverter converter = new CostConverter();
+
 		public PaymentSaveWindow(Bid bid)
 		{
 			InitializeComponent();
 			defaultBrush = tbxPayment.Background;
 			
 			Debt = bid.Debt;
+			old_bid_status = bid.Id_bid_status;
 			this.bid = bid;
 			
 			tbxPayment.TextChanged += delegate { tbxPayment.Background = defaultBrush; };
 			dpDatePayment.SelectedDateChanged += delegate { dpDatePayment.Background = defaultBrush; };
 			
-			Title += " (текущий остаток: " + bid.Debt + ")";
-			
-			lblDebt.Content = bid.Debt.ToString();
-			
+			object debt = converter.Convert(bid.Debt, 
+			                                Type.GetType("double"), 
+			                                null, 
+			                                System.Globalization.CultureInfo.CurrentCulture);
+			Title += " (текущий остаток: " + debt.ToString() + ")";
+			lblDebt.Content = debt.ToString();
 		}
 		
 		void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -69,6 +77,13 @@ namespace StangradCRM.View
 			
 			loadingProgress.Visibility = Visibility.Visible;
 			IsEnabled = false;
+
+			if(bid.Id_bid_status != (int)Classes.BidStatus.InWork)
+			{
+				PlannedShipmentDateSetWindow window 
+					= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { bid.Planned_shipment_date = planned_shipment_date; }));
+				window.ShowDialog();
+			}
 			
 			Task.Factory.StartNew(() => {
 				if(payment.save())
@@ -80,10 +95,14 @@ namespace StangradCRM.View
 					if(bid.Debt == 0)
 					{
 						bid.Id_payment_status = (int)Classes.PaymentStatus.Paid;
+						if(bid.Is_shipped != 0)
+						{
+							bid.Is_archive = 1;
+						}
 					}
 					
 					bid.Id_bid_status = (int)Classes.BidStatus.InWork;
-										
+					
 					if(!bid.save())
 					{
 						Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { errorSaveBid(); } ));
@@ -106,6 +125,15 @@ namespace StangradCRM.View
 		
 		private void successSave()
 		{
+			if(bid.Id_bid_status == (int)Classes.BidStatus.InWork
+			   && old_bid_status != bid.Id_bid_status && bid.Is_archive == 0)
+			{
+				MessageBox.Show("Статус заявки изменен на 'В работе'!");
+			}
+			if(bid.Is_archive != 0)
+			{
+				MessageBox.Show("Заявка передана в архив!");
+			}
 			Close();
 		}
 		

@@ -35,7 +35,7 @@ namespace StangradCRM.View
 	{
 		
 		private IniFile settings = new IniFile("Settings.ini");
-		private string version = "0.01";
+		private string version = "0.04";
 		
 		public StartupWindow()
 		{
@@ -46,26 +46,23 @@ namespace StangradCRM.View
 				MessageBox.Show("Необходимые аргументы не были получены!");
 				return;
 			}
-			Task.Factory.StartNew(() => {
-			                      
-			                      	if(!serverAuthorization(args[1], args[2]))
-			                      	{
-			                      		Dispatcher.BeginInvoke(DispatcherPriority.Background,
-				                  		                       new Action(() => {
-		                  		                                  	failSessionRestore();
-		                  		                                  	return;
-	                  		                                   }));
-			                      	}
-			                      	
-			                      	if(loadModels()) 
-			                      	{
-			                      		Dispatcher.BeginInvoke(DispatcherPriority.Background,
-			                      		                       new Action( () => {
-			                      		                                  	openMainWindow();
-			                      		                                  }));
-			                      	}
-			                      	
-			                      });
+			Task.Factory.StartNew(() => {  
+              	if(!serverAuthorization(args[1], args[2]))
+              	{
+              		Dispatcher.BeginInvoke(DispatcherPriority.Background,
+              		                       new Action(() => {
+      		                                  	failSessionRestore();
+      		                                  	return;
+  		                                   }));
+              	}         	
+              	if(loadModels()) 
+              	{
+              		Dispatcher.BeginInvoke(DispatcherPriority.Background,
+              		                       new Action( () => {
+              		                                  	openMainWindow();
+              		                                  }));
+              	}
+          	});
 			
 		}
 		
@@ -150,6 +147,8 @@ namespace StangradCRM.View
 			
 			CRMSettingViewModel.instance();
 			
+			ComplectationItemViewModel.instance();
+			
 			EquipmentViewModel.instance();
 			ModificationViewModel.instance();
 			SellerViewModel.instance();
@@ -166,6 +165,8 @@ namespace StangradCRM.View
 			
 			//EquipmentBidViewModel.instance();
 			//ComplectationViewModel.instance();
+			
+			//ComplectationItemViewModel.instance();
 			
 			return true;
 		}

@@ -39,6 +39,7 @@ namespace StangradCRM.Model
 		public int? Id_manager { get; set; }
 		public DateTime Date_created { get; set;	}
 		public DateTime? Shipment_date { get; set; }
+		public DateTime? Planned_shipment_date { get; set; }
 		public string Account { get; set; }
 		public double Amount { get; set; }
 		public int Is_archive { get; set; }
@@ -235,15 +236,17 @@ namespace StangradCRM.Model
 			}
 		}
 		
-		public string ShippedYesNo
+		public bool IsDelayShipment
 		{
 			get
 			{
-				if(Is_shipped == 0)
+				if(Planned_shipment_date != null 
+					&& Planned_shipment_date < DateTime.Now 
+					&& Is_shipped == 0)
 				{
-					return "Нет";
+					return true;
 				}
-				return "Да";
+				return false;
 			}
 		}
 		
@@ -333,6 +336,10 @@ namespace StangradCRM.Model
 			if(Shipment_date != null)
 			{
 				http.addParameter("shipment_date", ((DateTime)Shipment_date).ToString("yyyy-MM-dd"));
+			}
+			if(Planned_shipment_date != null)
+			{
+				http.addParameter("planned_shipment_date", ((DateTime)Planned_shipment_date).ToString("yyyy-MM-dd"));
 			}
 			http.addParameter("account", Account);
 			http.addParameter("amount", Amount);
@@ -461,6 +468,8 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("Is_shipped", Is_shipped);
 			RaisePropertyChanged("Debt", null);
 			RaisePropertyChanged("TransportCompanyName", null);
+			RaisePropertyChanged("Planned_shipment_date", null);
+			RaisePropertyChanged("IsDelayShipment", null);
 		}
 		
 		public override void loadedItemInitProperty ()
@@ -482,6 +491,7 @@ namespace StangradCRM.Model
 			Id_manager = bid.Id_manager;
 			Date_created = bid.Date_created;
 			Shipment_date = bid.Shipment_date;
+			Planned_shipment_date = bid.Planned_shipment_date;
 			Account = bid.Account;
 			Amount = bid.Amount;
 			Is_archive = bid.Is_archive;

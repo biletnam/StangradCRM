@@ -166,12 +166,75 @@ namespace StangradCRM.View.Controls.ManagerControls
 		{
 			equipmentBidViewSource.View.Refresh();
 			buyerViewSource.View.Refresh();
+			
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) return;
+			
+			if(!bid.PermittedRemoval) 
+			{
+				btnBidDelete.IsEnabled = false;
+			}
+			else 
+			{
+				btnBidDelete.IsEnabled = true;
+			}
 		}
 		
 		//Клик по кнопке добавления заявки, открывает окно добавления заявки
 		void BtnAdd_Click(object sender, RoutedEventArgs e)
 		{
 			BidSaveWindow window = new BidSaveWindow();
+			window.ShowDialog();
+		}
+		
+		//Клик по кнопке удаления заявки, удаляет заявку
+		void BtnBidDelete_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Выберите удаляемую заявку!");
+				return;
+			}
+			
+			if(MessageBox.Show("Удалить заявку?", "Удалить заявку?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
+			if(!bid.remove())
+			{
+				MessageBox.Show(bid.LastError);
+			}
+		}
+		
+		//Клик по кнопке передачи заявки другому менеджеру, открывает окно передачи заявки другому менеджеру
+		void BtnBidTransferToManager_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) return;
+			
+			TransferToManagerWindow window = new TransferToManagerWindow(bid);
+			window.ShowDialog();
+			
+		}
+		
+		//Клик по кнопке передачи заявки в другой статус, открывает окно передачи заявки в другой статус
+		void BtnBidTransferToStatus_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) return;
+			
+			TransferToStatusWindow window = new TransferToStatusWindow(bid);
+			window.ShowDialog();
+		}
+		
+		//Клик по кнопке просмотра платежей, открывает окно просмотра платежей
+		void BtnPaymentHistory_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Выберите заявку!");
+				return;
+			}
+			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
 			window.ShowDialog();
 		}
 		
@@ -201,6 +264,8 @@ namespace StangradCRM.View.Controls.ManagerControls
 		//Клик по кнопке добавления платежа (в каждой строке), открывает окно добавления платежа
 		void BtnAddPayment_Click(object sender, RoutedEventArgs e)
 		{
+			try
+			{
 			Button button = sender as Button;
 			if(button == null) return;
 			
@@ -214,15 +279,26 @@ namespace StangradCRM.View.Controls.ManagerControls
 			window.ShowDialog();
 			
 			viewSource.View.Refresh();
+			}
+			catch(Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
 		}
 		
 		//Клик по кнопке удаления заявки (в каждой строке), удаляет заявку
 		void BtnDeleteRow_Click(object sender, RoutedEventArgs e)
 		{
-			Bid bid = dgvBid.SelectedItem as Bid;
-			if(bid == null) return;
-			if(MessageBox.Show("Удалить заявку?", "Удалить заявку?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
+			Button button = sender as Button;
+			if(button == null) return;
 			
+			DataGridRow row = Classes.FindItem.FindParentItem<DataGridRow>(button);
+			if(row == null) return;
+			
+			Bid bid = row.Item as Bid;
+			if(bid == null) return;
+			
+			if(MessageBox.Show("Удалить заявку?", "Удалить заявку?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
 			if(!bid.remove())
 			{
 				MessageBox.Show(bid.LastError);
@@ -261,6 +337,12 @@ namespace StangradCRM.View.Controls.ManagerControls
 			}
 			
 			bid.Id_bid_status = bidStatus.Id;
+			if(bid.Id_bid_status == (int)Classes.BidStatus.InWork)
+			{
+				PlannedShipmentDateSetWindow window 
+					= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { bid.Planned_shipment_date = planned_shipment_date; }));
+				window.ShowDialog();
+			}
 			if(!bid.save())
 			{
 				MessageBox.Show(bid.LastError);
@@ -283,7 +365,9 @@ namespace StangradCRM.View.Controls.ManagerControls
 				MessageBox.Show("Заявка не выбрана!");
 				return;
 			}
-			
+			if(MessageBox.Show("Передать заявку менеджеру " + manager.Name + "?", 
+			                   "Передать заявку другому менеджеру?", 
+			                   MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 			bid.Id_manager = manager.Id;
 			if(!bid.save())
 			{
@@ -339,7 +423,8 @@ namespace StangradCRM.View.Controls.ManagerControls
 		void DgvEquipmentBid_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			complectationViewSource.View.Refresh();
-		}
+		}		
 		
+
 	}
 }

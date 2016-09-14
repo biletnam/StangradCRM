@@ -73,6 +73,32 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					Width="50">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition></ColumnDefinition>
+								</Grid.ColumnDefinitions>
+								<Button
+									x:Name="btnPaymentRemove"
+									Click="BtnPaymentRemove_Click"
+									Grid.Row="0"
+									Grid.Column="0"
+									Style="{StaticResource ButtonOperationGridAnimateStyle}">
+									<Image
+										VerticalAlignment="Stretch"
+										HorizontalAlignment="Stretch"
+										Source="/StangradCRM;component/Images/delete.png"
+										Stretch="Fill"></Image>
+								</Button>
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 			
 			</DataGrid.Columns>
 		</DataGrid>

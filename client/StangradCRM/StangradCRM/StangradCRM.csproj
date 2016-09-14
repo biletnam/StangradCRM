@@ -50,6 +50,7 @@
     <Reference Include="HTTPManager">
       <HintPath>..\..\libs\HTTPManager.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel" />
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -100,15 +101,20 @@
       <DependentUpon>DownListControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\CostConverter.cs" />
     <Compile Include="Core\BaseViewModel.cs" />
+    <Compile Include="Core\ExcelReport.cs" />
     <Compile Include="Core\IViewModel.cs" />
     <Compile Include="Core\Model.cs" />
+    <Compile Include="Core\Report.cs" />
+    <Compile Include="Core\ReportRow.cs" />
     <Compile Include="Core\TSObservableCollection.cs" />
     <Compile Include="Extensions\DataGridExtension.cs" />
     <Compile Include="Model\Bid.cs" />
     <Compile Include="Model\BidStatus.cs" />
     <Compile Include="Model\Buyer.cs" />
     <Compile Include="Model\Complectation.cs" />
+    <Compile Include="Model\ComplectationItem.cs" />
     <Compile Include="Model\CRMSetting.cs" />
     <Compile Include="Model\Equipment.cs" />
     <Compile Include="Model\EquipmentBid.cs" />
@@ -124,6 +130,7 @@
     <Compile Include="ViewModel\BidStatusViewModel.cs" />
     <Compile Include="ViewModel\BidViewModel.cs" />
     <Compile Include="ViewModel\BuyerViewModel.cs" />
+    <Compile Include="ViewModel\ComplectationItemViewModel.cs" />
     <Compile Include="ViewModel\ComplectationViewModel.cs" />
     <Compile Include="ViewModel\CRMSettingViewModel.cs" />
     <Compile Include="ViewModel\EquipmentBidViewModel.cs" />
@@ -291,6 +298,10 @@
       <DependentUpon>PaymentStatusWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\PlannedShipmentDateSetWindow.xaml.cs">
+      <DependentUpon>PlannedShipmentDateSetWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="View\SellerSaveWindow.xaml.cs">
       <DependentUpon>SellerSaveWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -301,6 +312,14 @@
     </Compile>
     <Compile Include="View\StartupWindow.xaml.cs">
       <DependentUpon>StartupWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\TransferToManagerWindow.xaml.cs">
+      <DependentUpon>TransferToManagerWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\TransferToStatusWindow.xaml.cs">
+      <DependentUpon>TransferToStatusWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\TransportCompanySaveWindow.xaml.cs">
@@ -354,9 +373,12 @@
     <Page Include="View\PaymentSaveWindow.xaml" />
     <Page Include="View\PaymentStatusSaveWindow.xaml" />
     <Page Include="View\PaymentStatusWindow.xaml" />
+    <Page Include="View\PlannedShipmentDateSetWindow.xaml" />
     <Page Include="View\SellerSaveWindow.xaml" />
     <Page Include="View\SellerWindow.xaml" />
     <Page Include="View\StartupWindow.xaml" />
+    <Page Include="View\TransferToManagerWindow.xaml" />
+    <Page Include="View\TransferToStatusWindow.xaml" />
     <Page Include="View\TransportCompanySaveWindow.xaml" />
     <Page Include="View\TransportCompanyWindow.xaml" />
   </ItemGroup>
@@ -376,6 +398,7 @@
     <Folder Include="View\Controls" />
     <Folder Include="View\Helpers" />
     <Folder Include="Extensions" />
+    <Folder Include="Converters" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resource.resx">

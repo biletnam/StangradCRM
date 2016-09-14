@@ -7,6 +7,7 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
+using StangradCRM.Core;
 using StangradCRM.ViewModel;
 
 namespace StangradCRM.Model
@@ -17,16 +18,40 @@ namespace StangradCRM.Model
 	public class Complectation : Core.Model
 	{
 		public int Complectation_count { get; set; }
-		public string Commentary { get; set; }
 		public int Id_equipment_bid { get; set; }
+		public int Id_complectation_item { get; set; }
 
+		public string Name 
+		{
+			get
+			{
+				ComplectationItem item = ComplectationItemViewModel.instance().getById(Id_complectation_item);
+				if(item == null) return "";
+				return item.Name;
+			}
+		}
+		
+		public TSObservableCollection<ComplectationItem> ComplectationItemCollection
+		{
+			get
+			{
+				return ComplectationItemViewModel.instance().Collection;
+			}
+		}
+		
+		//Название нового элемента комплектации
+		//Используется в форме добавления комплектация
+		//В случае если элемент комплектации не выбран (Id_complectation_item == 0)
+		//Будет создан новый элемент комплектации с данным названием
+		public string NewComplectationItemName { get; set; }
+		
 		public Complectation() {}
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
 		{
 			http.addParameter("complectation_count", Complectation_count);
 			http.addParameter("id_equipment_bid", Id_equipment_bid);
-			http.addParameter("commentary", Commentary);
+			http.addParameter("id_complectation_item", Id_complectation_item);
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
@@ -82,7 +107,7 @@ namespace StangradCRM.Model
 		{
 			base.loadedItemInitProperty();
 			RaisePropertyChanged("Complectation_count", Complectation_count, true);
-			RaisePropertyChanged("Commentary", Commentary, true);
+			RaisePropertyChanged("Id_complectation_item", Id_complectation_item, true);
 		}
 		
 		public override void setOldValues ()
@@ -91,7 +116,7 @@ namespace StangradCRM.Model
 			try
 			{
 				Complectation_count = (int)oldValues["Complectation_count"];
-				Commentary = oldValues["Commentary"].ToString();
+				Id_complectation_item = (int)oldValues["Id_complectation_item"];
 			}
 			catch {}
 		}
@@ -103,7 +128,7 @@ namespace StangradCRM.Model
 			if(complectation == null) return;
 			
 			Complectation_count = complectation.Complectation_count;
-			Commentary = complectation.Commentary;
+			Id_complectation_item = complectation.Id_complectation_item;
 			Id_equipment_bid = complectation.Id_equipment_bid;
 				
 			raiseAllProperties();
@@ -112,8 +137,9 @@ namespace StangradCRM.Model
 		public override void raiseAllProperties()
 		{
 			RaisePropertyChanged("Complectation_count", Complectation_count);
-			RaisePropertyChanged("Commentary", Commentary);
+			RaisePropertyChanged("Id_complectation_item", Id_complectation_item);
 			RaisePropertyChanged("Id_equipment_bid", Id_equipment_bid);
+			RaisePropertyChanged("Name", null);
 		}
 	}
 }

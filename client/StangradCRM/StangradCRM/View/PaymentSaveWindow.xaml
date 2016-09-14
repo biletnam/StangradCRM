@@ -2,8 +2,12 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
+	xmlns:converters="clr-namespace:StangradCRM.Converters"   
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"        
 	Title="Ввод суммы оплаты" Height="200" Width="400" WindowStartupLocation="CenterScreen">
+	<Window.Resources>
+		<converters:CostConverter x:Key="CostConverter"></converters:CostConverter>	
+	</Window.Resources>
 	<Grid Margin="5">
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 0, 0, 30" >
 			<Grid.RowDefinitions>
@@ -19,7 +23,10 @@
 			<Label Grid.Row="0" Grid.Column="0" 
 			       Content="Текущий остаток"></Label>			
 			
-			<Label Grid.Row="0" Grid.Column="1" x:Name="lblDebt"></Label>		
+			<Label 
+				Grid.Row="0" 
+				Grid.Column="1" 
+				x:Name="lblDebt"></Label>
 			
 			<Label Grid.Row="1" Grid.Column="0" 
 			       Content="Дата внесения суммы"></Label>
@@ -35,9 +42,10 @@
 			<Label Grid.Row="2" Grid.Column="0" 
 			       Content="Сумма"></Label>
 			
-			<TextBox Grid.Row="2" Grid.Column="1" 
-			         Style="{StaticResource DefaultTextBoxStyle}"
-			         x:Name="tbxPayment"></TextBox>
+			<TextBox 
+				Grid.Row="2" Grid.Column="1"		
+		        Style="{StaticResource DefaultTextBoxStyle}"
+		        x:Name="tbxPayment"></TextBox>
 		</Grid>
 
 		<libs:Loading

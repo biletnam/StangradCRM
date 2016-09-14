@@ -16,11 +16,31 @@
 			<Setter Property="FontSize" Value="12" />
 		</Style>
 		
+		<Style TargetType="DataGridRow" x:Key="DefaultDataGridRowStyle">
+			<Style.Triggers>
+				<Trigger Property="DataGridRow.IsSelected" Value="True">
+					<Setter Property="Background" Value="#0068B3"></Setter>
+					<Setter Property="BorderBrush" Value="#0068B3"></Setter>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+		
         <Style TargetType="DataGridCell" x:Key="DefaultDataGridCellStyle">
             <Style.Triggers>
                 <Trigger Property="DataGridCell.IsSelected" Value="True">
                     <Setter Property="Background" Value="#0068B3"></Setter>
                     <Setter Property="BorderBrush" Value="#0068B3"></Setter>
+            		<Setter Property="Foreground" Value="White"></Setter>
+                </Trigger>
+            </Style.Triggers>
+		</Style>
+		
+		<Style TargetType="DataGridCell" x:Key="NoIsSelectedDataGridCellStyle">
+            <Style.Triggers>
+                <Trigger Property="DataGridCell.IsSelected" Value="True">
+                    <Setter Property="Background" Value="White"></Setter>
+            		<Setter Property="BorderBrush" Value="White"></Setter>
+                	<Setter Property="Foreground" Value="Black"></Setter>
                 </Trigger>
             </Style.Triggers>
 		</Style>
@@ -72,6 +92,13 @@
 					<Setter Property="Height" Value="22"></Setter>
 				</Trigger>
 			</Style.Triggers>
+		</Style>
+
+		<Style TargetType="DatePicker" x:Key="DefaultDatePickerStyle">
+			<Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+			<Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+			<Setter Property="Height" Value="23"></Setter>
+			<Setter Property="Margin" Value="0, 2, 0, 2"></Setter>
 		</Style>
 		
 		<Style TargetType="TextBox" x:Key="DefaultTextBoxStyle">
