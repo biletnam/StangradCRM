@@ -83,11 +83,9 @@ namespace StangradCRM.View
 				if(!bid.save())
 				{
 					MessageBox.Show("Не удалось изменить статус оплаты!\n" + bid.LastError);
+					return;
 				}
-			}
-			else
-			{
-				MessageBox.Show("Без изменений");
+				bid.raiseAllProperties();
 			}
 		}
 	}

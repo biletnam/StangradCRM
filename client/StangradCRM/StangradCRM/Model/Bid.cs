@@ -49,45 +49,44 @@ namespace StangradCRM.Model
 		
 		//-------------------->
 		
-		public TSObservableCollection<EquipmentBid> EquipmentBid
-		{
+		public TSObservableCollection<EquipmentBid> EquipmentBid { 
 			set
 			{
-				TSObservableCollection<EquipmentBid> equipmentBids = value;
+				equipmentBidCollection = null;
 				EquipmentBidViewModel eb_vm = EquipmentBidViewModel.instance();
-				for(int i = 0; i < equipmentBids.Count; i++)
+				for(int i = 0; i < value.Count; i++)
 				{
-					EquipmentBid equipmentBid = eb_vm.getById(equipmentBids[i].Id);
+					EquipmentBid equipmentBid = eb_vm.getById(value[i].Id);
 					if(equipmentBid == null)
 					{
-						eb_vm.add(equipmentBids[i]);
+						eb_vm.add(value[i]);
 					}
 					else
 					{
-						equipmentBid.replace(equipmentBids[i]);
+						equipmentBid.replace(value[i]);
 					}
 				}
 			}
 		}
 		
-		public TSObservableCollection<Payment> Payment
+		public TSObservableCollection<Payment> Payment 
 		{
 			set
 			{
-				TSObservableCollection<Payment> payments = value;
+				paymentCollection = null;
 				PaymentViewModel p_vm = PaymentViewModel.instance();
-				for(int i = 0; i < payments.Count; i++)
+				for(int i = 0; i < value.Count; i++)
 				{
-					Payment payment = p_vm.getById(payments[i].Id);
+					Payment payment = p_vm.getById(value[i].Id);
 					if(payment == null)
 					{
-						p_vm.add(payments[i]);
+						p_vm.add(value[i]);
 					}
 					else
 					{
-						payment.replace(payments[i]);
+						payment.replace(value[i]);
 					}
-				}
+				}				
 			}
 		}
 		
@@ -279,11 +278,16 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		private TSObservableCollection<Payment> paymentCollection = null;
 		public TSObservableCollection<Payment> PaymentCollection
 		{
 			get
 			{
-				return PaymentViewModel.instance().getByBidId(Id);
+				if(paymentCollection == null)
+				{
+					paymentCollection = PaymentViewModel.instance().getByBidId(Id);
+				}
+				return paymentCollection;
 			}
 		}
 		
@@ -387,34 +391,34 @@ namespace StangradCRM.Model
 		public bool generateSerialNumber ()
 		{
 			try {
-			HTTPManager.HTTPRequest http = HTTPManager.HTTPRequest.Create(Settings.uri);
-			http.UseCookie = true;
-			http.addParameter("entity", "Bid/generateEquipmentBidSerialNumber");
-			http.addParameter("id", Id);
-			if(!http.post()) 
-			{
-				LastError = HTTPManager.HTTPRequest.LastError;
-				return false;
-			}
-			ResponseParser parser = ResponseParser.Parse(http.ResponseData);
-			if(!parser.NoError)
-			{
-				LastError = parser.LastError;
-				return false;
-			}
-			if(parser.ServerErrorFlag != 0)
-			{
-				LastError = parser.ToObject<string>();
-				return false;
-			}
-			List<TempEquipmentBid> updatedEquipmentBid = parser.ToObject<List<TempEquipmentBid>>();
-			for(int i = 0; i < updatedEquipmentBid.Count; i++)
-			{
-				EquipmentBid equipmentBid = EquipmentBidViewModel.instance().getById(updatedEquipmentBid[i].Id);
-				if(equipmentBid == null) continue;
-				equipmentBid.setSerialNumber(updatedEquipmentBid[i].SerialNumber);
-			}
-			return true;
+				HTTPManager.HTTPRequest http = HTTPManager.HTTPRequest.Create(Settings.uri);
+				http.UseCookie = true;
+				http.addParameter("entity", "Bid/generateEquipmentBidSerialNumber");
+				http.addParameter("id", Id);
+				if(!http.post()) 
+				{
+					LastError = HTTPManager.HTTPRequest.LastError;
+					return false;
+				}
+				ResponseParser parser = ResponseParser.Parse(http.ResponseData);
+				if(!parser.NoError)
+				{
+					LastError = parser.LastError;
+					return false;
+				}
+				if(parser.ServerErrorFlag != 0)
+				{
+					LastError = parser.ToObject<string>();
+					return false;
+				}
+				List<TempEquipmentBid> updatedEquipmentBid = parser.ToObject<List<TempEquipmentBid>>();
+				for(int i = 0; i < updatedEquipmentBid.Count; i++)
+				{
+					EquipmentBid equipmentBid = EquipmentBidViewModel.instance().getById(updatedEquipmentBid[i].Id);
+					if(equipmentBid == null) continue;
+					equipmentBid.setSerialNumber(updatedEquipmentBid[i].SerialNumber);
+				}
+				return true;
 			}
 			catch(Exception ex)
 			{
@@ -448,28 +452,32 @@ namespace StangradCRM.Model
 			}
 			
 			RaisePropertyChanged("Id_seller", Id_seller);
-			RaisePropertyChanged("SellerName", null);
 			RaisePropertyChanged("Id_buyer", Id_buyer);
-			RaisePropertyChanged("BuyerName", null);
 			RaisePropertyChanged("Id_bid_status", Id_bid_status);
-			RaisePropertyChanged("BidStatusName", null);
-			RaisePropertyChanged("BidStatusColor", null);
 			RaisePropertyChanged("Id_payment_status", Id_payment_status);
-			RaisePropertyChanged("PaymentStatusName", null);
-			RaisePropertyChanged("PaymentStatusColor", null);
 			RaisePropertyChanged("Id_transport_company", Id_transport_company);
 			RaisePropertyChanged("Id_manager", Id_manager);
-			RaisePropertyChanged("ManagerName", null);
 			RaisePropertyChanged("Date_created", Date_created);
 			RaisePropertyChanged("Shipment_date", Shipment_date);
 			RaisePropertyChanged("Account", Account);
 			RaisePropertyChanged("Amount", Amount);
 			RaisePropertyChanged("Is_archive", Is_archive);
 			RaisePropertyChanged("Is_shipped", Is_shipped);
+			
+			
+			RaisePropertyChanged("SellerName", null);			
+			RaisePropertyChanged("BuyerName", null);
+			RaisePropertyChanged("PaymentStatusName", null);
+			RaisePropertyChanged("PaymentStatusColor", null);
+			RaisePropertyChanged("BidStatusName", null);
+			RaisePropertyChanged("BidStatusColor", null);
+			RaisePropertyChanged("ManagerName", null);
 			RaisePropertyChanged("Debt", null);
 			RaisePropertyChanged("TransportCompanyName", null);
 			RaisePropertyChanged("Planned_shipment_date", null);
 			RaisePropertyChanged("IsDelayShipment", null);
+			
+			RaisePropertyChanged("PaymentCollection", null);
 		}
 		
 		public override void loadedItemInitProperty ()
@@ -496,6 +504,9 @@ namespace StangradCRM.Model
 			Amount = bid.Amount;
 			Is_archive = bid.Is_archive;
 			Is_shipped = bid.Is_shipped;
+
+			paymentCollection = null;
+			equipmentBidCollection = null;
 			
 			raiseAllProperties();
 		}

@@ -9,7 +9,7 @@
 	<Grid Background="White">
 		<Grid.RowDefinitions>
 			<RowDefinition></RowDefinition>
-			<RowDefinition Height="265"></RowDefinition>
+			<RowDefinition Height="235"></RowDefinition>
 			<RowDefinition Height="85"></RowDefinition>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -233,39 +233,7 @@
 			                    </DataTemplate>
 			                </DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>						
-						
-						<DataGridTemplateColumn
-							CellStyle="{StaticResource DefaultDataGridCellStyle}"
-			                Width="25">
-			                <DataGridTemplateColumn.CellTemplate>
-			                	<DataTemplate>
-									<Grid>
-				                		<Grid.ColumnDefinitions>
-											<ColumnDefinition ></ColumnDefinition>
-										</Grid.ColumnDefinitions>
-										<Button 
-											x:Name="btnDeleteRow"
-											Click="BtnDeleteRow_Click"
-											Grid.Row="0" Grid.Column="1">
-		                                    <Image 
-		                                        VerticalAlignment="Stretch"
-		                                        HorizontalAlignment="Stretch"
-		                                        Source="/StangradCRM;component/Images/delete.png"
-												Stretch="Fill"></Image>
-											<Button.Style>
-												<Style TargetType="Button" BasedOn="{StaticResource ButtonOperationGridAnimateStyle}">
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding Path=PermittedRemoval}" Value="False">
-															<Setter Property="Visibility" Value="Collapsed"></Setter>
-														</DataTrigger>
-													</Style.Triggers>
-												</Style>
-											</Button.Style>
-										</Button>
-				                	</Grid>
-								</DataTemplate>
-			                </DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
+
 					</DataGrid.Columns>
 				</DataGrid>
 				<Grid Grid.Column="0" Grid.Row="2" Margin="5, 0, 0, 2" >
@@ -281,7 +249,7 @@
 						Click="BtnAdd_Click"
 						HorizontalAlignment="Left"
 						Style="{StaticResource DefaultButtonStyle}"
-						Width="120"
+						Width="130"
 						Grid.Column="0"
 						Grid.Row="0"
 						Content="Добавить"/>
@@ -289,7 +257,7 @@
 						x:Name="btnBidDelete"
 						Click="BtnBidDelete_Click"
 						HorizontalAlignment="Left"
-						Width="120"
+						Width="130"
 						Grid.Column="1"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"
@@ -298,7 +266,7 @@
 						x:Name="btnBidTransferToManager"
 						Click="BtnBidTransferToManager_Click"
 						HorizontalAlignment="Left"
-						Width="120"
+						Width="130"
 						Grid.Column="2"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"
@@ -307,7 +275,7 @@
 						x:Name="btnBidTransferToStatus"
 						Click="BtnBidTransferToStatus_Click"
 						HorizontalAlignment="Left"
-						Width="120"
+						Width="130"
 						Grid.Column="3"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"
@@ -316,7 +284,7 @@
 						x:Name="btnPaymentHistory"
 						Click="BtnPaymentHistory_Click"
 						HorizontalAlignment="Left"
-						Width="120"
+						Width="130"
 						Grid.Column="4"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"

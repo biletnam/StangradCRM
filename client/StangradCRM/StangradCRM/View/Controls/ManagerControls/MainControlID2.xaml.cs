@@ -369,7 +369,7 @@ namespace StangradCRM.View.Controls.ManagerControls
 				return;
 			}
 			
-			BidViewModel.instance().remove(bid);
+			bid.remove(true);
 		}
 		
 		//Контекстное меню установки статуса "Отгружено"

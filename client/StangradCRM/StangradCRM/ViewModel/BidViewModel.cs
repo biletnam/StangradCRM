@@ -29,6 +29,8 @@ namespace StangradCRM.ViewModel
 			= new TSObservableCollection<Bid>();
 		
 		
+		private DateTime loadDateTime = DateTime.Now;
+		
 		Dictionary<int, TSObservableCollection<Bid>> _collectionByStatus
 			= new Dictionary<int, TSObservableCollection<Bid>>();
 		
@@ -158,7 +160,7 @@ namespace StangradCRM.ViewModel
 			{
 				return _collection.Max(x => x.Last_modified);
 			}
-			return DateTime.Now;
+			return loadDateTime;
 		}
 		
 		
@@ -173,11 +175,10 @@ namespace StangradCRM.ViewModel
 			http.addParameter("last_modified", lastModified);
 			
 			if(!http.post()) return null;
-
+			
 			ResponseParser parser = ResponseParser.Parse(http.ResponseData);
 			if(!parser.NoError)
 			{
-				Log.WriteError(parser.LastError);
 				return null;
 			}
 			return parser.ToObject<List<Bid>>();
@@ -203,6 +204,10 @@ namespace StangradCRM.ViewModel
 						{
 							add(newBid);
 						}
+						else
+						{
+							newBid.remove(true);
+						}
 					}
 					else
 					{
@@ -226,6 +231,7 @@ namespace StangradCRM.ViewModel
 					{
 						oldBid.replace(newBid);
 					}
+					newBid.remove(true);
 				}
 			}
 		}

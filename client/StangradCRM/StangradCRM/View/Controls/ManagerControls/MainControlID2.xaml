@@ -17,7 +17,7 @@
 	<Grid Background="White">
 		<Grid.RowDefinitions>
 			<RowDefinition></RowDefinition>
-			<RowDefinition Height="265"></RowDefinition>
+			<RowDefinition Height="235"></RowDefinition>
 			<RowDefinition Height="85"></RowDefinition>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -332,7 +332,7 @@
 						Click="BtnPrintBlank_Click"
 						HorizontalAlignment="Left"
 						Style="{StaticResource DefaultButtonStyle}"
-						Width="120"
+						Width="130"
 						Grid.Column="0"
 						Grid.Row="0"
 						Content="Печать бланков"></Button>
@@ -341,7 +341,7 @@
 						Click="BtnGenerateSN_Click"
 						HorizontalAlignment="Left"
 						Style="{StaticResource DefaultButtonStyle}"
-						Width="120"
+						Width="130"
 						Grid.Column="1"
 						Grid.Row="0"
 						Content="Сгенерировать S/N"></Button>
@@ -349,7 +349,7 @@
 						x:Name="btnBidTransferToManager"
 						Click="BtnBidTransferToManager_Click"
 						HorizontalAlignment="Left"
-						Width="120"
+						Width="130"
 						Grid.Column="2"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"
@@ -358,7 +358,7 @@
 						x:Name="btnBidTransferToStatus"
 						Click="BtnBidTransferToStatus_Click"
 						HorizontalAlignment="Left"
-						Width="120"
+						Width="130"
 						Grid.Column="3"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"
@@ -367,7 +367,7 @@
 						x:Name="btnPaymentHistory"
 						Click="BtnPaymentHistory_Click"
 						HorizontalAlignment="Left"
-						Width="120"
+						Width="130"
 						Grid.Column="4"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"
@@ -376,7 +376,7 @@
 						x:Name="btnSetShipment"
 						Click="BtnSetShipment_Click"
 						HorizontalAlignment="Left"
-						Width="120"
+						Width="130"
 						Grid.Column="5"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"

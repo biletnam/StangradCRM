@@ -44,6 +44,14 @@ namespace StangradCRM.View
 			if(args.Length < 3)
 			{
 				MessageBox.Show("Необходимые аргументы не были получены!");
+				if(MessageBox.Show("Запустить приложение на тестовом сервере?", 
+				                "Запустить приложение на тестовом сервере?",
+				                MessageBoxButton.YesNo) == MessageBoxResult.No) 
+				{
+					Close();
+					return;
+				}
+				loadTestServer ();
 				return;
 			}
 			Task.Factory.StartNew(() => {  
@@ -169,6 +177,60 @@ namespace StangradCRM.View
 			//ComplectationItemViewModel.instance();
 			
 			return true;
+		}
+		
+		private void loadTestServer ()
+		{
+			IniFile testSettings = new IniFile("testsettings.ini");
+			if(!testSettings.KeyExists("login") ||
+			   testSettings.Read("login") == "" ||
+			   !testSettings.KeyExists("password") ||
+			   testSettings.Read("password") == "" ||
+			   !testSettings.KeyExists("host") ||
+			   testSettings.Read("host") == "")
+			{
+				testSettings.Write("login", "");
+				testSettings.Write("password", "");
+				testSettings.Write("host", "");
+				MessageBox.Show("Файл с настройками подключения к тестовому серверу некорректен.\nПриложение будет закрыто!");
+				Close();
+				return;
+			}
+			Task.Factory.StartNew(() => {
+                  	Auth auth = Auth.getInstance();
+                  	auth.Entity = "Auth/auth";
+                  	auth.Login = testSettings.Read("login");
+                  	auth.Password = testSettings.Read("password");
+                  	try
+                  	{
+                  		Settings.uri = new Uri(testSettings.Read("host"));
+                  	}
+                  	catch
+                  	{
+                  		Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {errorTestServer("Некорректный адрес сервера!");}));
+                  		return;
+                  	}		                      	
+	             	if(!auth.authorization())
+                  	{
+                  		Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {errorTestServer(auth.LastError);}));
+                  		return;
+                  	}
+	              	if(loadModels()) 
+	              	{
+	              		Dispatcher.BeginInvoke(DispatcherPriority.Background,
+		                       new Action( () => {
+                                  	openMainWindow();
+                               }));
+		              	}
+		              	return;
+           });
+		}
+		
+		private void errorTestServer (string message)
+		{
+			MessageBox.Show(message + "\nПриложение будет закрыто!");
+			Close();
+			return;
 		}
 		
 	}

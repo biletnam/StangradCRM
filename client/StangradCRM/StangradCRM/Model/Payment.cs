@@ -8,6 +8,7 @@
  */
 using System;
 using StangradCRM.ViewModel;
+using StangradCRMLibs;
 
 namespace StangradCRM.Model
 {
@@ -67,6 +68,20 @@ namespace StangradCRM.Model
 			get {
 				return PaymentViewModel.instance();
 			}
+		}
+		
+		protected override bool afterRemove(StangradCRMLibs.ResponseParser parser, bool soft)
+		{
+			bool result = base.afterRemove(parser, soft);
+			if(result)
+			{
+				Bid bid = BidViewModel.instance().getById(Id_bid);
+				if(bid != null && bid.PaymentCollection.Contains(this))
+				{
+					bid.PaymentCollection.Remove(this);
+				}
+			}
+			return result;
 		}
 		
 		public override void replace(object o)

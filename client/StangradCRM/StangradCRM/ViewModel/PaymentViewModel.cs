@@ -7,10 +7,12 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using StangradCRM.Core;
 using StangradCRM.Model;
-using System.Linq;
-using System.Collections.Generic;
+using StangradCRMLibs;
 
 namespace StangradCRM.ViewModel
 {

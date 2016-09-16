@@ -374,7 +374,7 @@ namespace StangradCRM.View.Controls.ManagerControls
 				MessageBox.Show(bid.LastError);
 				return;
 			}
-			BidViewModel.instance().remove(bid);
+			bid.remove(true);
 		}
 		
 		//Оборудование в заявке ---->

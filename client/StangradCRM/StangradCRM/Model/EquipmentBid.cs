@@ -217,6 +217,8 @@ namespace StangradCRM.Model
 			Id_modification = equipmentBid.Id_modification;
 			Id_bid = equipmentBid.Id_bid;
 			Serial_number = equipmentBid.Serial_number;
+			complectationCollection = null;
+			
 			raiseAllProperties();
 		}
 		

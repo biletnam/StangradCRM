@@ -77,7 +77,7 @@ namespace StangradCRM.View
 				MessageBox.Show(bid.LastError);
 				return;
 			}
-			BidViewModel.instance().remove(bid);
+			bid.remove(true);
 			Close();
 		}
 	}
