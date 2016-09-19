@@ -72,16 +72,7 @@ namespace StangradCRM.Model
 		
 		protected override bool afterRemove(StangradCRMLibs.ResponseParser parser, bool soft)
 		{
-			bool result = base.afterRemove(parser, soft);
-			if(result)
-			{
-				Bid bid = BidViewModel.instance().getById(Id_bid);
-				if(bid != null && bid.PaymentCollection.Contains(this))
-				{
-					bid.PaymentCollection.Remove(this);
-				}
-			}
-			return result;
+			return base.afterRemove(parser, soft);
 		}
 		
 		public override void replace(object o)
@@ -92,6 +83,7 @@ namespace StangradCRM.Model
 			Id_bid = payment.Id_bid;
 			Id_manager = payment.Id_manager;
 			Payment_date = payment.Payment_date;
+			
 			raiseAllProperties();
 		}
 		

@@ -35,6 +35,7 @@ namespace StangradCRM.View.Controls.ManagerControls
 		CollectionViewSource equipmentBidViewSource = new CollectionViewSource();
 		CollectionViewSource complectationViewSource = new CollectionViewSource();
 		CollectionViewSource buyerViewSource = new CollectionViewSource();
+		
 		public MainControlID2(CollectionViewSource viewSource)
 		{
 			InitializeComponent();
@@ -189,8 +190,6 @@ namespace StangradCRM.View.Controls.ManagerControls
 		//Дабл клик по строке таблицы - открывает окно редактирования		
 		private void DgvBid_RowDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			try
-			{
 			DataGridRow row = sender as DataGridRow;
 			Bid bid = row.Item as Bid;
 			if(bid == null) return;
@@ -198,14 +197,8 @@ namespace StangradCRM.View.Controls.ManagerControls
 			BidSaveWindow window = new BidSaveWindow(bid);
 			window.ShowDialog();						
 			
-			viewSource.View.Refresh();
-			//Установка текущей ячейки (т.к. после viewSource.View.Refresh() фокус сбрасывается)
-          	dgvBid.CurrentCell = new DataGridCellInfo(row.Item, dgvBid.CurrentCell.Column);
-			}
-			catch(Exception ex)
-			{
-				MessageBox.Show(ex.ToString());
-			}
+			//обновление viewSource и установка фокуса
+			viewSourceRefresh(viewSource, dgvBid, row);
 		}
 		
 		//Обработка события нажатия клавиш на строке таблице
@@ -232,7 +225,9 @@ namespace StangradCRM.View.Controls.ManagerControls
 			PaymentSaveWindow window = new PaymentSaveWindow(bid);
 			window.ShowDialog();
 			
-			viewSource.View.Refresh();
+			//обновление viewSource и установка фокуса
+			viewSourceRefresh(viewSource, dgvBid, row);
+			
 		}
 		
 		//Клик по кнопке печати бланков
@@ -262,6 +257,8 @@ namespace StangradCRM.View.Controls.ManagerControls
 			
 			TransferToManagerWindow window = new TransferToManagerWindow(bid);
 			window.ShowDialog();
+	
+			viewSource.View.Refresh();
 		}
 		
 		//Клик по кнопке передачи заявки в другой статус, открывает окно передачи заявки в другой статус
@@ -272,6 +269,8 @@ namespace StangradCRM.View.Controls.ManagerControls
 			
 			TransferToStatusWindow window = new TransferToStatusWindow(bid);
 			window.ShowDialog();
+
+			viewSource.View.Refresh();
 		}
 		
 		//Клик по кнопке просмотра платежей, открывает окно просмотра платежей
@@ -285,6 +284,8 @@ namespace StangradCRM.View.Controls.ManagerControls
 			}
 			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
 			window.ShowDialog();
+			
+			viewSource.View.Refresh();
 		}
 		
 		//Клик по кнопке установки статуса 'отгружено', открывает окно установки статуса
@@ -298,6 +299,8 @@ namespace StangradCRM.View.Controls.ManagerControls
 			}
 			BidShipmentSaveWindow window = new BidShipmentSaveWindow(bid);
 			window.ShowDialog();
+			
+			viewSource.View.Refresh();
 		}
 		
 		//Контекстное меню в таблице заявок ---->
@@ -313,12 +316,13 @@ namespace StangradCRM.View.Controls.ManagerControls
 			}
 			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
 			window.ShowDialog();
+			
+			viewSource.View.Refresh();
 		}
 
 		//Контекстное меню передачи заявки в статус
 		void ContextTransferToStatus_Click(object sender, RoutedEventArgs e)
 		{
-			
 			MenuItem mi = sender as MenuItem;
 			if(mi == null) return;
 			
@@ -342,6 +346,9 @@ namespace StangradCRM.View.Controls.ManagerControls
 				MessageBox.Show(bid.LastError);
 				return;
 			}
+			
+			viewSource.View.Refresh();
+			
 		}
 		
 		//Контекстное меню передачи заявки другому менеджеру
@@ -368,7 +375,6 @@ namespace StangradCRM.View.Controls.ManagerControls
 				MessageBox.Show(bid.LastError);
 				return;
 			}
-			
 			bid.remove(true);
 		}
 		
@@ -446,6 +452,19 @@ namespace StangradCRM.View.Controls.ManagerControls
 
 		}
 		
-
+		
+		//Служебные---->
+		
+		//Обновление viewSource + установка фокуса на строку грида
+		void viewSourceRefresh(CollectionViewSource vs,
+								DataGrid dg = null,
+		                       DataGridRow row = null)
+		{
+			vs.View.Refresh();
+			if(dg != null && row != null)
+			{
+      			dg.CurrentCell = new DataGridCellInfo(row.Item, dg.CurrentCell.Column);
+			}
+		}
 	}
 }

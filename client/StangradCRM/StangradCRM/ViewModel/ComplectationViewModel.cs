@@ -62,26 +62,32 @@ namespace StangradCRM.ViewModel
 		public bool @add<T>(T modelItem)
 		{
 			Complectation complectation = modelItem as Complectation;
-			if(complectation != null && !_collection.Contains(complectation))
+			if(complectation == null)
 			{
-				_collection.Add(complectation);
-				complectation.loadedItemInitProperty();
-				return true;
+				complectation.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			complectation.LastError = "Не удалось преобразовать входные данные, либо данная запись уже есть в коллекции.";
-			return false;
+			Complectation exist = getById(complectation.Id);
+			if(exist != null || _collection.Contains(complectation))
+			{
+				complectation.LastError = "Днная запись уже есть в коллекции.";
+				return false;
+			}
+			_collection.Add(complectation);
+			complectation.loadedItemInitProperty();
+			return true;
 		}
 		
 		public bool @remove<T>(T modelItem)
 		{
 			Complectation complectation = modelItem as Complectation;
-			if(complectation != null && _collection.Contains(complectation))
+			if(complectation == null)
 			{
-				_collection.Remove(complectation);
-				return true;
+				complectation.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			complectation.LastError = "Не удалось преобразовать входные данные, либо данной записи нет в коллекции.";
-			return false;
+			if(!_collection.Contains(complectation)) return true;
+			return _collection.Remove(complectation);
 		}
 		
 		public Core.Model getItem(int id)

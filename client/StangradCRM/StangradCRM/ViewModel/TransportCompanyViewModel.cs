@@ -60,25 +60,31 @@ namespace StangradCRM.ViewModel
 		public bool @add<T>(T modelItem)
 		{
 			TransportCompany transportCompany = modelItem as TransportCompany;
-			if(transportCompany != null && !_collection.Contains(transportCompany))
+			if(transportCompany == null)
 			{
-				_collection.Add(transportCompany);
-				return true;
+				transportCompany.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			transportCompany.LastError = "Не удалось преобразовать входные данные, либо данная запись уже есть в коллекции.";
-			return false;
+			TransportCompany exist = getById(transportCompany.Id);
+			if(exist != null || _collection.Contains(transportCompany))
+			{
+				transportCompany.LastError = "Данная запись уже есть в коллекции.";
+				return false;
+			}
+			_collection.Add(transportCompany);
+			return true;
 		}
 		
 		public bool @remove<T>(T modelItem)
 		{
 			TransportCompany transportCompany = modelItem as TransportCompany;
-			if(transportCompany != null && _collection.Contains(transportCompany))
+			if(transportCompany == null)
 			{
-				_collection.Remove(transportCompany);
-				return true;
+				transportCompany.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			transportCompany.LastError = "Не удалось преобразовать входные данные, либо данной записи нет в коллекции.";
-			return false;
+			if(!_collection.Contains(transportCompany)) return true;
+			return _collection.Remove(transportCompany);
 		}
 		
 		public Core.Model getItem(int id)

@@ -62,25 +62,31 @@ namespace StangradCRM.ViewModel
 		public bool @add<T>(T modelItem)
 		{
 			Manager manager = modelItem as Manager;
-			if(manager != null && !_collection.Contains(manager))
+			if(manager == null)
 			{
-				_collection.Add(manager);
-				return true;
+				manager.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			manager.LastError = "Не удалось преобразовать входные данные, либо данная запись уже есть в коллекции.";
-			return false;
+			Manager exist = getById(manager.Id);
+			if(exist != null || _collection.Contains(manager))
+			{
+				manager.LastError = "Данная запись уже есть в коллекции.";
+				return false;
+			}
+			_collection.Add(manager);
+			return true;
 		}
 		
 		public bool @remove<T>(T modelItem)
 		{
 			Manager manager = modelItem as Manager;
-			if(manager != null && _collection.Contains(manager))
+			if(manager == null)
 			{
-				_collection.Remove(manager);
-				return true;
+				manager.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			manager.LastError = "Не удалось преобразовать входные данные, либо данной записи нет в коллекции.";
-			return false;
+			if(!_collection.Contains(manager)) return true;
+			return _collection.Remove(manager);
 		}
 		
 		public Core.Model getItem(int id)

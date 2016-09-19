@@ -73,7 +73,6 @@ namespace StangradCRM.Model
 		{
 			set
 			{
-				paymentCollection = null;
 				PaymentViewModel p_vm = PaymentViewModel.instance();
 				for(int i = 0; i < value.Count; i++)
 				{
@@ -90,7 +89,7 @@ namespace StangradCRM.Model
 			}
 		}
 		
-		//--------------------<
+		//--------------------<z
 		
 		public Classes.PaymentStatus CurrentPaymentStatus
 		{
@@ -278,16 +277,11 @@ namespace StangradCRM.Model
 			}
 		}
 		
-		private TSObservableCollection<Payment> paymentCollection = null;
 		public TSObservableCollection<Payment> PaymentCollection
 		{
 			get
 			{
-				if(paymentCollection == null)
-				{
-					paymentCollection = PaymentViewModel.instance().getByBidId(Id);
-				}
-				return paymentCollection;
+				return PaymentViewModel.instance().getByBidId(Id);
 			}
 		}
 		
@@ -434,6 +428,8 @@ namespace StangradCRM.Model
 			{
 				EquipmentBidCollection.ToList().ForEach(x => {x.remove(true);});
 				PaymentCollection.ToList().ForEach(x => {x.remove(true);});
+				
+				equipmentBidCollection = null;
 			}
 			return result;
 		}
@@ -505,8 +501,6 @@ namespace StangradCRM.Model
 			Is_archive = bid.Is_archive;
 			Is_shipped = bid.Is_shipped;
 
-			paymentCollection = null;
-			equipmentBidCollection = null;
 			
 			raiseAllProperties();
 		}

@@ -59,25 +59,31 @@ namespace StangradCRM.ViewModel
 		public bool @add<T>(T modelItem)
 		{
 			BidStatus bidStatus = modelItem as BidStatus;
-			if(bidStatus != null && !_collection.Contains(bidStatus))
+			if(bidStatus == null)
 			{
-				_collection.Add(bidStatus);
-				return true;
+				bidStatus.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			bidStatus.LastError = "Не удалось преобразовать входные данные, либо данная запись уже есть в коллекции.";
-			return false;
+			BidStatus exist = getById(bidStatus.Id);
+			if(exist != null || _collection.Contains(bidStatus))
+			{
+				bidStatus.LastError = "Либо данная запись уже есть в коллекции.";
+				return false;
+			}
+			_collection.Add(bidStatus);
+			return true;
 		}
 		
 		public bool @remove<T>(T modelItem)
 		{
 			BidStatus bidStatus = modelItem as BidStatus;
-			if(bidStatus != null && _collection.Contains(bidStatus))
+			if(bidStatus == null) 
 			{
-				_collection.Remove(bidStatus);
-				return true;
+				bidStatus.LastError = "Не удалось преобразовать входные данные.";
+				return false;				
 			}
-			bidStatus.LastError = "Не удалось преобразовать входные данные, либо данной записи нет в коллекции.";
-			return false;
+			if(!_collection.Contains(bidStatus)) return true;
+			return _collection.Remove(bidStatus);
 		}
 		
 		public BidStatus getById(int id)

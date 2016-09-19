@@ -92,13 +92,10 @@ namespace StangradCRM.Model
 		protected override bool afterRemove(StangradCRMLibs.ResponseParser parser, bool soft = false)
 		{
 			bool result = base.afterRemove(parser, soft);
-			if(result)
+			EquipmentBid equipmentBid = EquipmentBidViewModel.instance().getById(Id_equipment_bid);
+			if(equipmentBid != null && equipmentBid.ComplectationCollection.Contains(this))
 			{
-				EquipmentBid equipmentBid = EquipmentBidViewModel.instance().getById(Id_equipment_bid);
-				if(equipmentBid != null && equipmentBid.ComplectationCollection.Contains(this))
-				{
-					equipmentBid.ComplectationCollection.Remove(this);
-				}
+				equipmentBid.ComplectationCollection.Remove(this);
 			}
 			return result;
 		}

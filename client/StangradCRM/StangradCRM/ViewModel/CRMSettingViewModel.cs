@@ -59,25 +59,31 @@ namespace StangradCRM.ViewModel
 		public bool @add<T>(T modelItem)
 		{
 			CRMSetting crmSetting = modelItem as CRMSetting;
-			if(crmSetting != null && !_collection.Contains(crmSetting))
+			if(crmSetting == null)
 			{
-				_collection.Add(crmSetting);
-				return true;
+				crmSetting.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			crmSetting.LastError = "Не удалось преобразовать входные данные, либо данная запись уже есть в коллекции.";
-			return false;
+			CRMSetting exist = getById(crmSetting.Id);
+			if(exist != null || _collection.Contains(crmSetting))
+			{
+				crmSetting.LastError = "Данная запись уже есть в коллекции.";
+				return false;
+			}
+			_collection.Add(crmSetting);
+			return true;
 		}
 		
 		public bool @remove<T>(T modelItem)
 		{
 			CRMSetting crmSetting = modelItem as CRMSetting;
-			if(crmSetting != null && _collection.Contains(crmSetting))
+			if(crmSetting == null)
 			{
-				_collection.Remove(crmSetting);
-				return true;
+				crmSetting.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			crmSetting.LastError = "Не удалось преобразовать входные данные, либо данной записи нет в коллекции.";
-			return false;
+			if(!_collection.Contains(crmSetting)) return true;
+			return _collection.Remove(crmSetting);
 		}
 		
 		public Core.Model getItem(int id)
@@ -89,5 +95,11 @@ namespace StangradCRM.ViewModel
 		{
 			return _collection.Where(x => x.Setting_mashine_name == mashineName).FirstOrDefault();
 		}
+		
+		public CRMSetting getById (int id)
+		{
+			return _collection.Where(x => x.Id == id).FirstOrDefault();
+		}
+		
 	}
 }

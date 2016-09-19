@@ -64,25 +64,31 @@ namespace StangradCRM.ViewModel
 		public bool @add<T>(T modelItem)
 		{
 			Modification modification = modelItem as Modification;
-			if(modification != null && !_collection.Contains(modification))
+			if(modification == null)
 			{
-				_collection.Add(modification);
-				return true;
+				modification.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			modification.LastError = "Не удалось преобразовать входные данные, либо данная запись уже есть в коллекции.";
-			return false;
+			Modification exist = getById(modification.Id);
+			if(exist != null || _collection.Contains(modification))
+			{
+				modification.LastError = "Данная запись уже есть в коллекции.";
+				return false;
+			}
+			_collection.Add(modification);
+			return true;
 		}
 		
 		public bool @remove<T>(T modelItem)
 		{
 			Modification modification = modelItem as Modification;
-			if(modification != null && _collection.Contains(modification))
+			if(modification == null)
 			{
-				_collection.Remove(modification);
-				return true;
+				modification.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			modification.LastError = "Не удалось преобразовать входные данные, либо данной записи нет в коллекции.";
-			return false;
+			if(!_collection.Contains(modification)) return true;
+			return _collection.Remove(modification);
 		}
 		
 		public Core.Model getItem(int id)

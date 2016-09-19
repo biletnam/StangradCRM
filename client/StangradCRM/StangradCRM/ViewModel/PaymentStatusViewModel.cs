@@ -61,25 +61,31 @@ namespace StangradCRM.ViewModel
 		public bool @add<T>(T modelItem)
 		{
 			PaymentStatus paymentStatus = modelItem as PaymentStatus;
-			if(paymentStatus != null && !_collection.Contains(paymentStatus))
+			if(paymentStatus == null)
 			{
-				_collection.Add(paymentStatus);
-				return true;
+				paymentStatus.LastError = "Не удалось преобразовать входные данные.";
+				return false;				
 			}
-			paymentStatus.LastError = "Не удалось преобразовать входные данные, либо данная запись уже есть в коллекции.";
-			return false;
+			PaymentStatus exist = getById(paymentStatus.Id);
+			if(exist != null || _collection.Contains(paymentStatus))
+			{
+				paymentStatus.LastError = "Данная запись уже есть в коллекции.";
+				return false;
+			}
+			_collection.Add(paymentStatus);
+			return true;
 		}
 		
 		public bool @remove<T>(T modelItem)
 		{
 			PaymentStatus paymentStatus = modelItem as PaymentStatus;
-			if(paymentStatus != null && _collection.Contains(paymentStatus))
+			if(paymentStatus == null)
 			{
-				_collection.Remove(paymentStatus);
-				return true;
+				paymentStatus.LastError = "Не удалось преобразовать входные данные.";
+				return false;				
 			}
-			paymentStatus.LastError = "Не удалось преобразовать входные данные, либо данной записи нет в коллекции.";
-			return false;
+			if(!_collection.Contains(paymentStatus)) return true;
+			return _collection.Remove(paymentStatus);
 		}
 		
 		public Core.Model getItem(int id)

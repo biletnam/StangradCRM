@@ -117,31 +117,33 @@ namespace StangradCRM.ViewModel
 		public bool @add<T>(T modelItem)
 		{
 			Bid bid = modelItem as Bid;
-			if(bid != null && !_collection.Contains(bid))
+			if(bid == null)
 			{
-				_collection.Add(bid);
-				
-				getCollectionByStatus(bid.Id_bid_status).Add(bid);
-				
-				return true;
+				bid.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			bid.LastError = "Не удалось преобразовать входные данные, либо данная запись уже есть в коллекции.";
-			return false;
+			Bid exist = getById(bid.Id);
+			if(exist != null || _collection.Contains(bid))
+			{
+				bid.LastError = "Данная запись уже есть в коллекции.";
+				return false;
+			}
+			_collection.Add(bid);
+			getCollectionByStatus(bid.Id_bid_status).Add(bid);
+			return true;
 		}
 		
 		public bool @remove<T>(T modelItem)
 		{
 			Bid bid = modelItem as Bid;
-			if(bid != null && _collection.Contains(bid))
+			if(bid == null) 
 			{
-				_collection.Remove(bid);
-				
-				getCollectionByStatus(bid.Id_bid_status).Remove(bid);
-				
-				return true;
+				bid.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			bid.LastError = "Не удалось преобразовать входные данные, либо данной записи нет в коллекции.";
-			return false;
+			if(!_collection.Contains(bid)) return true;
+			getCollectionByStatus(bid.Id_bid_status).Remove(bid);
+			return _collection.Remove(bid);
 		}
 		
 		public Core.Model getItem(int id)
@@ -224,14 +226,13 @@ namespace StangradCRM.ViewModel
 						}
 						else
 						{
-							oldBid.remove(true);
+							newBid.remove(true);
 						}
 					}
 					else
 					{
 						oldBid.replace(newBid);
 					}
-					newBid.remove(true);
 				}
 			}
 		}

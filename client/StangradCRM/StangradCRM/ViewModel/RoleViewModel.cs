@@ -59,25 +59,31 @@ namespace StangradCRM.ViewModel
 		public bool @add<T>(T modelItem)
 		{
 			Role role = modelItem as Role;
-			if(role != null && !_collection.Contains(role))
+			if(role == null)
 			{
-				_collection.Add(role);
-				return true;
+				role.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			role.LastError = "Не удалось преобразовать входные данные, либо данная запись уже есть в коллекции.";
-			return false;
+			Role exist = getById(role.Id);
+			if(exist != null || _collection.Contains(role))
+			{
+				role.LastError = "Данная запись уже есть в коллекции.";
+				return false;
+			}
+			_collection.Add(role);
+			return true;
 		}
 		
 		public bool @remove<T>(T modelItem)
 		{
 			Role role = modelItem as Role;
-			if(role != null && _collection.Contains(role))
+			if(role == null)
 			{
-				_collection.Remove(role);
-				return true;
+				role.LastError = "Не удалось преобразовать входные данные.";
+				return false;
 			}
-			role.LastError = "Не удалось преобразовать входные данные, либо данной записи нет в коллекции.";
-			return false;
+			if(!_collection.Contains(role)) return true;
+			return _collection.Remove(role);
 		}
 		
 		public Core.Model getItem(int id)
