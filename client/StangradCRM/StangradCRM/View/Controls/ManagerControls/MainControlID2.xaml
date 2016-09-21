@@ -241,7 +241,7 @@
 				                                VerticalAlignment="Stretch"
 				                                HorizontalAlignment="Stretch"
 				                                Source="/StangradCRM;component/Images/add.png"
-												Stretch="Fill"></Image>					
+												Stretch="Fill"></Image>
 										</Button>
 			                    	</Grid>
 			                    </DataTemplate>
@@ -362,7 +362,7 @@
 						Grid.Column="3"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"
-						Content="Изменить статус"/>
+						Content="В новые"/>
 					<Button 
 						x:Name="btnPaymentHistory"
 						Click="BtnPaymentHistory_Click"
@@ -507,10 +507,19 @@
 							Click="BtnEquipmentBidAdd_Click"
 							Style="{StaticResource DefaultButtonStyle}"
 							HorizontalAlignment="Left"
-							Width="100"
+							Width="130"
 							Grid.Column="0"
 							Grid.Row="0"
 							Content="Добавить"></Button>
+						<Button 
+							Click="BtnEquipmentBidPrintSticker_Click"
+							x:Name="btnEquipmentBidPrintSticker"
+							Style="{StaticResource DefaultButtonStyle}"
+							HorizontalAlignment="Left"
+							Width="130"
+							Grid.Column="1"
+							Grid.Row="0"
+							Content="Печать наклейки"></Button>
 					</Grid>
 				</Grid>
 			</GroupBox>

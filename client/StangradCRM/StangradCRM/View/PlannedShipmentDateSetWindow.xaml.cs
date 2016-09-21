@@ -27,14 +27,15 @@ namespace StangradCRM.View
 	public partial class PlannedShipmentDateSetWindow : Window
 	{
 		private Bid bid = null;
-		private Action<DateTime> callback = null;
-		
-		private bool realClose = false;
+		private Action<DateTime> okCallback = null;
+		private Action cancelCallback = null;
 		
 		private Brush defaultBrush;
 		private Brush errorBrush = new SolidColorBrush(Color.FromRgb(250, 200, 200));
 		
-		public PlannedShipmentDateSetWindow(Bid bid, Action<DateTime> callback)
+		public PlannedShipmentDateSetWindow(Bid bid,
+		                                    Action<DateTime> okCallback = null,
+		                                    Action cancelCallback = null)
 		{
 			InitializeComponent();
 			Title = "Установка предполагаемой даты отгрузки для заявки №" + bid.Id.ToString();
@@ -60,14 +61,17 @@ namespace StangradCRM.View
 			dpPlannedShipmentDate.SelectedDateChanged += delegate { dpPlannedShipmentDate.Background = defaultBrush; };
 			
 			this.bid = bid;
-			this.callback = callback;
+			this.okCallback = okCallback;
+			this.cancelCallback = cancelCallback;
 		}
 		
 		void BtnSave_Click(object sender, RoutedEventArgs e)
 		{
 			if(!validate()) return;
-			callback((DateTime)dpPlannedShipmentDate.SelectedDate);
-			realClose = true;
+			if(okCallback != null)
+			{
+				okCallback((DateTime)dpPlannedShipmentDate.SelectedDate);
+			}
 			Close();
 		}
 		
@@ -81,13 +85,13 @@ namespace StangradCRM.View
 			return true;
 		}
 		
-		void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		void BtnCancel_Click(object sender, RoutedEventArgs e)
 		{
-			if(!realClose)
+			if(cancelCallback != null)
 			{
-				MessageBox.Show("Сохраните предполагаемую дату отгрузки!");
-				e.Cancel = true;
+				cancelCallback();
 			}
+			Close();
 		}
 	}
 }

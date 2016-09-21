@@ -41,6 +41,7 @@ namespace StangradCRM.View
 		
 		CostConverter converter = new CostConverter();
 
+		//Конструктор
 		public PaymentSaveWindow(Bid bid)
 		{
 			InitializeComponent();
@@ -61,14 +62,17 @@ namespace StangradCRM.View
 			lblDebt.Content = debt.ToString();
 		}
 		
+		//Клик по кнопке закрытия окна
 		void BtnCancel_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
 		}
 		
+		//Клик по кнопке сохранения платежа
 		void BtnSave_Click(object sender, RoutedEventArgs e)
 		{
 			if(!validate()) return;
+			
 			payment = new Payment();
 			payment.Id_bid = bid.Id;
 			payment.Payment_date = (DateTime)dpDatePayment.SelectedDate;
@@ -81,10 +85,19 @@ namespace StangradCRM.View
 			if(bid.Id_bid_status != (int)Classes.BidStatus.InWork)
 			{
 				PlannedShipmentDateSetWindow window 
-					= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { bid.Planned_shipment_date = planned_shipment_date; }));
+					= new PlannedShipmentDateSetWindow(bid, 
+                   			new Action<DateTime>( (planned_shipment_date) => { bid.Planned_shipment_date = planned_shipment_date; save(); }),
+                   			new Action(() => { Close(); }));
 				window.ShowDialog();
 			}
-			
+			else
+			{
+				save();
+			}
+		}
+		
+		private void save ()
+		{
 			Task.Factory.StartNew(() => {
 				if(payment.save())
 				{
@@ -123,34 +136,7 @@ namespace StangradCRM.View
 			});
 		}
 		
-		private void successSave()
-		{
-			if(bid.Id_bid_status == (int)Classes.BidStatus.InWork
-			   && old_bid_status != bid.Id_bid_status && bid.Is_archive == 0)
-			{
-				MessageBox.Show("Статус заявки изменен на 'В работе'!");
-			}
-			if(bid.Is_archive != 0)
-			{
-				MessageBox.Show("Заявка передана в архив!");
-			}
-			Close();
-		}
-		
-		private void errorSave()
-		{
-			loadingProgress.Visibility = Visibility.Hidden;
-			IsEnabled = true;
-			MessageBox.Show(payment.LastError);
-		}
-		
-		private void errorSaveBid ()
-		{
-			loadingProgress.Visibility = Visibility.Hidden;
-			IsEnabled = true;
-			MessageBox.Show(bid.LastError);
-		}
-		
+		//Ф-я валидации сохраняемых данных
 		private bool validate ()
 		{
 			try
@@ -179,6 +165,37 @@ namespace StangradCRM.View
 				return false;
 			}
 			return true;
+		}
+		
+		//Ф-я, вызываемая при успешном сохранении платежа
+		private void successSave()
+		{
+			if(bid.Id_bid_status == (int)Classes.BidStatus.InWork
+			   && old_bid_status != bid.Id_bid_status && bid.Is_archive == 0)
+			{
+				MessageBox.Show("Статус заявки изменен на 'В работе'!");
+			}
+			if(bid.Is_archive != 0)
+			{
+				MessageBox.Show("Заявка передана в архив!");
+			}
+			Close();
+		}
+		
+		//Ф-я, вызываемая при ошибке при сохранении платежа
+		private void errorSave()
+		{
+			loadingProgress.Visibility = Visibility.Hidden;
+			IsEnabled = true;
+			MessageBox.Show(payment.LastError);
+		}
+		
+		//Ф-я, вызываемая при ошибке сохранения заявки
+		private void errorSaveBid ()
+		{
+			loadingProgress.Visibility = Visibility.Hidden;
+			IsEnabled = true;
+			MessageBox.Show(bid.LastError);
 		}
 	}
 }

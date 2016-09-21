@@ -44,8 +44,6 @@ namespace StangradCRM.Model
 		public double Amount { get; set; }
 		public int Is_archive { get; set; }
 		public int Is_shipped { get; set; }
-				
-		public DateTime Last_modified { get; set; }
 		
 		//-------------------->
 		
@@ -501,7 +499,6 @@ namespace StangradCRM.Model
 			Is_archive = bid.Is_archive;
 			Is_shipped = bid.Is_shipped;
 
-			
 			raiseAllProperties();
 		}
 	}

@@ -199,7 +199,7 @@ namespace StangradCRM.Model
 				{
 					bid.EquipmentBidCollection.Remove(this);
 				}
-				ComplectationCollection.ToList().ForEach(x => {x.remove(true);});
+				ComplectationViewModel.instance().getByEquipmentBidId(Id).ToList().ForEach(x => {x.remove(true);});
 			}
 			return result;
 		}
@@ -217,7 +217,6 @@ namespace StangradCRM.Model
 			Id_modification = equipmentBid.Id_modification;
 			Id_bid = equipmentBid.Id_bid;
 			Serial_number = equipmentBid.Serial_number;
-			complectationCollection = null;
 			
 			raiseAllProperties();
 		}

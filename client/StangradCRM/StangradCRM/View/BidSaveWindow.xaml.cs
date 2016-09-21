@@ -74,7 +74,8 @@ namespace StangradCRM.View
 			tbxAmount.Text = bid.Amount.ToString();
 			dpDateCreated.SelectedDate = bid.Date_created;
 			cbxSeller.SelectedItem = SellerViewModel.instance().getById(bid.Id_seller);
-
+			dpPlannedShipmentDate.SelectedDate  = bid.Planned_shipment_date; 
+			
 			//Set buyer data
 			currentBuyer = BuyerViewModel.instance().getById(bid.Id_buyer);
 			if(currentBuyer != null)
@@ -118,6 +119,7 @@ namespace StangradCRM.View
 				if(dlcBuyer.Background == errorBrush)
 					dlcBuyer.Background = defaultBrush; 
 			};
+			dpPlannedShipmentDate.SelectedDateChanged += delegate { dpPlannedShipmentDate.Background = defaultBrush; };
 		}		
 		
 		//If bid edit -> init data
@@ -138,6 +140,9 @@ namespace StangradCRM.View
 		//if bid status = is_work
 		void InitializeIfIsWork ()
 		{
+			lblPlannedShopmentDate.Visibility = Visibility.Visible;
+			dpPlannedShipmentDate.Visibility = Visibility.Visible;
+			
 			btnIsShipped.Visibility = Visibility.Visible;
 			setShippedControlsVisibility();
 		}
@@ -171,6 +176,7 @@ namespace StangradCRM.View
 			bid.Amount = double.Parse(tbxAmount.Text);
 			bid.Id_seller = (int)cbxSeller.SelectedValue;
 			bid.Id_manager = Auth.getInstance().Id;
+			bid.Planned_shipment_date = dpPlannedShipmentDate.SelectedDate;
 			
 			//Если новая заявка - устанавливаем статусы "новая" и  "неоплачено"
 			if(bid.Id == 0)
@@ -321,8 +327,8 @@ namespace StangradCRM.View
 				double amount = double.Parse(tbxAmount.Text);
 				if(amount < 0)
 				{
-					tbxAmount.Background = errorBrush;
 					MessageBox.Show("Значение суммы должно быть больше 0!");
+					tbxAmount.Background = errorBrush;
 					return false;
 				}
 			}
@@ -335,7 +341,21 @@ namespace StangradCRM.View
 			{
 				cbxSeller.Background = errorBrush;
 				return false;
-			}			
+			}
+			if(dpPlannedShipmentDate.Visibility == Visibility.Visible)
+			{
+				if(dpPlannedShipmentDate.SelectedDate == null)
+				{
+					dpPlannedShipmentDate.Background = errorBrush;
+					return false;
+				}
+				if(dpPlannedShipmentDate.SelectedDate <= DateTime.Now)
+				{
+					MessageBox.Show("Дата предполагаемой отгрузки должна быть больше текущей даты!");
+					dpPlannedShipmentDate.Background = errorBrush;
+					return false;
+				}
+			}
 			if(dlcBuyer.Text == "")
 			{
 				dlcBuyer.Background = errorBrush;

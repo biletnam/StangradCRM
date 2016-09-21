@@ -57,6 +57,16 @@
 							<EventSetter Event="PreviewKeyDown" Handler="DgvBid_PreviewKeyDown"></EventSetter>
 						</Style>
 					</DataGrid.RowStyle>
+					<DataGrid.ContextMenu>
+						<ContextMenu
+							x:Name="contextMenu">
+							<MenuItem
+								Click="ContextPaymentHistory_Click"
+								x:Name="contextPaymentHistory"
+								Header="История платежей">
+							</MenuItem>
+						</ContextMenu>
+					</DataGrid.ContextMenu>
 					<DataGrid.Columns>
 						<DataGridTemplateColumn 
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"

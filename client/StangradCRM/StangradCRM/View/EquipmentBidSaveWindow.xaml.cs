@@ -46,7 +46,7 @@ namespace StangradCRM.View
 		public EquipmentBidSaveWindow(int idBid)
 		{
 			InitializeComponent();
-		
+			
 			setViewSources();
 			
 			isNew = true;
@@ -252,11 +252,18 @@ namespace StangradCRM.View
 		//Нажатие на кнопку добавления комплектации, создает и добавляет комплектацию в коллекцию
 		void BtnAdd_Click(object sender, RoutedEventArgs e)
 		{
-			Complectation complectation = new Complectation();
-			complectation.Complectation_count = 1;
-			complectation.Id_complectation_item = 0;
-			complectation.IsSaved = false;
-			equipmentBid.ComplectationCollection.Add(complectation);
+			try
+			{
+				Complectation complectation = new Complectation();
+				complectation.Complectation_count = 1;
+				complectation.Id_complectation_item = 0;
+				complectation.IsSaved = false;
+				equipmentBid.ComplectationCollection.Add(complectation);
+			}
+			catch(Exception ex)
+			{
+				System.Windows.MessageBox.Show(ex.ToString());
+			}
 		}
 		
 		//Обработка изменения количества комплектаций (в каждой строке)
@@ -323,6 +330,7 @@ namespace StangradCRM.View
 			Complectation complectation = (Complectation)row.Item;
 			if(complectation == null) return;
 			
+			//complectation.Id_complectation_item = 0;
 			complectation.NewComplectationItemName = downListControl.Text;
 			
 			complectation.IsSaved = false;

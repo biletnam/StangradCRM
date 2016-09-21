@@ -7,6 +7,7 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -19,12 +20,16 @@ namespace StangradCRM.Classes
 	/// </summary>
 	public static class BidUpdateTask
 	{
+		private static Task task;	
+		private static Mutex mutex;
+		
 		public static void Start (Dispatcher dispatcher, 
 		                          int updateTime = 60000, 
 		                          Action beforeCallback = null, 
 		                          Action afterCallback = null)
-		{
-			Task.Factory.StartNew( () => 
+		{			
+			mutex = new Mutex();
+			task = Task.Factory.StartNew( () => 
             {
 				while(true) 
 				{
@@ -42,5 +47,16 @@ namespace StangradCRM.Classes
 				}
             }, System.Threading.Tasks.TaskCreationOptions.LongRunning);
 		}
+		
+		public static Task GetTask ()
+		{
+			return task;
+		}
+		
+		public static Mutex GetMutex ()
+		{
+			return mutex;
+		}
+		
 	}
 }

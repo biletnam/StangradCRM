@@ -18,6 +18,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using Microsoft.Win32;
 using StangradCRM.Core;
 using StangradCRM.Extensions;
 using StangradCRM.Model;
@@ -267,8 +268,12 @@ namespace StangradCRM.View.Controls.ManagerControls
 			Bid bid = dgvBid.SelectedItem as Bid;
 			if(bid == null) return;
 			
-			TransferToStatusWindow window = new TransferToStatusWindow(bid);
-			window.ShowDialog();
+			bid.Id_bid_status = (int)Classes.BidStatus.New;
+			if(!bid.save())
+			{
+				MessageBox.Show(bid.LastError);
+				return;
+			}
 
 			viewSource.View.Refresh();
 		}
@@ -449,9 +454,30 @@ namespace StangradCRM.View.Controls.ManagerControls
 		//Клик по контекстному меню печати наклейки
 		void MiPrintSticker_Click(object sender, RoutedEventArgs e)
 		{
-
+			
 		}
 		
+		//Клик по кнопке печати наклейки
+		void BtnEquipmentBidPrintSticker_Click(object sender, RoutedEventArgs e)
+		{
+			EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
+			if(equipmentBid == null) return;
+			
+			SaveFileDialog sfDialog = new SaveFileDialog();
+			sfDialog.Filter = "Excel 2007 worksheet (*.xlsx)|*.xlsx";
+			if(sfDialog.ShowDialog() != true) return;
+			
+			Reports.Sticker sticker = new StangradCRM.Reports.Sticker(equipmentBid);
+			sticker.FileName = sfDialog.FileName;
+			if(!sticker.Save())
+			{
+				MessageBox.Show(sticker.LastError);
+			}
+			else
+			{
+				MessageBox.Show("Наклейка сохранена по пути " + sticker.FileName);
+			}
+		}
 		
 		//Служебные---->
 		

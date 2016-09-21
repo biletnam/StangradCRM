@@ -142,11 +142,12 @@
 					Grid.Column="0"
 					HorizontalAlignment="Right"
 					Margin="0, 0, 10, 0"
+					x:Name="lblPlannedShopmentDate"
 					Content="Пл. дата отгрузки"></Label>
 				<DatePicker
 					Visibility="Collapsed"
 					Style="{StaticResource DefaultDatePickerStyle}"
-					SelectedDate="{x:Static sys:DateTime.Now}"
+					SelectedDate="{x:Null}"
 					Grid.Row="5"
 					Grid.Column="1"
 					VerticalContentAlignment="Center"

@@ -24,7 +24,6 @@ namespace StangradCRM.Core
 		private Workbook excelWorkBook;
 		private Worksheet excelWorkSheet;
 		private object missingValue = System.Reflection.Missing.Value;
-		//private int CurrentRowIndex = 1;
 		
 		public ExcelReport()
 		{
@@ -37,33 +36,12 @@ namespace StangradCRM.Core
 		}
 		
 		protected bool Create ()
-		{
-			if(!Directory.Exists(SavePath))
-			{
-				LastError = "Directory " + SavePath + " not exist!";
-				return false;
-			}
-			if(ReportName == null)
-			{
-				LastError = "Report name is null";
-				return false;
-			}
-			
+		{			
 			bool result = true;
-			
 			try
 			{
-				SetHeader();
-				SetTitles();
-				SetRows();
-				SetFooter();
-				
-	            foreach(KeyValuePair<int, double> w in ColumnsWidth)
-	            {
-	                //excelWorkSheet.Columns[w.Key].ColumnWidth = w.Value;
-				}
-	            
-	            excelWorkBook.SaveAs(SavePath + @"\" + ReportName + ".xlsx");
+				prepareData();
+	            excelWorkBook.SaveAs(FileName);
 			}
 			catch (Exception ex)
 			{
@@ -104,24 +82,26 @@ namespace StangradCRM.Core
 			}
 		}
 		
-		protected void SetHeader ()
+		private void prepareData ()
 		{
-			
+			for(int i = 0; i < Rows.Count; i++) 
+			{
+				prepareCell(Rows[i].Cells, i+1);
+			}
 		}
 		
-		protected void SetTitles ()
+		private void prepareCell (List<ReportCell> cells, int rowIndex)
 		{
-			
+			for(int i = 0; i < cells.Count; i++)
+			{
+				excelWorkSheet.Cells[rowIndex, i+1] = cells[i].Content;
+			}
 		}
 		
-		protected void SetRows ()
+		private void SetCellStyle (ReportCell cell, int rowIndex, int columnIndex)
 		{
-			
+			if(cell.Width != 0) excelWorkSheet.Columns[columnIndex].ColumnWidth = cell.Width;
 		}
 		
-		protected void SetFooter ()
-		{
-			
-		}
 	}
 }

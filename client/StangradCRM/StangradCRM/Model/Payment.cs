@@ -36,6 +36,16 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		public bool IsArchive
+		{
+			get
+			{
+				Bid bid = BidViewModel.instance().getById(Id_bid);
+				if(bid.Is_archive == 0) return false;
+				return true;
+			}
+		}
+		
 		public Payment() {}
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)

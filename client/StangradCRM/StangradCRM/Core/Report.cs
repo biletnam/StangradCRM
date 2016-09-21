@@ -17,19 +17,11 @@ namespace StangradCRM.Core
 	public abstract class Report
 	{		
 		
-		public string SavePath { get; set; }
-		public string ReportName { get; set; }
-		
-		public string HeaderData { get; set; }
-		public string FooterData { get; set; }
-		
+		public string FileName { get; set; }
 		public string LastError { get; set; }
 		
 		public ReportRow Titles { get; set; }
-		public List<ReportRow> Rows { get; set; }
-		
-		public Dictionary<int, double> ColumnsWidth = new Dictionary<int, double>();
-		
+		public List<ReportRow> Rows = new List<ReportRow>();
 		
 		public abstract bool Save ();
 		

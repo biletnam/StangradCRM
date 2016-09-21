@@ -221,7 +221,9 @@ namespace StangradCRM.View.Controls.ManagerControls
 			Bid bid = dgvBid.SelectedItem as Bid;
 			if(bid == null) return;
 			
-			TransferToStatusWindow window = new TransferToStatusWindow(bid);
+			bid.Id_bid_status = (int)Classes.BidStatus.InWork;
+			PlannedShipmentDateSetWindow window 
+				= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { SetPlannedShipmentDateAndSave(bid, planned_shipment_date); }));
 			window.ShowDialog();
 		}
 		
@@ -336,18 +338,10 @@ namespace StangradCRM.View.Controls.ManagerControls
 				return;
 			}
 			
-			bid.Id_bid_status = bidStatus.Id;
-			if(bid.Id_bid_status == (int)Classes.BidStatus.InWork)
-			{
-				PlannedShipmentDateSetWindow window 
-					= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { bid.Planned_shipment_date = planned_shipment_date; }));
-				window.ShowDialog();
-			}
-			if(!bid.save())
-			{
-				MessageBox.Show(bid.LastError);
-				return;
-			}
+			bid.Id_bid_status = (int)Classes.BidStatus.InWork;
+			PlannedShipmentDateSetWindow window 
+				= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { SetPlannedShipmentDateAndSave(bid, planned_shipment_date); }));
+			window.ShowDialog();
 		}
 		
 		//Контекстное меню передачи заявки другому менеджеру
@@ -425,6 +419,16 @@ namespace StangradCRM.View.Controls.ManagerControls
 			complectationViewSource.View.Refresh();
 		}		
 		
-
+		//Служебные ---->
+		
+		//Установка предполагаемой даты отгрузки и сохранение заявки
+		private void SetPlannedShipmentDateAndSave (Bid bid, DateTime plannedShipmentDate)
+		{
+			bid.Planned_shipment_date = plannedShipmentDate;
+			if(!bid.save())
+			{
+				MessageBox.Show(bid.LastError);
+			}
+		}
 	}
 }

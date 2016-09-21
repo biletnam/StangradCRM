@@ -121,7 +121,22 @@ class BidController extends \system\controllers\ModelController {
     
     public function saveAction($params) {
         $params['last_modified'] = null;
-        return parent::saveAction($params);
+        $result = parent::saveAction($params);
+        if(((int)$result[0]) === 1) return $result;
+        if(isset($params['id']) && (int)$params['id'] != 0)
+        {
+            $bid = \user\models\Bid::get()->where('id', (int)$params['id'])->one();
+        }
+        else 
+        {
+            $bid = \user\models\Bid::get()->where('id', $result[1]['id'])->one();
+        }
+        if($bid === null)
+        {
+            return [1, "Server Error! Bid not found!"];
+        }
+        $result[1]['last_modified'] = $bid->LastModified;
+        return $result;
     }
 
     protected function permission($actionType) {

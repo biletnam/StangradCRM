@@ -113,13 +113,13 @@ namespace StangradCRM.Controls
 		}
 		
 		void LbList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{		
+		{
 			if(OnSelect != null)
 			{
 				OnSelect(this, new SelectionChanged(lbList.SelectedValue));
 			}
-			tbxInputData.Focus();
 			tbxInputData.Text = lbList.Text;
+			tbxInputData.Focus();
 			lbList.IsDropDownOpen = false;
 		}
 		

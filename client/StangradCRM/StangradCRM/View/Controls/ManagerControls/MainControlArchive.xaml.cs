@@ -162,5 +162,17 @@ namespace StangradCRM.View.Controls.ManagerControls
 			}
 		}
 		
+		void ContextPaymentHistory_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Заявка не выбрана!");
+				return;
+			}
+			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
+			window.ShowDialog();
+		}
+		
 	}
 }

@@ -279,7 +279,7 @@
 						Grid.Column="3"
 						Grid.Row="0"
 						Style="{StaticResource DefaultButtonStyle}"
-						Content="Изменить статус"/>
+						Content="В работу"/>
 					<Button 
 						x:Name="btnPaymentHistory"
 						Click="BtnPaymentHistory_Click"

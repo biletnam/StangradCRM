@@ -2,7 +2,6 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     WindowStartupLocation="CenterScreen"
-   	Closing="Window_Closing"
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
 	Title="" Height="100" Width="400">
 	<Grid Margin="5">
@@ -39,7 +38,16 @@
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"></ColumnDefinition>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
+			<Button
+				Width="120"
+				Grid.Row="0" Grid.Column="0"			
+				Content="Отмена" 
+				VerticalAlignment="Stretch" 
+				HorizontalAlignment="Stretch"
+				Click="BtnCancel_Click"
+				x:Name="btnCancel"></Button>
 			<Button
 				Width="120"
 				Grid.Row="0" Grid.Column="1"			

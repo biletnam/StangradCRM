@@ -43,9 +43,8 @@ namespace StangradCRM.View
 			string[] args = Environment.GetCommandLineArgs();
 			if(args.Length < 3)
 			{
-				MessageBox.Show("Необходимые аргументы не были получены!");
-				if(MessageBox.Show("Запустить приложение на тестовом сервере?", 
-				                "Запустить приложение на тестовом сервере?",
+				if(MessageBox.Show("Необходимые аргументы не были получены!\nЗапустить приложение на тестовом сервере?", 
+				                "Необходимые аргументы не были получены!",
 				                MessageBoxButton.YesNo) == MessageBoxResult.No) 
 				{
 					Close();
@@ -117,7 +116,7 @@ namespace StangradCRM.View
 		{
 			settings.Write("version", version);
 			Settings.version = version;
-			
+
 			int idRole = Auth.getInstance().IdRole;
 			switch(idRole)
 			{

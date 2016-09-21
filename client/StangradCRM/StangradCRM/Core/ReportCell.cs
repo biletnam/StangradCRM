@@ -1,8 +1,8 @@
 ﻿/*
  * Сделано в SharpDevelop.
  * Пользователь: Дмитрий
- * Дата: 12.09.2016
- * Время: 15:40
+ * Дата: 20.09.2016
+ * Время: 15:18
  * 
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
@@ -13,13 +13,19 @@ using System.Drawing;
 namespace StangradCRM.Core
 {
 	/// <summary>
-	/// Description of ReportRow.
+	/// Description of ReportCell.
 	/// </summary>
-	public class ReportRow
+	public class ReportCell
 	{
+		public string Content { get; set; }
+		public double Width { get; set; }
 		public double Height { get; set; }
+		public int RowSpan { get; set; }
+		public int ColumnSpan { get; set; }
 		
 		public List<TextStyle> TextStyle { get; set; }
+		public HorizontalAlignment HorizontalAlignment { get; set; }
+		public VerticalAlignment VerticalAlignment { get; set; }
 		
 		public Color BackgroundColor { get; set; }
 		public Color TextColor { get; set; }
@@ -28,16 +34,10 @@ namespace StangradCRM.Core
 		public BorderStyle BorderStyle { get; set; }
 		public List<Border> Border { get; set; }
 		
-		public List<ReportCell> Cells = null;
-		
-		public ReportRow ()
+		public ReportCell () {}
+		public ReportCell(string content)
 		{
-			Cells = new List<ReportCell>();
-		}
-		
-		public ReportRow (List<ReportCell> cells)
-		{
-			Cells = cells;
+			Content = content;
 		}
 	}
 }

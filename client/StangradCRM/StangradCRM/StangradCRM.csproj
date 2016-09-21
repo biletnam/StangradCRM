@@ -107,7 +107,9 @@
     <Compile Include="Core\IViewModel.cs" />
     <Compile Include="Core\Model.cs" />
     <Compile Include="Core\Report.cs" />
+    <Compile Include="Core\ReportCell.cs" />
     <Compile Include="Core\ReportRow.cs" />
+    <Compile Include="Core\ReportStyles.cs" />
     <Compile Include="Core\TSObservableCollection.cs" />
     <Compile Include="Extensions\DataGridExtension.cs" />
     <Compile Include="Model\Bid.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="Model\TransportCompany.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\WPFAssemblyInfo.cs" />
+    <Compile Include="Reports\Sticker.cs" />
     <Compile Include="ViewModel\BidStatusViewModel.cs" />
     <Compile Include="ViewModel\BidViewModel.cs" />
     <Compile Include="ViewModel\BuyerViewModel.cs" />
@@ -399,6 +402,7 @@
     <Folder Include="View\Helpers" />
     <Folder Include="Extensions" />
     <Folder Include="Converters" />
+    <Folder Include="Reports" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resource.resx">

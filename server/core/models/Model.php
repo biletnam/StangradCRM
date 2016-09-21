@@ -189,7 +189,7 @@ class Model {
             $error = $operation::lastError();
             return [1, $error->getMessage()];
         }
-        return [0, []];
+        return [0, [static::pk() => $this->Id]];
     }
     
     public function delete() {

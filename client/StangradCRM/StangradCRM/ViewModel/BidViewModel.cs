@@ -165,7 +165,7 @@ namespace StangradCRM.ViewModel
 			return loadDateTime;
 		}
 		
-		
+		//Ф-я загрузки модифицированных данных с сервера
 		private List<Bid> loadLastModified ()
 		{
 			HTTPManager.HTTPRequest http = HTTPManager.HTTPRequest.Create(Settings.uri);
@@ -186,51 +186,74 @@ namespace StangradCRM.ViewModel
 			return parser.ToObject<List<Bid>>();
 		}
 		
+		//Ф-я удаленной загрузки
 		public void RemoteLoad()
 		{
-			List<Bid> bids = loadLastModified();
+			//Список заявок
+			List<Bid> bids = null;
+			try
+			{
+				bids = loadLastModified();
+			}
+			catch
+			{
+				return;
+			}
 			if(bids == null) return;
-			
+			//Аутентификационные данные 
 			Auth auth = Auth.getInstance();
 			
+			//Цикл по новым заявкам			
 			for(int i = 0; i < bids.Count; i++)
 			{
+				//Новая заявка
 				Bid newBid = bids[i];
+				//Старая заявка
 				Bid oldBid = getById(newBid.Id);
-				
+				//Если старая заявка = null
 				if(oldBid == null)
 				{
+					//Если текущий пользователь менеджер
 					if(auth.IdRole == (int)Classes.Role.Manager)
 					{
+						//если код менеджера заявки == коду текущего авторизованного менеджер
 						if(newBid.Id_manager == auth.Id)
 						{
+							//добавляем новую заявку в коллекцию
 							add(newBid);
 						}
 						else
 						{
+							//иначе удаляем заявку из коллекции
 							newBid.remove(true);
 						}
 					}
 					else
 					{
+						//добавляем новую заявку в коллекцию
 						add(newBid);
 					}
 				}
-				else
+				else //если старая заявка не null
 				{
+					//Если текущий пользователь менеджер
 					if(auth.IdRole == (int)Classes.Role.Manager)
 					{
+						//если код менеджера заявки == коду текущего авторизованного менеджер
 						if(newBid.Id_manager == auth.Id)
 						{
+							//Заменяем данные старой завки на данные новой заявки
 							oldBid.replace(newBid);
 						}
 						else
 						{
+							//иначе удаляем заявку
 							newBid.remove(true);
 						}
 					}
 					else
 					{
+						//Заменяем данные старой завки на данные новой заявки
 						oldBid.replace(newBid);
 					}
 				}

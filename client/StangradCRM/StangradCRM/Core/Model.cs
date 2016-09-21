@@ -24,6 +24,7 @@ namespace StangradCRM.Core
 	{
 		public int Id { get; set; }
 		public int Row_order { get; set; }
+		public DateTime? Last_modified { get; set; }
 	}
 	
 	public abstract class Model : INotifyPropertyChanged
@@ -53,6 +54,20 @@ namespace StangradCRM.Core
 			{
 				row_order = value;
 				RaisePropertyChanged("Row_order", value);
+			}
+		}
+		
+		private DateTime last_modified;
+		public DateTime Last_modified 
+		{
+			get
+			{
+				return last_modified;
+			}
+			set
+			{
+				last_modified = value;
+				RaisePropertyChanged("Last_modified", last_modified);
 			}
 		}
 		
@@ -123,24 +138,32 @@ namespace StangradCRM.Core
 				LastError = parser.ToObject<String>();
 				return false;
 			}
+			
+			//Данные, возвращаемые после сохранения
+			SaveResultData saveResult = parser.ToObject<SaveResultData>();
+			if(saveResult == null)
+			{
+				LastError = "Данные о добавленной строке не были преобразованы";
+				return false;
+			}
+			Row_order = saveResult.Row_order;
+			if(saveResult.Last_modified != null)
+			{
+				Last_modified = (DateTime)saveResult.Last_modified;
+				Log.Write(Last_modified.ToString("dd.MM.yyyy HH:ss:mm"));
+			}
+			
 			if(Id == 0)
 			{
-				SaveResultData saveResult = parser.ToObject<SaveResultData>();
-				if(saveResult == null)
-				{
-					LastError = "Данные о добавленной строке не были преобразованы";
-					return false;
-				}
 				if(saveResult.Id == 0)
 				{
 					LastError = "Идентификатор не был получен.";
 					return false;
 				}
 				Id = saveResult.Id;
-				Row_order = saveResult.Row_order;
-				Id = id;
 				return CurrentViewModel.add(this);
 			}
+			
 			return true;
 		}
 		
