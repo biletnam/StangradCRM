@@ -28,12 +28,9 @@ namespace StangradCRM.Core
 		public BorderStyle BorderStyle { get; set; }
 		public List<Border> Border { get; set; }
 		
-		public List<ReportCell> Cells = null;
+		public List<ReportCell> Cells = new List<ReportCell>();
 		
-		public ReportRow ()
-		{
-			Cells = new List<ReportCell>();
-		}
+		public ReportRow () {}
 		
 		public ReportRow (List<ReportCell> cells)
 		{

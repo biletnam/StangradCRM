@@ -31,7 +31,7 @@ namespace StangradCRM.View.Controls.AdministratorControls
 		public MainControlArchiveBid()
 		{
 			InitializeComponent();
-			
+
 			viewSource = new CollectionViewSource();
 			viewSource.Source = BidViewModel.instance().getArchiveCollection();
 			
@@ -138,6 +138,61 @@ namespace StangradCRM.View.Controls.AdministratorControls
 		void BtnClearFastSearch_Click(object sender, RoutedEventArgs e)
 		{
 			tbxFastSearch.Text = "";
+		}
+		
+		//Дабл клик по строке таблицы - открывает окно редактирования		
+		private void DgvBid_RowDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			Bid bid = row.Item as Bid;
+			if(bid == null) return;
+			
+			BidShipmentSaveWindow window = new BidShipmentSaveWindow(bid);
+			window.ShowDialog();
+			
+			viewSource.View.Refresh();
+          	dgvBid.CurrentCell = new DataGridCellInfo(row.Item, dgvBid.CurrentCell.Column);
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void DgvBid_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				DgvBid_RowDoubleClick(sender, null);
+				e.Handled = true;
+			}
+		}
+		
+		void ContextPaymentHistory_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Заявка не выбрана!");
+				return;
+			}
+			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
+			window.ShowDialog();
+		}
+		
+		void Button_Click(object sender, RoutedEventArgs e)
+		{
+			Button button = sender as Button;
+			if(button == null) return;
+			
+			DataGridRow row = Classes.FindItem.FindParentItem<DataGridRow>(button);
+			if(row == null) return;
+			
+			Bid bid = row.Item as Bid;
+			if(bid == null) return;
+			
+			bid.Is_archive = 0;
+			if(!bid.save())
+			{
+				MessageBox.Show(bid.LastError);
+				return;
+			}
+			BidViewModel.instance().UpdateArchive(bid);
 		}
 		
 	}

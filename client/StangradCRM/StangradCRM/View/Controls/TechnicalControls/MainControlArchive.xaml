@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="StangradCRM.View.Controls.TechnicalControls.MainControlArchive"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Grid Background="White">
+		<DataGrid
+			Grid.Row="0"
+			x:Name="dgvEquipmentBid"
+			ItemsSource="{Binding EquipmentBidCollection}"
+			Style="{StaticResource DefaultDataGridStyle}">
+			
+			<DataGrid.Columns>
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="EquipmentName"
+					Width="*"
+					Header="Оборудование">
+					<DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock 
+                            	Margin="5, 0, 0, 0"
+                            	VerticalAlignment="Center"
+                            	Text="{Binding Path=EquipmentName}"></TextBlock>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="ModificationName"
+					Width="*"
+					Header="Модифкация">
+					<DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock 
+                            	Margin="5, 0, 0, 0"
+                            	VerticalAlignment="Center"
+                            	Text="{Binding Path=ModificationName}"></TextBlock>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="Serial_number"
+					Width="*"
+					Header="Серийный номер">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock
+								Margin="5, 0, 0, 0"
+								Text="{Binding Path=Serial_number}"
+								VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="MounthYearDateProduction"
+					Width="*"
+					Header="Дата производства">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock
+								Margin="5, 0, 0, 0"
+								Text="{Binding Path=MounthYearDateProduction}"
+								VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
+					SortMemberPath="ManagerName"
+					Width="*"
+					Header="Менеджер">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock
+								Margin="5, 0, 0, 0"
+								Text="{Binding Path=ManagerName}"
+								VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					Width="120"
+					Header="">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button Content="Вернуть из архива" Click="Button_Click"></Button>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

@@ -23,6 +23,9 @@
 					Header="Оборудование/Модификации"
 					x:Name="menuOpenEquipmentWindow"></MenuItem>
 				<MenuItem
+					Header="Наименования комплектаций"
+					x:Name="menuOpenComplectationItemWindow"></MenuItem>
+				<MenuItem
 					Header="Список покупателей"
 					x:Name="menuOpenBuyerWindow"></MenuItem>
 				<MenuItem
@@ -48,7 +51,6 @@
 			VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 			<TabItem Header="Настройка CRM" x:Name="tiCRMSetting"></TabItem>
 			<TabItem Header="Заявки" x:Name="tiBid"></TabItem>
-			<TabItem Header="Архив" x:Name="tiArchiveBid"></TabItem>
 		</TabControl>
 		<Grid 
 			Visibility="Hidden"

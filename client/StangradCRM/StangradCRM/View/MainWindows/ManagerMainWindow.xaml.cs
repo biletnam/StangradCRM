@@ -41,7 +41,7 @@ namespace StangradCRM.View.MainWindows
 			int updateTime = 60000;
 			try
 			{
-				updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value);
+				updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value) * 1000;
 			}
 			catch {}
 			 

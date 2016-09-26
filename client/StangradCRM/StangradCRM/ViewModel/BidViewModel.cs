@@ -46,7 +46,7 @@ namespace StangradCRM.ViewModel
 			return _collectionByStatus[bidStatusId];
 		}
 		
-		public void updateStatus (Bid bid, int oldStatus)
+		public void UpdateStatus (Bid bid, int oldStatus)
 		{
 			if(bid.Id_bid_status == oldStatus) return;
 			if(getCollectionByStatus(oldStatus).Contains(bid))
@@ -60,6 +60,19 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
+		public void UpdateArchive (Bid bid)
+		{
+			int oldStatus = (bid.Is_archive == 0) ? 1 : 0;
+			if(oldStatus == 0)
+			{
+				MoveToArchive(bid);
+			}
+			else
+			{
+				RemoveFromArchive(bid);
+			}
+		}
+		
 		public TSObservableCollection<Bid> getArchiveCollection ()
 		{
 			if(_archiveCollection == null)
@@ -70,7 +83,17 @@ namespace StangradCRM.ViewModel
 			return _archiveCollection;
 		}
 		
-		public void MoveToArchive (Bid bid)
+		private void RemoveFromArchive (Bid bid)
+		{
+			if(getArchiveCollection().Contains(bid))
+			{
+				getArchiveCollection().Remove(bid);
+				if(!getCollectionByStatus(bid.Id_bid_status).Contains(bid))
+					getCollectionByStatus(bid.Id_bid_status).Add(bid);
+			}
+		}
+		
+		private void MoveToArchive (Bid bid)
 		{
 			if(getCollectionByStatus(bid.Id_bid_status).Contains(bid))
 			{
@@ -129,7 +152,14 @@ namespace StangradCRM.ViewModel
 				return false;
 			}
 			_collection.Add(bid);
-			getCollectionByStatus(bid.Id_bid_status).Add(bid);
+			if(!getCollectionByStatus(bid.Id_bid_status).Contains(bid))
+		   	{
+				getCollectionByStatus(bid.Id_bid_status).Add(bid);
+			}
+			if(bid.Is_archive != 0 && !getArchiveCollection().Contains(bid))
+			{
+				getArchiveCollection().Add(bid);
+			}
 			return true;
 		}
 		
@@ -141,8 +171,15 @@ namespace StangradCRM.ViewModel
 				bid.LastError = "Не удалось преобразовать входные данные.";
 				return false;
 			}
+			if(getCollectionByStatus(bid.Id_bid_status).Contains(bid))
+			{
+				getCollectionByStatus(bid.Id_bid_status).Remove(bid);
+			}
+			if(bid.Is_archive != 0 && getArchiveCollection().Contains(bid))
+			{
+				getArchiveCollection().Remove(bid);
+			}
 			if(!_collection.Contains(bid)) return true;
-			getCollectionByStatus(bid.Id_bid_status).Remove(bid);
 			return _collection.Remove(bid);
 		}
 		
@@ -274,6 +311,7 @@ namespace StangradCRM.ViewModel
             collection.ToList().ForEach(x => x.setFilters(properties, false));
             
             collection.Where(x => (x.Account.ToLower().IndexOf(searchString) != -1) |
+                             (x.Id.ToString().ToLower().IndexOf(searchString) != -1) |
                              	(x.Amount.ToString().ToLower().IndexOf(searchString) != -1) |
                              	(x.BuyerInfo.ToLower().IndexOf(searchString) != -1 ) |
                              	(x.EquipmentBidStringSearch.ToLower().IndexOf(searchString) != -1 )

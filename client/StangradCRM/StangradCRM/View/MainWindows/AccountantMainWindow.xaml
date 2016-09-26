@@ -20,6 +20,9 @@
 			x:Name="tcMain" 
 			Margin="0, 20, 0, 0"
 			VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+			<TabItem Header="Новые" x:Name="tiNewBid"></TabItem>
+			<TabItem Header="В работе" x:Name="tiInWorkBid"></TabItem>
+			<TabItem Header="Архив" x:Name="tiArchiveBid"></TabItem>
 		</TabControl>
 		<Grid 
 			Visibility="Hidden"

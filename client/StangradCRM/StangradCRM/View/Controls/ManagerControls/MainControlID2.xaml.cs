@@ -11,12 +11,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 using Microsoft.Win32;
 using StangradCRM.Core;
@@ -36,6 +38,8 @@ namespace StangradCRM.View.Controls.ManagerControls
 		CollectionViewSource equipmentBidViewSource = new CollectionViewSource();
 		CollectionViewSource complectationViewSource = new CollectionViewSource();
 		CollectionViewSource buyerViewSource = new CollectionViewSource();
+		
+		IniFile iniFile = new IniFile("Settings.ini");
 		
 		public MainControlID2(CollectionViewSource viewSource)
 		{
@@ -236,6 +240,50 @@ namespace StangradCRM.View.Controls.ManagerControls
 		{
 			Bid bid = dgvBid.SelectedItem as Bid;
 			if(bid == null) return;
+			
+			Buyer buyer = BuyerViewModel.instance().getById(bid.Id_buyer);
+			if(buyer == null) return;
+			
+			var openFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
+			if(iniFile.KeyExists("report_path") && System.IO.Directory.Exists(iniFile.Read("report_path")))
+			{
+				openFolderDialog.SelectedPath = iniFile.Read("report_path");
+			}
+			System.Windows.Forms.DialogResult result =
+				openFolderDialog.ShowDialog(Classes.OpenDirectoryDialog.GetIWin32Window(this));
+			
+			if(result == System.Windows.Forms.DialogResult.OK)
+			{
+				processControl.Visibility = Visibility.Visible;
+				Task.Factory.StartNew( () => {              
+					int reportCount = bid.EquipmentBidCollection.Count;                     
+					for(int i = 0; i < reportCount; i++)
+					{
+						Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { processControl.Text = "Формирование бланков " + (i+1).ToString() + " из " + reportCount.ToString(); } ));
+						EquipmentBid equipmentBid = bid.EquipmentBidCollection[i];
+						string fileName = "Бланк заявки №" + bid.Id.ToString() + "-" + equipmentBid.Id.ToString() + " " + bid.Account + " " + buyer.Name + ".xlsx";
+						Reports.BidBlank bidBlank = new StangradCRM.Reports.BidBlank(bid, equipmentBid);
+						bidBlank.FileName = openFolderDialog.SelectedPath + "/" + ReplaceSpecialCharsFileName(fileName);
+						if(!bidBlank.Save())
+						{
+							MessageBox.Show(bidBlank.LastError);
+							Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { processControl.Visibility = Visibility.Hidden; } ));
+							return;
+						}
+						equipmentBid.Is_blank_print = 1;
+						if(!equipmentBid.save())
+						{
+							MessageBox.Show("Не удалось установить статус 'Бланк заявки сформирован' для оборудования в заявке\n" + equipmentBid.LastError);
+							Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { processControl.Visibility = Visibility.Hidden; } ));
+							return;
+						}
+					}
+					Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { processControl.Visibility = Visibility.Hidden; } ));
+					MessageBox.Show("Все бланки заявок сохранены в директорию '" + openFolderDialog.SelectedPath + "'");
+					iniFile.Write("report_path", openFolderDialog.SelectedPath);
+					System.Diagnostics.Process.Start(openFolderDialog.SelectedPath);
+				});
+			}
 		}
 		
 		//Клик по кнопке генерации серийных номеров
@@ -454,16 +502,11 @@ namespace StangradCRM.View.Controls.ManagerControls
 		//Клик по контекстному меню печати наклейки
 		void MiPrintSticker_Click(object sender, RoutedEventArgs e)
 		{
-			
-		}
-		
-		//Клик по кнопке печати наклейки
-		void BtnEquipmentBidPrintSticker_Click(object sender, RoutedEventArgs e)
-		{
 			EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
 			if(equipmentBid == null) return;
 			
 			SaveFileDialog sfDialog = new SaveFileDialog();
+			sfDialog.FileName = "Наклейка заявки №" + equipmentBid.Id_bid.ToString() + " для оборудования " + equipmentBid.EquipmentName + ", код оборудования в заявке " + equipmentBid.Id.ToString() + " (" + DateTime.Now.ToString("dd.MM.yyyy") + ").xlsx";
 			sfDialog.Filter = "Excel 2007 worksheet (*.xlsx)|*.xlsx";
 			if(sfDialog.ShowDialog() != true) return;
 			
@@ -476,7 +519,65 @@ namespace StangradCRM.View.Controls.ManagerControls
 			else
 			{
 				MessageBox.Show("Наклейка сохранена по пути " + sticker.FileName);
+				System.Diagnostics.Process.Start(System.IO.Path.GetDirectoryName(sticker.FileName));
 			}
+		}
+		
+		//Клик по контекстному меню печати бланка
+		void MiPrintBlank_Click(object sender, RoutedEventArgs e)
+		{
+			EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
+			if(equipmentBid == null) return;
+			
+			Bid bid = BidViewModel.instance().getById(equipmentBid.Id_bid);
+			if(bid == null) return;
+			
+			Buyer buyer = BuyerViewModel.instance().getById(bid.Id_buyer);
+			if(buyer == null) return;
+			
+			var openFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
+			if(iniFile.KeyExists("report_path") && System.IO.Directory.Exists(iniFile.Read("report_path")))
+			{
+				openFolderDialog.SelectedPath = iniFile.Read("report_path");
+			}
+			System.Windows.Forms.DialogResult result = 
+				openFolderDialog.ShowDialog(Classes.OpenDirectoryDialog.GetIWin32Window(this));
+			
+			if(result == System.Windows.Forms.DialogResult.OK)
+			{
+				string fileName = "Бланк заявки №" + bid.Id.ToString() + "-" + equipmentBid.Id.ToString() + " " + bid.Account + " " + buyer.Name + ".xlsx";
+				Reports.BidBlank bidBlank = new StangradCRM.Reports.BidBlank(bid, equipmentBid);
+				bidBlank.FileName = openFolderDialog.SelectedPath + "/" + ReplaceSpecialCharsFileName(fileName);
+				
+				processControl.Visibility = Visibility.Visible;
+				processControl.Text = "Сохранение бланка заявки...";
+				
+				Task.Factory.StartNew( () => {       
+					if(!bidBlank.Save())
+					{
+						MessageBox.Show(bidBlank.LastError);
+						Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { processControl.Visibility = Visibility.Hidden; } ));
+						return;
+					}
+					equipmentBid.Is_blank_print = 1;
+					if(!equipmentBid.save())
+					{
+						MessageBox.Show("Не удалось установить статус 'Бланк заявки сформирован' для оборудования в заявке\n" + equipmentBid.LastError);
+						Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { processControl.Visibility = Visibility.Hidden; } ));
+						return;
+					}
+					MessageBox.Show("Бланк заявки сохранен в директорию '" + openFolderDialog.SelectedPath + "'");
+					Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => { processControl.Visibility = Visibility.Hidden; } ));
+					iniFile.Write("report_path", openFolderDialog.SelectedPath);
+					System.Diagnostics.Process.Start(openFolderDialog.SelectedPath);
+                });
+			}
+		}
+		
+		//Клик по кнопке печати наклейки
+		void BtnEquipmentBidPrintSticker_Click(object sender, RoutedEventArgs e)
+		{
+			MiPrintSticker_Click(null, null);
 		}
 		
 		//Служебные---->
@@ -491,6 +592,22 @@ namespace StangradCRM.View.Controls.ManagerControls
 			{
       			dg.CurrentCell = new DataGridCellInfo(row.Item, dg.CurrentCell.Column);
 			}
+		}
+		
+		//Замена спец. символов в имени файла
+		string ReplaceSpecialCharsFileName (string filename)
+		{
+			filename = filename.Replace('/', '-');
+			filename = filename.Replace('\\', '-');
+			filename = filename.Replace('|' , '-');
+			filename = filename.Replace('<' , '-');
+			filename = filename.Replace('>' , '-');
+			filename = filename.Replace('?' , '-');
+			filename = filename.Replace('[' , '-');
+			filename = filename.Replace(']' , '-');
+			filename = filename.Replace(':' , '-');
+			filename = filename.Replace('"' , ' ');
+			return filename.Replace('*' , '-');
 		}
 	}
 }

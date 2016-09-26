@@ -26,6 +26,10 @@ namespace StangradCRM.View.Controls.AdministratorControls
 		public MainControlBid()
 		{
 			InitializeComponent();
+			
+			tiNewBid.Content = new MainControlNewBid();
+			tiInWorkBid.Content = new MainControlInWork();
+			tiArchiveBid.Content = new MainControlArchiveBid();
 		}
 	}
 }

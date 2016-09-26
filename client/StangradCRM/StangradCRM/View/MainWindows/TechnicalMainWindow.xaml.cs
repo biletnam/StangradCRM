@@ -34,7 +34,7 @@ namespace StangradCRM.View.MainWindows
 			int updateTime = 60000;
 			try
 			{
-				updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value);
+				updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value) * 1000;
 			}
 			catch {}
 			 
@@ -42,6 +42,13 @@ namespace StangradCRM.View.MainWindows
 			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }), 
 			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }));
 			
+			tiEquipmentBid.Content = new View.Controls.TechnicalControls.MainControlInWork();
+			tiArchiveEquipmentBid.Content = new View.Controls.TechnicalControls.MainControlArchive();
+		}
+		
+		void MiExit_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
 		}
 	}
 }

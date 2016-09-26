@@ -50,7 +50,7 @@ namespace StangradCRM.Model
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
 		{
-			http.addParameter("paying", Paying);
+			http.addParameter("paying", Paying.ToString().Replace(',', '.'));
 			http.addParameter("id_bid", Id_bid);
 			http.addParameter("id_manager", Id_manager);
 			http.addParameter("payment_date", Payment_date.ToString("yyyy-MM-dd"));

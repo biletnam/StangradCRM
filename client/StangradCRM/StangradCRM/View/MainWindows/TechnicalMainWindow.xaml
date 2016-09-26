@@ -7,6 +7,26 @@
 	Width="600"
 	WindowState="Maximized">
 	<Grid>
+		<Menu
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Top">
+			<MenuItem
+				Header="Файл">
+				<MenuItem
+					Click="MiExit_Click"
+					x:Name="miExit"
+					Header="Выход"></MenuItem>
+			</MenuItem>
+		</Menu>
+		<TabControl 
+			x:Name="tcMain" 
+			Margin="0, 20, 0, 0"
+			VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+			<TabItem Header="Оборудование в работе" x:Name="tiEquipmentBid"></TabItem>
+			<TabItem Header="Архив" x:Name="tiArchiveEquipmentBid"></TabItem>
+		</TabControl>
+		
+		
 		<Grid 
 			Visibility="Hidden"
 			Margin="0, 20, 0, 0"

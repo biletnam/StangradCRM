@@ -330,9 +330,17 @@ namespace StangradCRM.View
 			Complectation complectation = (Complectation)row.Item;
 			if(complectation == null) return;
 			
-			//complectation.Id_complectation_item = 0;
-			complectation.NewComplectationItemName = downListControl.Text;
-			
+			ComplectationItem citem = ComplectationItemViewModel.instance()
+				.getByName(downListControl.Text);
+			if(citem != null)
+			{
+				complectation.Id_complectation_item = citem.Id;
+			}
+			else
+			{
+				complectation.Id_complectation_item = 0;
+				complectation.NewComplectationItemName = downListControl.Text;
+			}
 			complectation.IsSaved = false;
 		}
 		

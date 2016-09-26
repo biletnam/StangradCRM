@@ -26,6 +26,17 @@ namespace StangradCRM.Model
 		public int? Id_modification { get; set; }
 		public int Id_bid { get; set; }
 		public int? Serial_number { get; set; }
+		public int Is_blank_print { get; set; }
+		public int Is_archive { get; set; }
+		
+		public bool IsBlankPrint 
+		{
+			get
+			{
+				if(Is_blank_print == 0) return false;
+				return true;
+			}
+		}
 		
 		//-------------------->
 		
@@ -61,6 +72,8 @@ namespace StangradCRM.Model
 			
 			http.addParameter("id_equipment", Id_equipment);
 			http.addParameter("id_bid", Id_bid);
+			http.addParameter("is_blank_print", Is_blank_print);
+			http.addParameter("is_archive", Is_archive);
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
@@ -155,7 +168,7 @@ namespace StangradCRM.Model
 			}
 		}
 		
-		
+		//Search ---->
 		public string ComplectationStringSearch
 		{
 			get
@@ -173,6 +186,45 @@ namespace StangradCRM.Model
 				return resultString;
 			}
 		}
+		
+		//<----
+		
+		//Для тех отдела ---->
+		
+		public string MounthYearDateProduction
+		{
+			get
+			{
+				Bid bid = BidViewModel.instance().getById(Id_bid);
+				if(bid == null || bid.Planned_shipment_date == null) return "";
+				DateTime date = (DateTime)bid.Planned_shipment_date;
+				string monthName = Classes.Months.getRuMonthNameByNumber(date.Month);
+				string year = date.Year.ToString();
+				return monthName + " " + year;
+			}
+		}
+		
+		public DateTime? PlannedShipmentDate
+		{
+			get
+			{
+				Bid bid = BidViewModel.instance().getById(Id_bid);
+				if(bid == null || bid.Planned_shipment_date == null) return null;
+				return bid.Planned_shipment_date;
+			}
+		}
+		
+		public string ManagerName 
+		{
+			get
+			{
+				Bid bid = BidViewModel.instance().getById(Id_bid);
+				if(bid == null) return "";
+				return bid.ManagerName;
+			}
+		}
+		
+		// <----
 		
 		protected override bool afterSave(StangradCRMLibs.ResponseParser parser)
 		{
@@ -217,6 +269,8 @@ namespace StangradCRM.Model
 			Id_modification = equipmentBid.Id_modification;
 			Id_bid = equipmentBid.Id_bid;
 			Serial_number = equipmentBid.Serial_number;
+			Is_blank_print = equipmentBid.Is_blank_print;
+			Is_archive = equipmentBid.Is_archive;
 			
 			raiseAllProperties();
 		}
@@ -227,8 +281,11 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("Id_modification", Id_modification);
 			RaisePropertyChanged("Id_bid", Id_bid);
 			RaisePropertyChanged("Serial_number", Serial_number);
+			RaisePropertyChanged("Is_blank_print", Is_blank_print);
+			RaisePropertyChanged("Is_archive", Is_archive);
 			RaisePropertyChanged("EquipmentName", null);
 			RaisePropertyChanged("ModificationName", null);
+			RaisePropertyChanged("IsBlankPrint", null);
 		}
 	}
 }

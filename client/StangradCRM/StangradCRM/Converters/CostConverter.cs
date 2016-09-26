@@ -19,8 +19,18 @@ namespace StangradCRM.Converters
 
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			if((double)value == 0) return "0";
-			return ((double)value).ToString("# ### ### ###", culture);
+			double v = (double)value;
+			if(v == 0) return "0,00";
+			
+			//Целая часть
+			int intPart = (int)v;
+			//Дробная часть, округленная до 2-х знаков
+			double faction = Math.Round(v - intPart, 2);
+			
+			string strIntPart = intPart.ToString("# ### ### ###", culture);
+			if(faction == 0) return strIntPart;
+			string strFaction = (faction * 100).ToString();
+			return strIntPart + "," + strFaction;
 		}
 		
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

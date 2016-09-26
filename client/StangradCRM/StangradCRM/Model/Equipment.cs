@@ -43,7 +43,7 @@ namespace StangradCRM.Model
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
 		{
 			http.addParameter("name", Name);
-			http.addParameter("row_order", (EquipmentViewModel.instance().getMaxRowOrder()+1));
+			http.addParameter("row_order", Row_order);
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
@@ -90,8 +90,10 @@ namespace StangradCRM.Model
 		{
 			Equipment equipment = o as Equipment;
 			if(equipment == null) return;
+			
 			Name = equipment.Name;
 			Serial_number = equipment.Serial_number;
+			Row_order = equipment.Row_order;
 			
 			raiseAllProperties();
 		}
@@ -100,6 +102,7 @@ namespace StangradCRM.Model
 		{
 			RaisePropertyChanged("Name", Name);
 			RaisePropertyChanged("Serial_number", Serial_number);
+			RaisePropertyChanged("Row_order", Row_order);
 		}
 	}
 }

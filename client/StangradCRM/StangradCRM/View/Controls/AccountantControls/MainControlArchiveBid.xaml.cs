@@ -1,14 +1,13 @@
 ﻿/*
  * Сделано в SharpDevelop.
  * Пользователь: Дмитрий
- * Дата: 02.09.2016
- * Время: 17:08
+ * Дата: 01.09.2016
+ * Время: 11:32
  * 
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,20 +23,30 @@ using StangradCRM.ViewModel;
 namespace StangradCRM.View.Controls.AccountantControls
 {
 	/// <summary>
-	/// Interaction logic for MainControlID1.xaml
+	/// Interaction logic for MainControlArchiveBid.xaml
 	/// </summary>
-	public partial class MainControlID1 : UserControl
+	public partial class MainControlArchiveBid : UserControl
 	{
 		CollectionViewSource viewSource;
-		public MainControlID1(CollectionViewSource viewSource)
+		public MainControlArchiveBid()
 		{
 			InitializeComponent();
-			this.viewSource = viewSource;
-			this.viewSource.SortDescriptions.Add(new SortDescription("Date_created", ListSortDirection.Descending));
+
+			viewSource = new CollectionViewSource();
+			viewSource.Source = BidViewModel.instance().getArchiveCollection();
+			
+			viewSource.Filter += delegate(object sender, FilterEventArgs e) 
+			{
+				Bid bid = e.Item as Bid;
+				if(bid == null) return;
+				e.Accepted = bid.IsVisible;
+			};
+			
 			DataContext = new
 			{
 				BidCollection = this.viewSource.View
 			};
+			
 		}
 		
 		void DgvBid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -131,13 +140,19 @@ namespace StangradCRM.View.Controls.AccountantControls
 			tbxFastSearch.Text = "";
 		}
 		
+
+		
+		
 		void ContextPaymentHistory_Click(object sender, RoutedEventArgs e)
 		{
 			Bid bid = dgvBid.SelectedItem as Bid;
-			if(bid == null) return;
+			if(bid == null) 
+			{
+				MessageBox.Show("Заявка не выбрана!");
+				return;
+			}
 			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
 			window.ShowDialog();
 		}
-		
 	}
 }

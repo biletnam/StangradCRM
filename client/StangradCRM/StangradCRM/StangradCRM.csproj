@@ -69,6 +69,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -94,11 +95,17 @@
     <Compile Include="Classes\BidStatus.cs" />
     <Compile Include="Classes\BidUpdateTask.cs" />
     <Compile Include="Classes\FindItem.cs" />
+    <Compile Include="Classes\Months.cs" />
+    <Compile Include="Classes\OpenDirectoryDialog.cs" />
     <Compile Include="Classes\PaymentStatus.cs" />
     <Compile Include="Classes\PaymentStatusIntConverter.cs" />
     <Compile Include="Classes\Role.cs" />
     <Compile Include="Controls\DownListControl.xaml.cs">
       <DependentUpon>DownListControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\ProcessControl.xaml.cs">
+      <DependentUpon>ProcessControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\CostConverter.cs" />
@@ -129,6 +136,7 @@
     <Compile Include="Model\TransportCompany.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\WPFAssemblyInfo.cs" />
+    <Compile Include="Reports\BidBlank.cs" />
     <Compile Include="Reports\Sticker.cs" />
     <Compile Include="ViewModel\BidStatusViewModel.cs" />
     <Compile Include="ViewModel\BidViewModel.cs" />
@@ -169,12 +177,24 @@
       <DependentUpon>BuyerWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\Controls\AccountantControls\MainControlID1.xaml.cs">
-      <DependentUpon>MainControlID1.xaml</DependentUpon>
+    <Compile Include="View\ComplectationItemSaveWindow.xaml.cs">
+      <DependentUpon>ComplectationItemSaveWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\Controls\AccountantControls\MainControlID2.xaml.cs">
-      <DependentUpon>MainControlID2.xaml</DependentUpon>
+    <Compile Include="View\ComplectationItemWindow.xaml.cs">
+      <DependentUpon>ComplectationItemWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\AccountantControls\MainControlArchiveBid.xaml.cs">
+      <DependentUpon>MainControlArchiveBid.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\AccountantControls\MainControlInWork.xaml.cs">
+      <DependentUpon>MainControlInWork.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\AccountantControls\MainControlNewBid.xaml.cs">
+      <DependentUpon>MainControlNewBid.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\Controls\AdministratorControls\MainControlArchiveBid.xaml.cs">
@@ -189,6 +209,14 @@
       <DependentUpon>MainControlCRMSetting.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\Controls\AdministratorControls\MainControlInWork.xaml.cs">
+      <DependentUpon>MainControlInWork.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\AdministratorControls\MainControlNewBid.xaml.cs">
+      <DependentUpon>MainControlNewBid.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="View\Controls\DefaultMainControl.xaml.cs">
       <DependentUpon>DefaultMainControl.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -197,20 +225,12 @@
       <DependentUpon>MainControlArchiveBid.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\Controls\DirectorControls\MainControlManagerBid.xaml.cs">
-      <DependentUpon>MainControlManagerBid.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="View\Controls\DirectorControls\MainControlMyBid.xaml.cs">
-      <DependentUpon>MainControlMyBid.xaml</DependentUpon>
+    <Compile Include="View\Controls\DirectorControls\ManagerBidControlID2.xaml.cs">
+      <DependentUpon>ManagerBidControlID2.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\Controls\DirectorControls\ManagerBidControlID1.xaml.cs">
       <DependentUpon>ManagerBidControlID1.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="View\Controls\DirectorControls\ManagerBidControlID2.xaml.cs">
-      <DependentUpon>ManagerBidControlID2.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\Controls\DirectorControls\MyBidControlID1.xaml.cs">
@@ -219,6 +239,14 @@
     </Compile>
     <Compile Include="View\Controls\DirectorControls\MyBidControlID2.xaml.cs">
       <DependentUpon>MyBidControlID2.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\DirectorControls\MainControlManagerBid.xaml.cs">
+      <DependentUpon>MainControlManagerBid.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\DirectorControls\MainControlMyBid.xaml.cs">
+      <DependentUpon>MainControlMyBid.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\Controls\ManagerControls\MainControlArchive.xaml.cs">
@@ -231,6 +259,14 @@
     </Compile>
     <Compile Include="View\Controls\ManagerControls\MainControlID2.xaml.cs">
       <DependentUpon>MainControlID2.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\TechnicalControls\MainControlArchive.xaml.cs">
+      <DependentUpon>MainControlArchive.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\TechnicalControls\MainControlInWork.xaml.cs">
+      <DependentUpon>MainControlInWork.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\EquipmentBidSaveWindow.xaml.cs">
@@ -249,7 +285,6 @@
       <DependentUpon>EquipmentWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\Helpers\AccountantMainWindowHelper.cs" />
     <Compile Include="View\Helpers\DirectorManagerBidControlHelper.cs" />
     <Compile Include="View\Helpers\DirectorMyBidControlHelper.cs" />
     <Compile Include="View\Helpers\ManagerMainWindowHelper.cs" />
@@ -336,28 +371,36 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\DownListControl.xaml" />
+    <Page Include="Controls\ProcessControl.xaml" />
     <Page Include="View\BidSaveWindow.xaml" />
     <Page Include="View\BidShipmentSaveWindow.xaml" />
     <Page Include="View\BidStatusSaveWindow.xaml" />
     <Page Include="View\BidStatusWindow.xaml" />
     <Page Include="View\BuyerSaveWindow.xaml" />
     <Page Include="View\BuyerWindow.xaml" />
-    <Page Include="View\Controls\AccountantControls\MainControlID1.xaml" />
-    <Page Include="View\Controls\AccountantControls\MainControlID2.xaml" />
+    <Page Include="View\ComplectationItemSaveWindow.xaml" />
+    <Page Include="View\ComplectationItemWindow.xaml" />
+    <Page Include="View\Controls\AccountantControls\MainControlArchiveBid.xaml" />
+    <Page Include="View\Controls\AccountantControls\MainControlInWork.xaml" />
+    <Page Include="View\Controls\AccountantControls\MainControlNewBid.xaml" />
     <Page Include="View\Controls\AdministratorControls\MainControlArchiveBid.xaml" />
     <Page Include="View\Controls\AdministratorControls\MainControlBid.xaml" />
     <Page Include="View\Controls\AdministratorControls\MainControlCRMSetting.xaml" />
+    <Page Include="View\Controls\AdministratorControls\MainControlInWork.xaml" />
+    <Page Include="View\Controls\AdministratorControls\MainControlNewBid.xaml" />
     <Page Include="View\Controls\DefaultMainControl.xaml" />
     <Page Include="View\Controls\DirectorControls\MainControlArchiveBid.xaml" />
-    <Page Include="View\Controls\DirectorControls\MainControlManagerBid.xaml" />
-    <Page Include="View\Controls\DirectorControls\MainControlMyBid.xaml" />
-    <Page Include="View\Controls\DirectorControls\ManagerBidControlID1.xaml" />
     <Page Include="View\Controls\DirectorControls\ManagerBidControlID2.xaml" />
+    <Page Include="View\Controls\DirectorControls\ManagerBidControlID1.xaml" />
     <Page Include="View\Controls\DirectorControls\MyBidControlID1.xaml" />
     <Page Include="View\Controls\DirectorControls\MyBidControlID2.xaml" />
+    <Page Include="View\Controls\DirectorControls\MainControlManagerBid.xaml" />
+    <Page Include="View\Controls\DirectorControls\MainControlMyBid.xaml" />
     <Page Include="View\Controls\ManagerControls\MainControlArchive.xaml" />
     <Page Include="View\Controls\ManagerControls\MainControlID1.xaml" />
     <Page Include="View\Controls\ManagerControls\MainControlID2.xaml" />
+    <Page Include="View\Controls\TechnicalControls\MainControlArchive.xaml" />
+    <Page Include="View\Controls\TechnicalControls\MainControlInWork.xaml" />
     <Page Include="View\EquipmentBidSaveWindow.xaml" />
     <Page Include="View\EquipmentSaveWindow.xaml">
       <DependentUpon>EquipmentSelectWindow.xaml</DependentUpon>
@@ -397,6 +440,7 @@
     <Folder Include="View\Controls\AdministratorControls" />
     <Folder Include="View\Controls\DirectorControls" />
     <Folder Include="View\Controls\AccountantControls" />
+    <Folder Include="View\Controls\TechnicalControls" />
     <Folder Include="View\MainWindows" />
     <Folder Include="View\Controls" />
     <Folder Include="View\Helpers" />
@@ -425,6 +469,9 @@
   <ItemGroup>
     <Content Include="Images\arrow_down.png" />
     <Content Include="Images\arrow_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\green_check.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

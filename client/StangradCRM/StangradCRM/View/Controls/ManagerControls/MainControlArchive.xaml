@@ -4,8 +4,8 @@
 	<Grid Background="White">
 		<Grid.RowDefinitions>
 			<RowDefinition></RowDefinition>
-			<RowDefinition></RowDefinition>
-			<RowDefinition Height="100"></RowDefinition>
+			<RowDefinition Height="235"></RowDefinition>
+			<RowDefinition Height="85"></RowDefinition>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition></ColumnDefinition>
@@ -205,6 +205,22 @@
 					SelectionChanged="DgvEquipmentBid_SelectionChanged"
 					Style="{StaticResource DefaultDataGridStyle}">
 					<DataGrid.Columns>
+
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+							CanUserSort="True"
+							SortMemberPath="Id"
+							Width="70"
+							Header="Код">
+							<DataGridTemplateColumn.CellTemplate>
+		                        <DataTemplate>
+		                            <TextBlock 
+		                            	Margin="5, 0, 0, 0"
+		                            	VerticalAlignment="Center"
+		                            	Text="{Binding Path=Id}"></TextBlock>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 						
 						<DataGridTemplateColumn
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"

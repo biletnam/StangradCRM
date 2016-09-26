@@ -1,11 +1,15 @@
 ﻿<UserControl x:Class="StangradCRM.View.Controls.AdministratorControls.MainControlArchiveBid"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:converters="clr-namespace:StangradCRM.Converters"  
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Grid Background="White">
+	<UserControl.Resources>
+		<converters:CostConverter x:Key="CostConverter"></converters:CostConverter>
+	</UserControl.Resources>
+<Grid Background="White">
 		<Grid.RowDefinitions>
 			<RowDefinition></RowDefinition>
-			<RowDefinition></RowDefinition>
-			<RowDefinition Height="100"></RowDefinition>
+			<RowDefinition Height="235"></RowDefinition>
+			<RowDefinition Height="85"></RowDefinition>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition></ColumnDefinition>
@@ -51,13 +55,28 @@
 					x:Name="dgvBid"
 					ItemsSource="{Binding BidCollection}"
 					Style="{StaticResource DefaultDataGridStyle}">
-					
+					<DataGrid.RowStyle>
+						<Style TargetType="DataGridRow">
+							<EventSetter Event="MouseDoubleClick" Handler="DgvBid_RowDoubleClick"></EventSetter>
+							<EventSetter Event="PreviewKeyDown" Handler="DgvBid_PreviewKeyDown"></EventSetter>
+						</Style>
+					</DataGrid.RowStyle>
+					<DataGrid.ContextMenu>
+						<ContextMenu
+							x:Name="contextMenu">
+							<MenuItem
+								Click="ContextPaymentHistory_Click"
+								x:Name="contextPaymentHistory"
+								Header="История платежей">
+							</MenuItem>
+						</ContextMenu>
+					</DataGrid.ContextMenu>
 					<DataGrid.Columns>
 						<DataGridTemplateColumn 
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Id"
-			                Width="100"
+			                Width="50"
 			                Header="Код">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
@@ -68,6 +87,36 @@
 			                </DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 							
+						<DataGridTemplateColumn 
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="Date_created"
+			                Width="100"
+			                Header="Дата создания">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=Date_created, StringFormat=\{0:dd.MM.yyyy\}}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="Account"
+			                Width="50"
+			                Header="Счет">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=Account}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
 						<DataGridTemplateColumn
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
@@ -97,48 +146,18 @@
 			                    </DataTemplate>
 			                </DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
-
-						<DataGridTemplateColumn
-							CellStyle="{StaticResource DefaultDataGridCellStyle}"
-			                CanUserSort="True"
-			                SortMemberPath="Id_payment_status"
-			                Width="*"
-			                Header="Статус оплаты">
-							<DataGridTemplateColumn.CellTemplate>
-			                    <DataTemplate>
-			                        <TextBlock 
-			                        	Margin="5, 0, 0, 0"
-			                        	Text="{Binding Path=PaymentStatusName}" VerticalAlignment="Center"/>
-			                    </DataTemplate>
-			                </DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-							
-						<DataGridTemplateColumn
-							CellStyle="{StaticResource DefaultDataGridCellStyle}"
-			                CanUserSort="True"
-			                SortMemberPath="Account"
-			                Width="*"
-			                Header="Счет">
-			                <DataGridTemplateColumn.CellTemplate>
-			                    <DataTemplate>
-			                        <TextBlock 
-			                        	Margin="5, 0, 0, 0"
-			                        	Text="{Binding Path=Account}" VerticalAlignment="Center"/>
-			                    </DataTemplate>
-			                </DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
 							
 						<DataGridTemplateColumn
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Amount"
-			                Width="*"
+			                Width="150"
 			                Header="Сумма">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
 			                        	Margin="5, 0, 0, 0"
-			                        	Text="{Binding Path=Amount}" VerticalAlignment="Center"/>
+			                        	Text="{Binding Path=Amount, Converter={StaticResource CostConverter}}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
 			                </DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>						
@@ -146,18 +165,61 @@
 						<DataGridTemplateColumn
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
-			                SortMemberPath="Id_manager"
+			                SortMemberPath="ManagerName"
 			                Width="*"
 			                Header="Менеджер">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
 			                        	Margin="5, 0, 0, 0"
-			                        	Text="{Binding Path=ManagerName}"
-			                        	VerticalAlignment="Center"/>
+			                        	Text="{Binding Path=ManagerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
 			                </DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>						
+						</DataGridTemplateColumn>	
+						
+						<DataGridTemplateColumn 
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="Shipment_date"
+			                Width="*"
+			                Header="Отгружено">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                    	<Grid>
+			                    		<Grid.RowDefinitions>
+											<RowDefinition></RowDefinition>
+			                    			<RowDefinition></RowDefinition>
+			                    		</Grid.RowDefinitions>
+			                    		<TextBlock 		
+											Text="{Binding Path=TransportCompanyName}"			                    			
+			                    			Grid.Row="0"
+			                    			VerticalAlignment="Center"
+			                        		Margin="5, 0, 0, 0"></TextBlock>
+			                        	<TextBlock
+											Grid.Row="1"			                        		
+			                        		Margin="5, 0, 0, 0"
+			                        		Text="{Binding Path=Shipment_date, StringFormat=\{0:dd.MM.yyyy\}}" 
+			                        		VerticalAlignment="Center"/>
+			                    	</Grid>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                Width="130"
+			                Header="">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+									<Button 
+										Click="Button_Click"
+										Content="Вернуть из архива">
+			                    	</Button>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					
 					</DataGrid.Columns>
 				</DataGrid>
 			</Grid>	
@@ -214,14 +276,14 @@
 						<DataGridTemplateColumn
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 							CanUserSort="True"
-							SortMemberPath="SerialNumber"
+							SortMemberPath="Serial_number"
 							Width="*"
 							Header="Серийный номер">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<TextBlock
 										Margin="5, 0, 0, 0"
-										Text="{Binding Path=SerialNumber}"
+										Text="{Binding Path=Serial_number}"
 										VerticalAlignment="Center" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
@@ -238,15 +300,15 @@
 						<DataGridTemplateColumn
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 							CanUserSort="True"
-							SortMemberPath="Commentary"
+							SortMemberPath="Name"
 							Width="*"
-							Header="Коментарий">
+							Header="Наименование">
 							<DataGridTemplateColumn.CellTemplate>
 		                        <DataTemplate>
 		                        	<TextBlock 
 		                        		TextWrapping="Wrap"
 		                        		Margin="5, 0, 0, 0"
-		                        		Text="{Binding Path=Commentary}" 
+		                        		Text="{Binding Path=Name}" 
 		                        		VerticalAlignment="Center"></TextBlock>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
@@ -279,7 +341,7 @@
 				<DataGrid.Columns>
 					
 					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
 						CanUserSort="True"
 						SortMemberPath="Name"
 						Width="*"
@@ -296,7 +358,7 @@
 					</DataGridTemplateColumn>
 				
 					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
 						CanUserSort="True"
 						SortMemberPath="Contact_person"
 						Width="*"
@@ -313,7 +375,7 @@
 					</DataGridTemplateColumn>
 				
 					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
 						CanUserSort="True"
 						SortMemberPath="Phone"
 						Width="*"
@@ -330,7 +392,7 @@
 					</DataGridTemplateColumn>
 				
 					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
 						CanUserSort="True"
 						SortMemberPath="Email"
 						Width="*"
@@ -347,7 +409,7 @@
 					</DataGridTemplateColumn>
 				
 					<DataGridTemplateColumn
-						CellStyle="{StaticResource DefaultDataGridCellStyle}"
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
 						CanUserSort="True"
 						SortMemberPath="City"
 						Width="*"

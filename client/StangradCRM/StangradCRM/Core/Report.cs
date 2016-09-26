@@ -20,6 +20,50 @@ namespace StangradCRM.Core
 		public string FileName { get; set; }
 		public string LastError { get; set; }
 		
+		public int AllDocumentFontSize { get; set; }
+		
+		protected virtual double? LeftFieldMargin { 
+			get 
+			{
+				return null;
+			}
+		}
+
+		protected virtual double? RightFieldMargin { 
+			get 
+			{
+				return null;
+			}
+		}
+		
+		protected virtual double? TopFieldMargin { 
+			get 
+			{
+				return null;
+			}
+		}
+
+		protected virtual double? BottomFieldMargin { 
+			get 
+			{
+				return null;
+			}
+		}
+		
+		protected virtual double? HeaderFieldMargin { 
+			get 
+			{
+				return null;
+			}
+		}
+
+		protected virtual double? FooterFieldMargin { 
+			get 
+			{
+				return null;
+			}
+		}
+		
 		public ReportRow Titles { get; set; }
 		public List<ReportRow> Rows = new List<ReportRow>();
 		

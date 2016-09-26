@@ -1,8 +1,8 @@
 ﻿/*
  * Сделано в SharpDevelop.
  * Пользователь: Дмитрий
- * Дата: 02.09.2016
- * Время: 15:26
+ * Дата: 26.08.2016
+ * Время: 17:20
  * 
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
@@ -26,11 +26,15 @@ using StangradCRMLibs;
 namespace StangradCRM.View.Controls.DirectorControls
 {
 	/// <summary>
-	/// Interaction logic for MyBidControlID1.xaml
+	/// Interaction logic for MainControlID1.xaml
 	/// </summary>
 	public partial class MyBidControlID1 : UserControl
 	{
 		CollectionViewSource viewSource;
+		CollectionViewSource equipmentBidViewSource = new CollectionViewSource();
+		CollectionViewSource complectationViewSource = new CollectionViewSource();
+		CollectionViewSource buyerViewSource = new CollectionViewSource();
+		
 		public MyBidControlID1(CollectionViewSource viewSource)
 		{
 			InitializeComponent();
@@ -48,187 +52,92 @@ namespace StangradCRM.View.Controls.DirectorControls
 			List<BidStatus> status = BidStatusViewModel.instance().Collection.ToList();
 			status.Remove(BidStatusViewModel.instance().getById((int)Classes.BidStatus.New));
 			
+			SetViewSources();
+			
 			DataContext = new
 			{
 				BidCollection = this.viewSource.View,
 				CurrentManagerCollection = manager,
-				CurrentStatusCollection = status
+				CurrentStatusCollection = status,
+				EquipmentBidCollection = equipmentBidViewSource.View,
+				ComplectationCollection = complectationViewSource.View,
+				BuyerCollection = buyerViewSource.View
 			};
 		}
 		
-		void BtnAdd_Click(object sender, RoutedEventArgs e)
+		//Фильтры отображени/сокрытия строк таблиц
+		private void SetViewSources ()
 		{
-			BidSaveWindow window = new BidSaveWindow();
-			window.ShowDialog();
-		}
-		
-		void BtnEditRow_Click(object sender, RoutedEventArgs e)
-		{
-			Bid bid = dgvBid.SelectedItem as Bid;
-			if(bid == null) return;
-			
-			BidSaveWindow window = new BidSaveWindow(bid);
-			window.ShowDialog();
-			
-			viewSource.View.Refresh();
-		}
-		
-		void DgvBid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			SetEquipmentBidSource();
-			SetBuyerSource();
-		}
-		
-		private void SetEquipmentBidSource ()
-		{
-			Bid bid = dgvBid.SelectedItem as Bid;
-			Binding binding = new Binding();
-			if(bid == null)
+			equipmentBidViewSource.Source = EquipmentBidViewModel.instance().Collection;
+			equipmentBidViewSource.Filter += delegate(object sender, FilterEventArgs e) 
 			{
-				binding.Source = null;
-			}
-			else 
-			{
-				binding.Source = bid.EquipmentBidCollection;
-			}
-			dgvEquipmentBid.SetBinding(DataGrid.ItemsSourceProperty, binding);
-			
-			if(dgvEquipmentBid.Items.Count > 0)
-			{
-				dgvEquipmentBid.SelectedIndex = 0;
-			}
-			SetComplectationSource();
-		}
-		
-		private void SetBuyerSource ()
-		{
-			Bid bid = dgvBid.SelectedItem as Bid;
-			Binding binding = new Binding();
-			if(bid == null)
-			{
-				binding.Source = null;
-			}
-			else 
-			{
-				List<Buyer> buyerList = new List<Buyer>();
-				Buyer buyer = BuyerViewModel.instance().getById(bid.Id_buyer);
-				if(buyer != null)
+				EquipmentBid equipmentBid = e.Item as EquipmentBid;
+				if(equipmentBid == null) return;
+				
+				Bid bid = dgvBid.SelectedItem as Bid;
+				if(bid == null)
 				{
-					buyerList.Add(buyer);
-					binding.Source = buyerList;
+					e.Accepted = false;
+					return;
+				}
+				if(bid.Id == equipmentBid.Id_bid)
+				{
+					e.Accepted = true;
 				}
 				else
 				{
-					binding.Source = null;
+					e.Accepted = false;
 				}
-			}
-			dgvBuyer.SetBinding(DataGrid.ItemsSourceProperty, binding);
-		}
-		
-		void BtnEquipmentBidAdd_Click(object sender, RoutedEventArgs e)
-		{
-			Bid bid = dgvBid.SelectedItem as Bid;
-			if(bid == null) return;
-			EquipmentBidSaveWindow window = new EquipmentBidSaveWindow(bid.Id);
-			window.ShowDialog();
-		}
-		
-		void BtnEquipmentBidEdit_Click(object sender, RoutedEventArgs e)
-		{
-			EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
-			if(equipmentBid == null) return;
-			EquipmentBidSaveWindow window = new EquipmentBidSaveWindow(equipmentBid);
-			window.ShowDialog();
-		}
-		
-		void BtnEquipmentBidRemove_Click(object sender, RoutedEventArgs e)
-		{
-			EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
-			if(equipmentBid == null) return;
-			if(MessageBox.Show("Удалить оборудование из заявки?", "Удалить оборудование из заявки?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
-			if(!equipmentBid.remove())
-			{
-				MessageBox.Show(equipmentBid.LastError);
-			}
-		}
-		
-		void DgvEquipmentBid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			SetComplectationSource();
-		}
-		
-		private void SetComplectationSource ()
-		{
-			EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
-			Binding binding = new Binding();
-			if(equipmentBid == null)
-			{
-				binding.Source = null;
-			}
-			else
-			{
-				binding.Source = equipmentBid.ComplectationCollection;
-			}
-			dgvComplectation.SetBinding(DataGrid.ItemsSourceProperty, binding);
-		}
-		
-		void ContextMenuOpenEditWindow_Click(object sender, RoutedEventArgs e)
-		{
-			BtnEditRow_Click(null, null);
-		}
-		
-		void ContextMenuRemove_Click(object sender, RoutedEventArgs e)
-		{
-			BtnDeleteRow_Click(null, null);
-		}
-		
-		void contextMenuItemTransferByManagerClick(object sender, RoutedEventArgs e) 
-		{
-			MenuItem mi = sender as MenuItem;
-			if(mi == null)
-			{
-				MessageBox.Show("MenuItem is null");
-				return;
-			}
+			};
 			
-			Manager manager = mi.DataContext as Manager;
-			if(manager == null)
+			complectationViewSource.Source = ComplectationViewModel.instance().Collection;
+			complectationViewSource.Filter += delegate(object sender, FilterEventArgs e) 
 			{
-				MessageBox.Show("Manager is null");
-				return;
-			}
+				Complectation complectation = e.Item as Complectation;
+				if(complectation == null) return;
+				
+				EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
+				if(equipmentBid == null)
+				{
+					e.Accepted = false;
+					return;
+				}
+				if(complectation.Id_equipment_bid == equipmentBid.Id)
+				{
+					e.Accepted = true;
+				}
+				else
+				{
+					e.Accepted = false;
+				}
+			};
 			
-			Bid bid = dgvBid.SelectedItem as Bid;
-			if(bid == null) 
+			buyerViewSource.Source = BuyerViewModel.instance().Collection;
+			buyerViewSource.Filter += delegate(object sender, FilterEventArgs e) 
 			{
-				MessageBox.Show("Bid is null");
-				return;
-			}
-			
-			bid.Id_manager = manager.Id;
-			if(!bid.save())
-			{
-				MessageBox.Show(bid.LastError);
-				return;
-			}
-			viewSource.View.Refresh();
-			ManagerBidControlID1.UpdateViewSource();
-			ManagerBidControlID2.UpdateViewSource();
+				Buyer buyer = e.Item as Buyer;
+				if(buyer == null) return;
+				
+				Bid bid = dgvBid.SelectedItem as Bid;
+				if(bid == null)
+				{
+					e.Accepted = false;
+					return;
+				}
+				if(buyer.Id == bid.Id_buyer)
+				{
+					e.Accepted = true;
+				}
+				else
+				{
+					e.Accepted = false;
+				}
+			};
 		}
+
+		//Поиск ---->
 		
-		void BtnDeleteRow_Click(object sender, RoutedEventArgs e)
-		{
-			Bid bid = dgvBid.SelectedItem as Bid;
-			if(bid == null) return;
-			if(MessageBox.Show("Удалить заявку?", "Удалить заявку?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
-			
-			if(!bid.remove())
-			{
-				MessageBox.Show(bid.LastError);
-			}
-			
-		}
-		
+		//Вызывается при вводе данных в строку поиска, осуществляет поиск
 		void TbxFastSearch_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			BidViewModel.instance().fastSearch(tbxFastSearch.Text, (TSObservableCollection<Bid>)viewSource.Source);
@@ -243,95 +152,283 @@ namespace StangradCRM.View.Controls.DirectorControls
 			}
 		}
 		
-		void ContextAddPayment_Click(object sender, RoutedEventArgs e)
-		{
-			Bid bid = dgvBid.SelectedItem as Bid;
-			if(bid == null) return;
-			PaymentSaveWindow window = new PaymentSaveWindow(bid);
-			window.ShowDialog();
-			
-			viewSource.View.Refresh();
-		}
-		
+		//Клик по кнопке очистки строки поиска
 		void BtnClearFastSearch_Click(object sender, RoutedEventArgs e)
 		{
 			tbxFastSearch.Text = "";
 		}
+
 		
-		void ContextPaymentHistory_Click(object sender, RoutedEventArgs e)
+		//Заявки ---->
+
+		//Изменение выделенной строки в таблице заявок
+		void DgvBid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			equipmentBidViewSource.View.Refresh();
+			buyerViewSource.View.Refresh();
+			
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) return;
+			
+			if(!bid.PermittedRemoval) 
+			{
+				btnBidDelete.IsEnabled = false;
+			}
+			else 
+			{
+				btnBidDelete.IsEnabled = true;
+			}
+		}
+		
+		//Клик по кнопке добавления заявки, открывает окно добавления заявки
+		void BtnAdd_Click(object sender, RoutedEventArgs e)
+		{
+			BidSaveWindow window = new BidSaveWindow();
+			window.ShowDialog();
+		}
+		
+		//Клик по кнопке удаления заявки, удаляет заявку
+		void BtnBidDelete_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Выберите удаляемую заявку!");
+				return;
+			}
+			
+			if(MessageBox.Show("Удалить заявку?", "Удалить заявку?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
+			if(!bid.remove())
+			{
+				MessageBox.Show(bid.LastError);
+			}
+		}
+		
+		//Клик по кнопке передачи заявки другому менеджеру, открывает окно передачи заявки другому менеджеру
+		void BtnBidTransferToManager_Click(object sender, RoutedEventArgs e)
 		{
 			Bid bid = dgvBid.SelectedItem as Bid;
 			if(bid == null) return;
+			
+			TransferToManagerWindow window = new TransferToManagerWindow(bid);
+			window.ShowDialog();
+			
+		}
+		
+		//Клик по кнопке передачи заявки в другой статус, открывает окно передачи заявки в другой статус
+		void BtnBidTransferToStatus_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) return;
+			
+			bid.Id_bid_status = (int)Classes.BidStatus.InWork;
+			PlannedShipmentDateSetWindow window 
+				= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { SetPlannedShipmentDateAndSave(bid, planned_shipment_date); }));
+			window.ShowDialog();
+		}
+		
+		//Клик по кнопке просмотра платежей, открывает окно просмотра платежей
+		void BtnPaymentHistory_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Выберите заявку!");
+				return;
+			}
 			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
 			window.ShowDialog();
 		}
 		
-		void ContextTransferToInWork_Click(object sender, RoutedEventArgs e)
+		//Дабл клик по строке таблицы - открывает окно редактирования		
+		private void DgvBid_RowDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			Bid bid = row.Item as Bid;
+			if(bid == null) return;
+			
+			BidSaveWindow window = new BidSaveWindow(bid);
+			window.ShowDialog();
+			
+			viewSource.View.Refresh();
+          	dgvBid.CurrentCell = new DataGridCellInfo(row.Item, dgvBid.CurrentCell.Column);
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void DgvBid_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				DgvBid_RowDoubleClick(sender, null);
+				e.Handled = true;
+			}
+		}
+
+		//Клик по кнопке добавления платежа (в каждой строке), открывает окно добавления платежа
+		void BtnAddPayment_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+			Button button = sender as Button;
+			if(button == null) return;
+			
+			DataGridRow row = Classes.FindItem.FindParentItem<DataGridRow>(button);
+			if(row == null) return;
+			
+			Bid bid = row.Item as Bid;
+			if(bid == null) return;
+			
+			PaymentSaveWindow window = new PaymentSaveWindow(bid);
+			window.ShowDialog();
+			
+			viewSource.View.Refresh();
+			}
+			catch(Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+		}
+		
+		//Клик по кнопке удаления заявки (в каждой строке), удаляет заявку
+		void BtnDeleteRow_Click(object sender, RoutedEventArgs e)
+		{
+			Button button = sender as Button;
+			if(button == null) return;
+			
+			DataGridRow row = Classes.FindItem.FindParentItem<DataGridRow>(button);
+			if(row == null) return;
+			
+			Bid bid = row.Item as Bid;
+			if(bid == null) return;
+			
+			if(MessageBox.Show("Удалить заявку?", "Удалить заявку?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
+			if(!bid.remove())
+			{
+				MessageBox.Show(bid.LastError);
+			}
+		}
+		
+		//Контекстное меню в таблице заявок ---->
+		
+		//Клик по элементу меню просмотра истории платежей
+		void ContextPaymentHistory_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Заявка не выбрана!");
+				return;
+			}
+			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
+			window.ShowDialog();
+		}
+		
+		//Контекстное меню передачи заявки в работу
+		void ContextTransferToStatus_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = sender as MenuItem;
-			if(mi == null)
-			{
-				MessageBox.Show("MenuItem is null");
-				return;
-			}
+			if(mi == null) return;
 			
 			BidStatus bidStatus = mi.DataContext as BidStatus;
-			if(bidStatus == null)
-			{
-				MessageBox.Show("BidStatus is null");
-				return;
-			}
+			if(bidStatus == null) return;
 			
 			Bid bid = dgvBid.SelectedItem as Bid;
 			if(bid == null) 
 			{
-				MessageBox.Show("Bid is null");
+				MessageBox.Show("Заявка не выбрана!");
 				return;
 			}
 			
-			bid.Id_bid_status = bidStatus.Id;
+			bid.Id_bid_status = (int)Classes.BidStatus.InWork;
+			PlannedShipmentDateSetWindow window 
+				= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { SetPlannedShipmentDateAndSave(bid, planned_shipment_date); }));
+			window.ShowDialog();
+		}
+		
+		//Контекстное меню передачи заявки другому менеджеру
+		void contextMenuItemTransferByManagerClick(object sender, RoutedEventArgs e) 
+		{
+			MenuItem mi = sender as MenuItem;
+			if(mi == null) return;
+			
+			Manager manager = mi.DataContext as Manager;
+			if(manager == null) return;
+			
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Заявка не выбрана!");
+				return;
+			}
+			if(MessageBox.Show("Передать заявку менеджеру " + manager.Name + "?", 
+			                   "Передать заявку другому менеджеру?", 
+			                   MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+			bid.Id_manager = manager.Id;
 			if(!bid.save())
 			{
 				MessageBox.Show(bid.LastError);
 				return;
 			}
+			bid.remove(true);
 		}
 		
-		void ContextMenuRemove_Loaded(object sender, RoutedEventArgs e)
+		//Оборудование в заявке ---->
+		
+		//Нажатие на кнопку добавления - открывает окно добавления
+		void BtnEquipmentBidAdd_Click(object sender, RoutedEventArgs e)
 		{
-			MenuItem mi = sender as MenuItem;
-			if(mi == null) return;
-			
 			Bid bid = dgvBid.SelectedItem as Bid;
-			if(bid ==null) return;
+			if(bid == null) return;
 			
-			if(bid.PermittedRemoval == false)
-			{
-				mi.Visibility = Visibility.Collapsed;
-			}
-			else
-			{
-				mi.Visibility = Visibility.Visible;
-			}
+			EquipmentBidSaveWindow window = new EquipmentBidSaveWindow(bid.Id);
+			window.ShowDialog();
 		}
 		
-		void ContextAddPayment_Loaded(object sender, RoutedEventArgs e)
+		//Дабл клик по строке таблицы - открывает окно редактирования
+		private void DgvEquipmentBid_RowDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			MenuItem mi = sender as MenuItem;
-			if(mi == null) return;
+			DataGridRow row = sender as DataGridRow;
+			EquipmentBid equipmentBid = row.Item as EquipmentBid;
+			if(equipmentBid == null) return;
 			
-			Bid bid = dgvBid.SelectedItem as Bid;
-			if(bid ==null) return;
+			EquipmentBidSaveWindow window = new EquipmentBidSaveWindow(equipmentBid);
+			window.ShowDialog();
+		}
+		
+		//Нажатие на кнопку удаления в строке, удаляет запись
+		void BtnEquipmentBidRemove_Click(object sender, RoutedEventArgs e)
+		{
+			Button button = sender as Button;
+			if(button == null) return;
 			
-			if(bid.Id_payment_status == 3)
+			DataGridRow row = Classes.FindItem.FindParentItem<DataGridRow>(button);
+			if(row == null) return;
+			
+			EquipmentBid equipmentBid = row.Item as EquipmentBid;
+			if(equipmentBid == null) return;
+			
+			if(MessageBox.Show("Удалить оборудование из заявки?", "Удалить оборудование из заявки?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
+			if(!equipmentBid.remove())
 			{
-				mi.Visibility = Visibility.Collapsed;
+				MessageBox.Show(equipmentBid.LastError);
 			}
-			else
-			{
-				mi.Visibility = Visibility.Visible;
-			}
+		}
+
+		//Изменение выделенной строки в таблице оборудования в заявке		
+		void DgvEquipmentBid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			complectationViewSource.View.Refresh();
 		}		
 		
+		//Служебные ---->
+		
+		//Установка предполагаемой даты отгрузки и сохранение заявки
+		private void SetPlannedShipmentDateAndSave (Bid bid, DateTime plannedShipmentDate)
+		{
+			bid.Planned_shipment_date = plannedShipmentDate;
+			if(!bid.save())
+			{
+				MessageBox.Show(bid.LastError);
+			}
+		}
 	}
 }

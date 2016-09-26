@@ -25,6 +25,7 @@ namespace StangradCRM.Model
 		{
 			http.addParameter("name", Name);
 			http.addParameter("id_equipment", Id_equipment);
+			http.addParameter("row_order", Row_order);
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
@@ -80,6 +81,7 @@ namespace StangradCRM.Model
 			if(modification == null) return;
 			Name = modification.Name;
 			Id_equipment = modification.Id_equipment;
+			Row_order = modification.Row_order;
 			raiseAllProperties();
 		}
 		
@@ -87,6 +89,7 @@ namespace StangradCRM.Model
 		{
 			RaisePropertyChanged("Name", Name);
 			RaisePropertyChanged("Id_equipment", Id_equipment);
+			RaisePropertyChanged("Row_order", Row_order);
 		}
 	}
 }

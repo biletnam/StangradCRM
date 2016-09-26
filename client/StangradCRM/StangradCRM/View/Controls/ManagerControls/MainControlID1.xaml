@@ -323,6 +323,23 @@
 						
 						<DataGrid.Columns>
 							
+
+							<DataGridTemplateColumn
+								CellStyle="{StaticResource DefaultDataGridCellStyle}"
+								CanUserSort="True"
+								SortMemberPath="Id"
+								Width="70"
+								Header="Код">
+								<DataGridTemplateColumn.CellTemplate>
+			                        <DataTemplate>
+			                            <TextBlock 
+			                            	Margin="5, 0, 0, 0"
+			                            	VerticalAlignment="Center"
+			                            	Text="{Binding Path=Id}"></TextBlock>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							
 							<DataGridTemplateColumn
 								CellStyle="{StaticResource DefaultDataGridCellStyle}"
 								CanUserSort="True"

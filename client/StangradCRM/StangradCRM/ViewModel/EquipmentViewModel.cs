@@ -112,12 +112,5 @@ namespace StangradCRM.ViewModel
 		{
 			_collection.ToList().ForEach(x => x.setFilter("Name", true));
 		}
-		
-		public int getMaxRowOrder ()
-		{
-			if(_collection.Count == 0) return 1;
-			return _collection.Max(x => x.Row_order);
-		}
-		
 	}
 }

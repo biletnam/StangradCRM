@@ -259,6 +259,8 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		//For search ---->
+		
 		public string EquipmentBidStringSearch
 		{
 			get
@@ -266,7 +268,9 @@ namespace StangradCRM.Model
 				string resultString = "";
 				foreach(EquipmentBid equipmentBid in EquipmentBidCollection)
 				{
-					resultString += equipmentBid.EquipmentName + " " 
+					resultString += equipmentBid.Id.ToString() + " "
+						+ equipmentBid.Id_equipment.ToString() + " "
+						+ equipmentBid.EquipmentName + " "
 						+ equipmentBid.ModificationName + " " 
 						+ equipmentBid.Serial_number.ToString() + " "
 						+ equipmentBid.ComplectationStringSearch;
@@ -274,6 +278,8 @@ namespace StangradCRM.Model
 				return resultString;
 			}
 		}
+		
+		//<----
 		
 		public TSObservableCollection<Payment> PaymentCollection
 		{
@@ -338,7 +344,7 @@ namespace StangradCRM.Model
 				http.addParameter("planned_shipment_date", ((DateTime)Planned_shipment_date).ToString("yyyy-MM-dd"));
 			}
 			http.addParameter("account", Account);
-			http.addParameter("amount", Amount);
+			http.addParameter("amount", Amount.ToString().Replace(',', '.'));
 			http.addParameter("date_created", Date_created.ToString("yyyy-MM-dd"));
 			http.addParameter("is_archive", Is_archive);
 			http.addParameter("is_shipped", Is_shipped);
@@ -435,14 +441,19 @@ namespace StangradCRM.Model
 		public override void raiseAllProperties()
 		{
 			if(oldValues.ContainsKey("Id_bid_status") &&
-			   oldValues["Id_bid_status"] != null)
+			   oldValues["Id_bid_status"] != null &&
+			   (oldValues["Id_bid_status"] as int?) != null &&
+			   Id_bid_status != (int)oldValues["Id_bid_status"])
 			{
-				BidViewModel.instance().updateStatus(this, (int)oldValues["Id_bid_status"]);
+				BidViewModel.instance().UpdateStatus(this, (int)oldValues["Id_bid_status"]);
 			}
 			
-			if(Is_archive != 0)
+			if(oldValues.ContainsKey("Is_archive") &&
+			   oldValues["Is_archive"] != null &&
+			   (oldValues["Is_archive"] as int?) != null &&
+			   Is_archive != (int)oldValues["Is_archive"])
 			{
-				BidViewModel.instance().MoveToArchive(this);
+				BidViewModel.instance().UpdateArchive(this);
 			}
 			
 			RaisePropertyChanged("Id_seller", Id_seller);
@@ -478,6 +489,7 @@ namespace StangradCRM.Model
 		{
 			RaisePropertyChanged("Id_payment_status", Id_payment_status, true);
 			RaisePropertyChanged("Id_bid_status", Id_bid_status, true);
+			RaisePropertyChanged("Is_archive", Is_archive, true);
 		}
 		
 		public override void replace(object o)
@@ -487,7 +499,7 @@ namespace StangradCRM.Model
 			
 			Id_seller = bid.Id_seller;
 			Id_buyer = bid.Id_buyer;
-			Id_bid_status = bid.Id_bid_status;
+			Id_bid_status = bid.Id_bid_status;			
 			Id_payment_status = bid.Id_payment_status;
 			Id_transport_company = bid.Id_transport_company;
 			Id_manager = bid.Id_manager;

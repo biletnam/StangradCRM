@@ -1,0 +1,412 @@
+﻿<UserControl x:Class="StangradCRM.View.Controls.AccountantControls.MainControlArchiveBid"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:converters="clr-namespace:StangradCRM.Converters"  
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<UserControl.Resources>
+		<converters:CostConverter x:Key="CostConverter"></converters:CostConverter>
+	</UserControl.Resources>
+<Grid Background="White">
+		<Grid.RowDefinitions>
+			<RowDefinition></RowDefinition>
+			<RowDefinition Height="235"></RowDefinition>
+			<RowDefinition Height="85"></RowDefinition>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<GroupBox Grid.Row="0" Grid.Column="0" Header="Заявки">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"></RowDefinition>
+					<RowDefinition Height="*"></RowDefinition>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<GroupBox 
+					Grid.Row="0" Grid.Column="1"
+					Margin="5, 0, 5, 0"
+					HorizontalAlignment="Stretch"
+		        	Header="Поиск">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"></RowDefinition>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition></ColumnDefinition>
+							<ColumnDefinition Width="25"></ColumnDefinition>
+						</Grid.ColumnDefinitions>	
+						<TextBox 
+							Grid.Row="0" Grid.Column="0"
+							Style="{StaticResource DefaultTextBoxStyle}"
+							TextChanged="TbxFastSearch_TextChanged"
+							x:Name="tbxFastSearch"></TextBox>
+						<Button 
+							x:Name="btnClearFastSearch"
+							Grid.Row="0"
+							Grid.Column="1"
+							Click="BtnClearFastSearch_Click"
+							Content="X"></Button>
+					</Grid>
+				</GroupBox>
+				<DataGrid
+					Grid.Row="1" Grid.Column="0"
+					SelectionChanged="DgvBid_SelectionChanged"
+					x:Name="dgvBid"
+					ItemsSource="{Binding BidCollection}"
+					Style="{StaticResource DefaultDataGridStyle}">
+
+					<DataGrid.ContextMenu>
+						<ContextMenu
+							x:Name="contextMenu">
+							<MenuItem
+								Click="ContextPaymentHistory_Click"
+								x:Name="contextPaymentHistory"
+								Header="История платежей">
+							</MenuItem>
+						</ContextMenu>
+					</DataGrid.ContextMenu>
+					<DataGrid.Columns>
+						<DataGridTemplateColumn 
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="Id"
+			                Width="50"
+			                Header="Код">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=Id}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+							
+						<DataGridTemplateColumn 
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="Date_created"
+			                Width="100"
+			                Header="Дата создания">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=Date_created, StringFormat=\{0:dd.MM.yyyy\}}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="Account"
+			                Width="50"
+			                Header="Счет">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=Account}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="SellerName"
+			                Width="*"
+			                Header="Продавец">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=SellerName}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+							
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="BuyerName"
+			                Width="*"
+			                Header="Покупатель">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=BuyerName}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+							
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="Amount"
+			                Width="150"
+			                Header="Сумма">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=Amount, Converter={StaticResource CostConverter}}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>						
+
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="ManagerName"
+			                Width="*"
+			                Header="Менеджер">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                        <TextBlock 
+			                        	Margin="5, 0, 0, 0"
+			                        	Text="{Binding Path=ManagerName}" VerticalAlignment="Center"/>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>	
+						
+						<DataGridTemplateColumn 
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+			                CanUserSort="True"
+			                SortMemberPath="Shipment_date"
+			                Width="*"
+			                Header="Отгружено">
+			                <DataGridTemplateColumn.CellTemplate>
+			                    <DataTemplate>
+			                    	<Grid>
+			                    		<Grid.RowDefinitions>
+											<RowDefinition></RowDefinition>
+			                    			<RowDefinition></RowDefinition>
+			                    		</Grid.RowDefinitions>
+			                    		<TextBlock 		
+											Text="{Binding Path=TransportCompanyName}"			                    			
+			                    			Grid.Row="0"
+			                    			VerticalAlignment="Center"
+			                        		Margin="5, 0, 0, 0"></TextBlock>
+			                        	<TextBlock
+											Grid.Row="1"			                        		
+			                        		Margin="5, 0, 0, 0"
+			                        		Text="{Binding Path=Shipment_date, StringFormat=\{0:dd.MM.yyyy\}}" 
+			                        		VerticalAlignment="Center"/>
+			                    	</Grid>
+			                    </DataTemplate>
+			                </DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					
+					</DataGrid.Columns>
+				</DataGrid>
+			</Grid>	
+		</GroupBox>
+		<Grid Grid.Row="1" Grid.Column="0">
+			<Grid.RowDefinitions>
+				<RowDefinition></RowDefinition>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition></ColumnDefinition>
+				<ColumnDefinition></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<GroupBox 
+				Grid.Row="0" Grid.Column="0"
+				Header="Оборудование в заявке">
+				<DataGrid
+					x:Name="dgvEquipmentBid"
+					SelectionChanged="DgvEquipmentBid_SelectionChanged"
+					Style="{StaticResource DefaultDataGridStyle}">
+					<DataGrid.Columns>
+						
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+							CanUserSort="True"
+							SortMemberPath="EquipmentName"
+							Width="*"
+							Header="Оборудование">
+							<DataGridTemplateColumn.CellTemplate>
+		                        <DataTemplate>
+		                            <TextBlock 
+		                            	Margin="5, 0, 0, 0"
+		                            	VerticalAlignment="Center"
+		                            	Text="{Binding Path=EquipmentName}"></TextBlock>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+							CanUserSort="True"
+							SortMemberPath="ModificationName"
+							Width="*"
+							Header="Модифкация">
+							<DataGridTemplateColumn.CellTemplate>
+		                        <DataTemplate>
+		                            <TextBlock 
+		                            	Margin="5, 0, 0, 0"
+		                            	VerticalAlignment="Center"
+		                            	Text="{Binding Path=ModificationName}"></TextBlock>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+							CanUserSort="True"
+							SortMemberPath="Serial_number"
+							Width="*"
+							Header="Серийный номер">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBlock
+										Margin="5, 0, 0, 0"
+										Text="{Binding Path=Serial_number}"
+										VerticalAlignment="Center" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</GroupBox>
+			<GroupBox 
+				Grid.Row="0" Grid.Column="1"
+				Header="Комплектации">
+				<DataGrid x:Name="dgvComplectation"	Style="{StaticResource DefaultDataGridStyle}">
+					<DataGrid.Columns>
+						
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+							CanUserSort="True"
+							SortMemberPath="Name"
+							Width="*"
+							Header="Наименование">
+							<DataGridTemplateColumn.CellTemplate>
+		                        <DataTemplate>
+		                        	<TextBlock 
+		                        		TextWrapping="Wrap"
+		                        		Margin="5, 0, 0, 0"
+		                        		Text="{Binding Path=Name}" 
+		                        		VerticalAlignment="Center"></TextBlock>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+		
+						<DataGridTemplateColumn
+							CellStyle="{StaticResource DefaultDataGridCellStyle}"
+							CanUserSort="True"
+							SortMemberPath="Complectation_count"
+							Width="140"
+							Header="Количество единиц">
+							<DataGridTemplateColumn.CellTemplate>
+		                        <DataTemplate>
+									<TextBlock 
+										Margin="5, 0, 0, 0"
+										Text="{Binding Path=Complectation_count}" VerticalAlignment="Center"></TextBlock>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
+					</DataGrid.Columns>
+				</DataGrid>
+			</GroupBox>
+		</Grid>
+		<GroupBox 
+			Grid.Column="0" 
+			Grid.Row="2"
+	        Header="Информация о покупателе">
+			<DataGrid x:Name="dgvBuyer"	Style="{StaticResource DefaultDataGridStyle}">
+				<DataGrid.Columns>
+					
+					<DataGridTemplateColumn
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
+						CanUserSort="True"
+						SortMemberPath="Name"
+						Width="*"
+						Header="Наименование">
+						<DataGridTemplateColumn.CellTemplate>
+	                        <DataTemplate>
+	                        	<TextBlock 
+	                        		TextWrapping="Wrap"
+	                        		Margin="5, 0, 0, 0"
+	                        		Text="{Binding Path=Name}" 
+	                        		VerticalAlignment="Center"></TextBlock>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				
+					<DataGridTemplateColumn
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
+						CanUserSort="True"
+						SortMemberPath="Contact_person"
+						Width="*"
+						Header="Контактное лицо">
+						<DataGridTemplateColumn.CellTemplate>
+	                        <DataTemplate>
+	                        	<TextBlock 
+	                        		TextWrapping="Wrap"
+	                        		Margin="5, 0, 0, 0"
+	                        		Text="{Binding Path=Contact_person}" 
+	                        		VerticalAlignment="Center"></TextBlock>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				
+					<DataGridTemplateColumn
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
+						CanUserSort="True"
+						SortMemberPath="Phone"
+						Width="*"
+						Header="Телефон">
+						<DataGridTemplateColumn.CellTemplate>
+	                        <DataTemplate>
+	                        	<TextBlock 
+	                        		TextWrapping="Wrap"
+	                        		Margin="5, 0, 0, 0"
+	                        		Text="{Binding Path=Phone}" 
+	                        		VerticalAlignment="Center"></TextBlock>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				
+					<DataGridTemplateColumn
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
+						CanUserSort="True"
+						SortMemberPath="Email"
+						Width="*"
+						Header="Email">
+						<DataGridTemplateColumn.CellTemplate>
+	                        <DataTemplate>
+	                        	<TextBlock 
+	                        		TextWrapping="Wrap"
+	                        		Margin="5, 0, 0, 0"
+	                        		Text="{Binding Path=Email}" 
+	                        		VerticalAlignment="Center"></TextBlock>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				
+					<DataGridTemplateColumn
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
+						CanUserSort="True"
+						SortMemberPath="City"
+						Width="*"
+						Header="Город">
+						<DataGridTemplateColumn.CellTemplate>
+	                        <DataTemplate>
+	                        	<TextBlock 
+	                        		TextWrapping="Wrap"
+	                        		Margin="5, 0, 0, 0"
+	                        		Text="{Binding Path=City}" 
+	                        		VerticalAlignment="Center"></TextBlock>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				
+				</DataGrid.Columns>
+			</DataGrid>
+		</GroupBox>	
+	</Grid>
+</UserControl>

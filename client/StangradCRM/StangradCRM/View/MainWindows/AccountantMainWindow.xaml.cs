@@ -18,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 using StangradCRM.Model;
+using StangradCRM.View.Controls.AccountantControls;
 using StangradCRM.ViewModel;
 using StangradCRMLibs;
 
@@ -36,7 +37,7 @@ namespace StangradCRM.View.MainWindows
 			int updateTime = 60000;
 			try
 			{
-				updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value);
+				updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value) * 1000;
 			}
 			catch {}
 			 
@@ -44,22 +45,10 @@ namespace StangradCRM.View.MainWindows
 			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }), 
 			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }));
 			
+			tiNewBid.Content = new MainControlNewBid();
+			tiInWorkBid.Content = new MainControlInWork();
+			tiArchiveBid.Content = new MainControlArchiveBid();
 			
-			List<BidStatus> bidStatus = BidStatusViewModel.instance().Collection.ToList();
-			for(int i = 0; i < bidStatus.Count; i++)
-			{
-				try
-				{
-					TabItem tabItem = new TabItem();
-					tabItem.Header = bidStatus[i].Name;
-					tcMain.Items.Add(tabItem);
-					tabItem.Content = View.Helpers.AccountantMainWindowHelper.GetControl(bidStatus[i].Id);
-				}
-				catch(Exception ex)
-				{
-					MessageBox.Show(ex.Message);
-				}
-			}
 		}
 		void MenuItem_Click(object sender, RoutedEventArgs e)
 		{

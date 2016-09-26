@@ -33,8 +33,14 @@ namespace StangradCRM.Core
 		
 		public enum BorderStyle
 		{
-			Solid,
-			Dashed
+			LineStyleNone,
+			Continuous,
+			Dash,
+			DashDot,
+			DashDotDot,
+			Dot,
+			Double,
+			SlantDashDot
 		}
 		
 		public enum Border
@@ -44,5 +50,14 @@ namespace StangradCRM.Core
 			Top,
 			Right,
 			Bottom
+		}
+		
+		public enum BorderWeight
+		{
+			None,
+			Hairline,
+			Medium,
+			Thick,
+			Thin
 		}
 }

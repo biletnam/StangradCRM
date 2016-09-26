@@ -16,6 +16,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using StangradCRM.Model;
 using StangradCRM.ViewModel;
 
 namespace StangradCRM.View.Controls.AdministratorControls
@@ -37,12 +38,39 @@ namespace StangradCRM.View.Controls.AdministratorControls
 		
 		void BtnSaveRow_Click(object sender, RoutedEventArgs e)
 		{
-
+			Button button = sender as Button;
+			if(button == null) return;
+			
+			DataGridRow row = Classes.FindItem.FindParentItem<DataGridRow>(button);
+			if(row == null) return;
+			
+			CRMSetting crmSetting = (CRMSetting)row.Item;
+			if(crmSetting == null) return;
+			
+			if(!crmSetting.save())
+			{
+				MessageBox.Show(crmSetting.LastError);
+				return;
+			}
+			crmSetting.IsSaved = true;
 		}
 		
 		void TbxSettingValue_TextChanged(object sender, TextChangedEventArgs e)
 		{
-
+			TextBox textBox = sender as TextBox;
+			if(textBox == null) return;
+			
+			DataGridRow row = Classes.FindItem.FindParentItem<DataGridRow>(textBox);
+			if(row == null) return;
+			
+			CRMSetting crmSetting = (CRMSetting)row.Item;
+			if(crmSetting == null) return;
+			
+			if(crmSetting.Setting_value != textBox.Text)
+			{
+				crmSetting.Setting_value = textBox.Text;
+				crmSetting.IsSaved = false;
+			}
 		}
 	}
 }

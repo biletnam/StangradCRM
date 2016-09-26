@@ -2,9 +2,9 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:enum="clr-namespace:StangradCRM.Classes"  
 	xmlns:converters="clr-namespace:StangradCRM.Converters"  
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	xmlns:controls="clr-namespace:StangradCRM.Controls"  
+ 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<UserControl.Resources>
-        
 		<Style x:Key="AddPaymentButton" TargetType="Button" BasedOn="{StaticResource ButtonOperationGridAnimateStyle}">
         	<Style.Triggers>
         		<DataTrigger Binding="{Binding Path=Debt}" Value="0">
@@ -14,7 +14,7 @@
 		</Style>
 		<converters:CostConverter x:Key="CostConverter"></converters:CostConverter>
 	</UserControl.Resources>
-	<Grid Background="White">
+	<Grid Background="White">		
 		<Grid.RowDefinitions>
 			<RowDefinition></RowDefinition>
 			<RowDefinition Height="235"></RowDefinition>
@@ -23,6 +23,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition></ColumnDefinition>
 		</Grid.ColumnDefinitions>
+
 		<GroupBox Grid.Row="0" Grid.Column="0" Header="Заявки">
 			<Grid>
 				<Grid.RowDefinitions>
@@ -412,6 +413,10 @@
 									x:Name="miPrintSticker"
 									Click="MiPrintSticker_Click"
 									Header="Печать наклейки"></MenuItem>
+								<MenuItem 
+									x:Name="miPrintBlank"
+									Click="MiPrintBlank_Click"
+									Header="Печать бланка"></MenuItem>
 							</ContextMenu>						
 						</DataGrid.ContextMenu>
 						
@@ -419,10 +424,32 @@
 							<Style TargetType="DataGridRow">
 								<EventSetter Event="MouseDoubleClick" Handler="DgvEquipmentBid_RowDoubleClick"></EventSetter>
 								<EventSetter Event="PreviewKeyDown" Handler="DgvEquipmentBid_PreviewKeyDown"></EventSetter>
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding Path=IsBlankPrint}" Value="True">
+										<Setter Property="Background" Value="#c2f5c2"></Setter>
+									</DataTrigger>
+								</Style.Triggers>
 							</Style>
 						</DataGrid.RowStyle>
 						
 						<DataGrid.Columns>
+							
+	
+							<DataGridTemplateColumn
+								CellStyle="{StaticResource DefaultDataGridCellStyle}"
+								CanUserSort="True"
+								SortMemberPath="Id"
+								Width="70"
+								Header="Код">
+								<DataGridTemplateColumn.CellTemplate>
+			                        <DataTemplate>
+			                            <TextBlock 
+			                            	Margin="5, 0, 0, 0"
+			                            	VerticalAlignment="Center"
+			                            	Text="{Binding Path=Id}"></TextBlock>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
 							
 							<DataGridTemplateColumn
 								CellStyle="{StaticResource DefaultDataGridCellStyle}"
@@ -666,5 +693,18 @@
 				</DataGrid.Columns>
 			</DataGrid>
 		</GroupBox>
+			
+		<controls:ProcessControl 
+			x:Name="processControl"
+			Panel.ZIndex="100"
+			Grid.Column="0"
+			Grid.Row="0"
+			Grid.RowSpan="3"
+			Visibility="Hidden"
+			MessageHorizontalAlignment="Center"
+			MessageVerticalAlignment="Center"
+			MessageMargin="0, 0, 10, 10"
+			VerticalAlignment="Stretch"
+			HorizontalAlignment="Stretch" />
 	</Grid>
 </UserControl>

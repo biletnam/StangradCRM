@@ -146,15 +146,15 @@ namespace StangradCRM.Core
 				LastError = "Данные о добавленной строке не были преобразованы";
 				return false;
 			}
-			Row_order = saveResult.Row_order;
+
 			if(saveResult.Last_modified != null)
 			{
 				Last_modified = (DateTime)saveResult.Last_modified;
-				Log.Write(Last_modified.ToString("dd.MM.yyyy HH:ss:mm"));
 			}
 			
 			if(Id == 0)
 			{
+				Row_order = saveResult.Row_order;
 				if(saveResult.Id == 0)
 				{
 					LastError = "Идентификатор не был получен.";
@@ -163,7 +163,7 @@ namespace StangradCRM.Core
 				Id = saveResult.Id;
 				return CurrentViewModel.add(this);
 			}
-			
+			raiseAllProperties();
 			return true;
 		}
 		
