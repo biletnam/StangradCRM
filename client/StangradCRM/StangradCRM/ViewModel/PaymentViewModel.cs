@@ -109,5 +109,10 @@ namespace StangradCRM.ViewModel
 		{
 			return _collection.Where(x => x.Id_bid == bidId).FirstOrDefault();
 		}
+		
+		public List<Payment> GetByPeriod (DateTime start, DateTime end)
+		{
+			return _collection.Where(x => (x.Payment_date >= start) && (x.Payment_date <= end)).ToList();
+		}
 	}
 }

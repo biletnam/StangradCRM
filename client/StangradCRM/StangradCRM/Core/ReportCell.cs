@@ -26,6 +26,8 @@ namespace StangradCRM.Core
 		
 		public uint FontSize { get; set; } // +
 		
+		public Format Format { get; set; }
+		
 		public List<TextStyle> TextStyle { get; set; }
 		public HorizontalAlignment HorizontalAlignment { get; set; } // +
 		public VerticalAlignment VerticalAlignment { get; set; } // +

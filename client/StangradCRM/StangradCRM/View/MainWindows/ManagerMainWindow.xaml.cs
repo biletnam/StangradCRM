@@ -45,7 +45,9 @@ namespace StangradCRM.View.MainWindows
 			}
 			catch {}
 			 
-			Classes.BidUpdateTask.Start(Dispatcher, updateTime, 
+			Classes.UpdateTask.Start(Dispatcher, 
+			                         	new Action (() => { BidViewModel.instance().RemoteLoad(); }),
+			                         	updateTime,
 			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }), 
 			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }));
 			
@@ -73,6 +75,18 @@ namespace StangradCRM.View.MainWindows
 		void MenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
+		}
+		
+		void MiDataRefresh_Click(object sender, RoutedEventArgs e)
+		{
+			Classes.UpdateTask.StartSingle(Dispatcher, 
+	                                  	new Action (() => { 
+			                                           	BidViewModel.instance().RemoteLoad();
+			                                           	BuyerViewModel.instance().RemoteLoad();
+			                                           	ComplectationItemViewModel.instance().RemoteLoad();
+		                                           }),
+			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }), 
+			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }));
 		}
 	}
 }

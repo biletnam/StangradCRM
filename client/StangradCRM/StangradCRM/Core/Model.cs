@@ -388,5 +388,19 @@ namespace StangradCRM.Core
 			return true;
         }
         
+		protected bool IsChanged (object o, string propertyName)
+		{
+			if(!oldValues.ContainsKey(propertyName))
+			{
+				return true;
+			}
+			System.Reflection.PropertyInfo propertyInfo 
+				= o.GetType().GetProperty(propertyName);
+			if(propertyInfo == null) return true;
+			if(propertyInfo.GetValue(this, null).ToString()
+			   == oldValues[propertyName].ToString()) return false;
+			return true;
+		}
+        
 	}
 }

@@ -92,6 +92,11 @@ namespace StangradCRM.Core
 			}
 		}
 		
+        protected void SetLandscapeOrientation ()
+        {
+            excelWorkSheet.PageSetup.Orientation = XlPageOrientation.xlLandscape;
+}
+		
 		private void Close ()
 		{
             excelWorkBook.Close(true, missingValue, missingValue);
@@ -166,6 +171,24 @@ namespace StangradCRM.Core
 
 			//Размер шрифта ячейки
 			if(cell.FontSize != 0) range.Font.Size = cell.FontSize;			
+			
+			//Формат
+			switch(cell.Format)
+			{
+				case Format.Money:
+					range.NumberFormat = "#,##0.00$"; break;
+			}
+			
+			/* Форматы ячеек
+			'000000'
+			'0.000'  числовой с 3 цифрами после точки 
+			'0.0_ ;[Red]-0.0' отрицательные числа красным цветом
+			'General' общий
+			'#,##0.00$' денежный
+			'd/m/yyyy;@' дата зависит от настроек ОС 
+			'm/d/yyyy' дата
+			'@' текстовый
+			*/
 			
 			//Горизонтальное положение текста в ячейке
 			switch (cell.HorizontalAlignment)

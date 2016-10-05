@@ -36,7 +36,7 @@ namespace StangradCRM.Model
 		public int Id_bid_status { get; set; }
 		public int Id_payment_status { get; set; }
 		public int? Id_transport_company { get; set; }
-		public int? Id_manager { get; set; }
+		public int Id_manager { get; set; }
 		public DateTime Date_created { get; set;	}
 		public DateTime? Shipment_date { get; set; }
 		public DateTime? Planned_shipment_date { get; set; }
@@ -192,10 +192,6 @@ namespace StangradCRM.Model
 		{
 			get
 			{
-				if(Id_manager == null)
-				{
-					return "<Не назначен>";
-				}
 				Manager manager = ManagerViewModel.instance().getById((int)Id_manager);
 				if(manager != null)
 				{
@@ -236,8 +232,19 @@ namespace StangradCRM.Model
 		{
 			get
 			{
+				int dayCount = 0;
+				CRMSetting crmSetting = CRMSettingViewModel.instance().getByMashineName("warning_shipment_date_day_count");
+				if(crmSetting != null)
+				{
+					try
+					{
+						dayCount = int.Parse(crmSetting.Setting_value);
+					}
+					catch {}
+				}
+				
 				if(Planned_shipment_date != null 
-					&& Planned_shipment_date < DateTime.Now 
+				   && ((DateTime)Planned_shipment_date).AddDays(-dayCount) < DateTime.Now
 					&& Is_shipped == 0)
 				{
 					return true;
@@ -319,11 +326,19 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		public bool IsDuplicate
+		{
+			get
+			{
+				return BidViewModel.instance().IsDuplicate(this);
+			}
+		}
+		
 		public Bid() {}
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
 		{
-			http.addParameter("id_seller", Id_seller);
+			http.addParameter("id_seller", Id_seller);			
 			http.addParameter("id_buyer", Id_buyer);
 			http.addParameter("id_bid_status", Id_bid_status);
 			http.addParameter("id_payment_status", Id_payment_status);
@@ -331,10 +346,8 @@ namespace StangradCRM.Model
 			{
 				http.addParameter("id_transport_company", (int)Id_transport_company);
 			}
-			if(Id_manager != null)
-			{
-				http.addParameter("id_manager", (int)Id_manager);
-			}
+
+			http.addParameter("id_manager", (int)Id_manager);
 			if(Shipment_date != null)
 			{
 				http.addParameter("shipment_date", ((DateTime)Shipment_date).ToString("yyyy-MM-dd"));
@@ -441,7 +454,6 @@ namespace StangradCRM.Model
 		public override void raiseAllProperties()
 		{
 			if(oldValues.ContainsKey("Id_bid_status") &&
-			   oldValues["Id_bid_status"] != null &&
 			   (oldValues["Id_bid_status"] as int?) != null &&
 			   Id_bid_status != (int)oldValues["Id_bid_status"])
 			{
@@ -449,7 +461,6 @@ namespace StangradCRM.Model
 			}
 			
 			if(oldValues.ContainsKey("Is_archive") &&
-			   oldValues["Is_archive"] != null &&
 			   (oldValues["Is_archive"] as int?) != null &&
 			   Is_archive != (int)oldValues["Is_archive"])
 			{
@@ -487,9 +498,9 @@ namespace StangradCRM.Model
 		
 		public override void loadedItemInitProperty ()
 		{
-			RaisePropertyChanged("Id_payment_status", Id_payment_status, true);
-			RaisePropertyChanged("Id_bid_status", Id_bid_status, true);
-			RaisePropertyChanged("Is_archive", Is_archive, true);
+			oldValues["Id_payment_status"] = Id_payment_status;
+			oldValues["Id_bid_status"] = Id_bid_status;
+			oldValues["Is_archive"] = Is_archive;
 		}
 		
 		public override void replace(object o)

@@ -19,10 +19,35 @@
 			</MenuItem>
 			<MenuItem Header="Отчеты">
 				<MenuItem
-					Header="Отчет 1"
-					x:Name="miReport1">
+					Click="MiBuyerList_Click"
+					Header="Список покупателей"
+					x:Name="miBuyerList">
+				</MenuItem>
+				<MenuItem
+					Click="MiTurnover_Click"
+					Header="Поступления"
+					x:Name="miTurnover">
+				</MenuItem>
+				<MenuItem
+					Click="MiEquipmentShipment_Click"
+					Header="Отгрузки оборудования"
+					x:Name="miEquipmentShipment">
+				</MenuItem>
+				<MenuItem
+					Click="MiBuyerHistory_Click"
+					Header="Анализ покупателя"
+					x:Name="miBuyerHistory">
+				</MenuItem>
+				<MenuItem
+					Click="MiIndicators_Click"
+					Header="Показатели за период"
+					x:Name="miIndicators">
 				</MenuItem>
 			</MenuItem>
+			<MenuItem 
+				Click="MiDataRefresh_Click"
+				Header="Обновить" 
+				x:Name="miDataRefresh"></MenuItem>
 		</Menu>
 		<TabControl 
 			x:Name="tcMain" 

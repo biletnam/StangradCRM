@@ -7,9 +7,12 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
+using System.Collections.Generic;
 using System.Linq;
+
 using StangradCRM.Core;
 using StangradCRM.Model;
+using StangradCRMLibs;
 
 namespace StangradCRM.ViewModel
 {
@@ -103,5 +106,53 @@ namespace StangradCRM.ViewModel
 		{
 			return _collection.Where(x => x.Name == name).FirstOrDefault();
 		}
+		
+		//Ф-я загрузки данных с сервера
+		private List<ComplectationItem> loadData ()
+		{
+			HTTPManager.HTTPRequest http = HTTPManager.HTTPRequest.Create(Settings.uri);
+			http.UseCookie = true;
+			http.addParameter("entity", "ComplectationItem/get");
+			
+			if(!http.post()) return null;
+			
+			ResponseParser parser = ResponseParser.Parse(http.ResponseData);
+			if(!parser.NoError)
+			{
+				return null;
+			}
+			return parser.ToObject<List<ComplectationItem>>();
+		}
+		
+		//Ф-я удаленной загрузки
+		public void RemoteLoad()
+		{
+			//Список элементов комплектаций
+			List<ComplectationItem> items = null;
+			try
+			{
+				items = loadData();
+			}
+			catch
+			{
+				return;
+			}
+			if(items == null) return;
+
+			//Цикл по элементам комплектаций			
+			for(int i = 0; i < items.Count; i++)
+			{
+				ComplectationItem item = getById(items[i].Id);
+				if(item == null)
+				{
+					add(items[i]);
+				}
+				else
+				{
+					item.replace(items[i]);
+				}
+			}
+		}
+		
 	}
 }

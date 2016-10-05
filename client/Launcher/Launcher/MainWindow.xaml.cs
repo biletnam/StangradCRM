@@ -52,16 +52,16 @@ namespace Launcher
 				tbxLogin.Text = this.settings.Read("login");
 			if(this.settings.KeyExists("version"))
 				this.version = this.settings.Read("version");
+			if(this.settings.KeyExists("app"))
+				this.appName = this.settings.Read("app");				
 			if(this.settings.KeyExists("host")) {
 				tbxHost.Text = this.settings.Read("host");
 			}
-			if(this.settings.KeyExists("app")) {
-				this.appName = this.settings.Read("app");
-			}
-			
 			else {
 				this.toggleHostSettingsVisible(true);
 			}
+			if(this.settings.KeyExists("pass"))
+				this.tbxPassword.Password = PasswordDecrypt(this.settings.Read("pass"), tbxHost.Text + "-" + tbxLogin.Text);
 			
 			tbxLogin.TextChanged += 
 				delegate { tbxLogin.Background = defaultBrush; };
@@ -115,6 +115,7 @@ namespace Launcher
 		private void memberAuthData () {
 			settings.Write("save", "true");
 			settings.Write("login", tbxLogin.Text);
+			settings.Write("pass", PasswordEncrypt(tbxPassword.Password, tbxHost.Text + "-" + tbxLogin.Text));
 			settings.Write("host", tbxHost.Text);
 			settings.Write("app", this.appName);
 		}
@@ -160,7 +161,10 @@ namespace Launcher
 				return;
 			}
 			loadingProgress.Visibility = Visibility.Visible;
+			
 			btnLogin.IsEnabled = false;
+			tbxPassword.IsEnabled = false;
+			
 			Auth auth = Auth.getInstance();
 			auth.Login = tbxLogin.Text;
 			auth.Password = tbxPassword.Password;
@@ -184,9 +188,21 @@ namespace Launcher
 					                                  	lblCurrentStatus.Visibility = Visibility.Hidden;
 					                                  	loadingProgress.Visibility = Visibility.Hidden;
 					                                  	btnLogin.IsEnabled = true;
+					                                  	tbxPassword.IsEnabled = true;
 					                                  }));
 				}
             });
 		}
+		
+		private string PasswordEncrypt (string password, string key)
+		{
+			return Crypto.EncryptStringAES(password, key);
+		}
+		
+		private string PasswordDecrypt (string password, string key)
+		{
+			return Crypto.DecryptStringAES(password, key);
+		}
+		
 	}
 }

@@ -73,6 +73,7 @@
       <DependentUpon>Loading.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Crypto.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

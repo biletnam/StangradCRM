@@ -16,20 +16,17 @@ using StangradCRM.ViewModel;
 namespace StangradCRM.Classes
 {
 	/// <summary>
-	/// Description of BidUpdateTask.
+	/// Description of UpdateTask.
 	/// </summary>
-	public static class BidUpdateTask
+	public static class UpdateTask
 	{
-		private static Task task;	
-		private static Mutex mutex;
-		
-		public static void Start (Dispatcher dispatcher, 
-		                          int updateTime = 60000, 
+		public static void Start (Dispatcher dispatcher,
+		                          Action action,
+		                          int updateTime = 60000,
 		                          Action beforeCallback = null, 
 		                          Action afterCallback = null)
 		{			
-			mutex = new Mutex();
-			task = Task.Factory.StartNew( () => 
+			Task.Factory.StartNew( () => 
             {
 				while(true) 
 				{
@@ -42,20 +39,30 @@ namespace StangradCRM.Classes
 					{
 						dispatcher.BeginInvoke(DispatcherPriority.Background, afterCallback);
 					}
-					dispatcher.BeginInvoke(DispatcherPriority.Background, 
-					                       new Action(() => BidViewModel.instance().RemoteLoad()));
+					if(action != null)
+						dispatcher.BeginInvoke(DispatcherPriority.Background, action);
 				}
             }, System.Threading.Tasks.TaskCreationOptions.LongRunning);
 		}
 		
-		public static Task GetTask ()
+		public static void StartSingle (Dispatcher dispatcher, 
+	                              Action action,
+		                          Action beforeCallback = null, 
+		                          Action afterCallback = null)
 		{
-			return task;
-		}
-		
-		public static Mutex GetMutex ()
-		{
-			return mutex;
+			Task.Factory.StartNew( () => 
+            {
+				if(beforeCallback != null)
+				{
+					dispatcher.BeginInvoke(DispatcherPriority.Background, beforeCallback);
+				}
+				if(action != null)
+					dispatcher.BeginInvoke(DispatcherPriority.Background, action);
+				if(afterCallback != null)
+				{
+					dispatcher.BeginInvoke(DispatcherPriority.Background, afterCallback);
+				}
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning);
 		}
 		
 	}

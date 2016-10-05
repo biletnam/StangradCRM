@@ -83,9 +83,6 @@ class SQLExecutor {
             $type = $this->queries[$i]['type'];
             $sth = $this->dbh->prepare($query);
             for($i = 0; $i < count($values); $i++) {
-                
-                
-                
                 if($values[$i] === 'NULL' || $values[$i] === NULL) {
                     $sth->bindValue($i+1, NULL, \PDO::PARAM_NULL);
                 }
@@ -97,6 +94,7 @@ class SQLExecutor {
                 }
             }
             try {
+                \libs\classes\file\Log::Write($query);
                 $sth->execute();
                 $this->execRules($sth, $type);
             }

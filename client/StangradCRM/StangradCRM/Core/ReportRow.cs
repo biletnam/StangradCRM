@@ -36,5 +36,10 @@ namespace StangradCRM.Core
 		{
 			Cells = cells;
 		}
+		
+		public void Add (ReportCell cell)
+		{
+			Cells.Add(cell);
+		}
 	}
 }

@@ -60,4 +60,11 @@ namespace StangradCRM.Core
 			Thick,
 			Thin
 		}
+		
+		public enum Format
+		{
+			Text,
+			Date,
+			Money
+		}
 }

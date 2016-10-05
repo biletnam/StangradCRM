@@ -18,7 +18,7 @@ namespace StangradCRM.Classes
 		private static string[] months = new string[] 
 		{
 			"Январь", "Февраль", "Март", "Апрель", "Май", 
-			"Июнь", "Июль", "Август", "Сетнябрь", "Октябрь", "Ноябрь", "Декабрь"
+			"Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
 		};
 		public static string getRuMonthNameByNumber (int monthNumber)
 		{

@@ -263,7 +263,7 @@ namespace StangradCRM.View.Controls.DirectorControls
 						EquipmentBid equipmentBid = bid.EquipmentBidCollection[i];
 						string fileName = "Бланк заявки №" + bid.Id.ToString() + "-" + equipmentBid.Id.ToString() + " " + bid.Account + " " + buyer.Name + ".xlsx";
 						Reports.BidBlank bidBlank = new StangradCRM.Reports.BidBlank(bid, equipmentBid);
-						bidBlank.FileName = openFolderDialog.SelectedPath + "/" + ReplaceSpecialCharsFileName(fileName);
+						bidBlank.FileName = openFolderDialog.SelectedPath + "/" + Classes.ReplaceSpecialCharsFileName.Replace(fileName);
 						if(!bidBlank.Save())
 						{
 							MessageBox.Show(bidBlank.LastError);
@@ -547,7 +547,7 @@ namespace StangradCRM.View.Controls.DirectorControls
 			{
 				string fileName = "Бланк заявки №" + bid.Id.ToString() + "-" + equipmentBid.Id.ToString() + " " + bid.Account + " " + buyer.Name + ".xlsx";
 				Reports.BidBlank bidBlank = new StangradCRM.Reports.BidBlank(bid, equipmentBid);
-				bidBlank.FileName = openFolderDialog.SelectedPath + "/" + ReplaceSpecialCharsFileName(fileName);
+				bidBlank.FileName = openFolderDialog.SelectedPath + "/" + Classes.ReplaceSpecialCharsFileName.Replace(fileName);
 				
 				processControl.Visibility = Visibility.Visible;
 				processControl.Text = "Сохранение бланка заявки...";
@@ -592,22 +592,6 @@ namespace StangradCRM.View.Controls.DirectorControls
 			{
       			dg.CurrentCell = new DataGridCellInfo(row.Item, dg.CurrentCell.Column);
 			}
-		}
-		
-		//Замена спец. символов в имени файла
-		string ReplaceSpecialCharsFileName (string filename)
-		{
-			filename = filename.Replace('/', '-');
-			filename = filename.Replace('\\', '-');
-			filename = filename.Replace('|' , '-');
-			filename = filename.Replace('<' , '-');
-			filename = filename.Replace('>' , '-');
-			filename = filename.Replace('?' , '-');
-			filename = filename.Replace('[' , '-');
-			filename = filename.Replace(']' , '-');
-			filename = filename.Replace(':' , '-');
-			filename = filename.Replace('"' , ' ');
-			return filename.Replace('*' , '-');
 		}
 	}
 }

@@ -7,9 +7,12 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using StangradCRM.Core;
 using StangradCRM.Model;
-using System.Linq;
+using StangradCRMLibs;
 
 namespace StangradCRM.ViewModel
 {
@@ -96,5 +99,75 @@ namespace StangradCRM.ViewModel
 		{
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
 		}
+		
+		public List<Buyer> getByMoreDateCreated (DateTime date_created)
+		{
+			return _collection.Where(x => x.Date_created >= date_created).ToList();
+		}
+		
+		public void fastSearch (string searchString)
+		{
+			searchString = searchString.ToLower();
+			string[] properties = new string[] 
+			{
+				"Name", "Contact_person", "Phone", "Email", "City"
+			};
+            _collection.ToList().ForEach(x => x.setFilters(properties, false));
+            
+            _collection.Where(x => (x.Name.ToLower().IndexOf(searchString) != -1) |
+                             (x.Contact_person.ToLower().IndexOf(searchString) != -1) |
+                             	(x.Phone.ToString().ToLower().IndexOf(searchString) != -1) |
+                             	(x.Email.ToLower().IndexOf(searchString) != -1 ) |
+                             	(x.City.ToLower().IndexOf(searchString) != -1 )
+                             ).ToList().ForEach(y => y.setFilters(properties, true));
+		}
+		
+		//Ф-я загрузки данных с сервера
+		private List<Buyer> loadData ()
+		{
+			HTTPManager.HTTPRequest http = HTTPManager.HTTPRequest.Create(Settings.uri);
+			http.UseCookie = true;
+			http.addParameter("entity", "Buyer/get");
+			
+			if(!http.post()) return null;
+			
+			ResponseParser parser = ResponseParser.Parse(http.ResponseData);
+			if(!parser.NoError)
+			{
+				return null;
+			}
+			return parser.ToObject<List<Buyer>>();
+		}
+		
+		//Ф-я удаленной загрузки
+		public void RemoteLoad()
+		{
+			//Список покупателей
+			List<Buyer> buyers = null;
+			try
+			{
+				buyers = loadData();
+			}
+			catch
+			{
+				return;
+			}
+			if(buyers == null) return;
+
+			//Цикл по покупателям			
+			for(int i = 0; i < buyers.Count; i++)
+			{
+				Buyer buyer = getById(buyers[i].Id);
+				if(buyer == null)
+				{
+					add(buyers[i]);
+				}
+				else
+				{
+					buyer.replace(buyers[i]);
+				}
+			}
+		}
+		
 	}
 }

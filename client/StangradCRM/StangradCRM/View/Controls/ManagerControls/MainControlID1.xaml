@@ -104,6 +104,11 @@
 							<Setter Property="Background" Value="{Binding Path=PaymentStatusColor}"></Setter>
 							<EventSetter Event="MouseDoubleClick" Handler="DgvBid_RowDoubleClick"></EventSetter>
 							<EventSetter Event="PreviewKeyDown" Handler="DgvBid_PreviewKeyDown"></EventSetter>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding Path=IsDuplicate}" Value="True">
+									<Setter Property="Background" Value="#ff0000"></Setter>
+								</DataTrigger>
+							</Style.Triggers>
 						</Style>
 					</DataGrid.RowStyle>
 					<DataGrid.Columns>

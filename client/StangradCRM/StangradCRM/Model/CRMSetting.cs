@@ -48,12 +48,18 @@ namespace StangradCRM.Model
 		
 		public override void replace(object o)
 		{
-			throw new NotImplementedException();
+			CRMSetting setting = o as CRMSetting;
+			if(o == null) return;
+			Setting_mashine_name = setting.Setting_mashine_name;
+			Setting_name = setting.Setting_name;
+			Setting_value = setting.Setting_value;
 		}
 		
 		public override void raiseAllProperties()
 		{
-			throw new NotImplementedException();
+			RaisePropertyChanged("Setting_mashine_name", Setting_mashine_name);
+			RaisePropertyChanged("Setting_name", Setting_name);
+			RaisePropertyChanged("Setting_value", Setting_value);
 		}
 	}
 }

@@ -192,7 +192,34 @@ namespace StangradCRM.ViewModel
 		{
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
 		}
+		
+		public List<Bid> getBySellerId (int id_seller)
+		{
+			return _collection.Where(x => x.Id_seller == id_seller).ToList();
+		}
 	
+		public List<Bid> GetByPeriod (DateTime start, DateTime end)
+		{
+			return _collection.Where(x => (x.Date_created >= start) && (x.Date_created <= end)).ToList();
+		}
+		
+		public DateTime GetDateCreatedFirsBid ()
+		{
+			if(_collection.Count == 0) return DateTime.Now;
+			return _collection.Min(x => x.Date_created);
+		}
+		
+		public List<Bid> GetByYearAndMonth (int year, int month)
+		{
+			if(year == 0) return new List<Bid>();
+			List<Bid> bid = _collection.Where(x => x.Date_created.Year == year).ToList();
+			if(month != 0)
+			{
+				return bid.Where(x => x.Date_created.Month == month).ToList();
+			}
+			return bid;
+		}
+		
 		public DateTime maxLastModified ()
 		{
 			if(_collection.Count > 0)
@@ -200,6 +227,17 @@ namespace StangradCRM.ViewModel
 				return _collection.Max(x => x.Last_modified);
 			}
 			return loadDateTime;
+		}
+		
+		public bool IsDuplicate (Bid bid)
+		{
+			int count = _collection.Where(x => 
+                              (x.Account == bid.Account)
+                              && (x.Id_seller == bid.Id_seller)
+                              && (x.Id_buyer == bid.Id_buyer)
+                              && (x.Id != bid.Id)).Count();
+			if(count == 0) return false;
+			return true;
 		}
 		
 		//Ф-я загрузки модифицированных данных с сервера

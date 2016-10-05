@@ -18,6 +18,10 @@
 				<MenuItem
 					Header="Выход" Click="MenuItem_Click"></MenuItem>
 			</MenuItem>
+			<MenuItem 
+				Click="MiDataRefresh_Click"
+				Header="Обновить" 
+				x:Name="miDataRefresh"></MenuItem>
 		</Menu>
 		<TabControl 
 			x:Name="tcMain" 

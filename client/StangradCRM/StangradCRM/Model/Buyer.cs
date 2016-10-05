@@ -22,13 +22,23 @@ namespace StangradCRM.Model
 		public string Phone { get; set; }
 		public string Email { get; set; }
 		public string City { get; set; }
-		
+		public DateTime? Date_created { get; set; }
+
 		public string SecondColumnValue //Кастыль 
 		{
 			get
 			{
 				if(City == "") return "";
 				return "(" + City + ")";
+			}
+		}
+		
+		public string NameWithCity
+		{
+			get
+			{
+				if(City == "") return Name;
+				return Name + " (" + City + ")";
 			}
 		}
 		

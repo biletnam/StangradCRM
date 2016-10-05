@@ -150,23 +150,42 @@ class Model {
         static::$model[static::table()][(int)$id] = $instance;
     }
 
-    public function save() {
-        if($this->Id != null) {
-            return $this->update();
+    private function GetChangedFields ()
+    {
+        $changed_fields = [];
+        for($i = 0; $i < count($this->properties); $i++)
+        {
+            $property = \system\libs\FormatModelPropertyName::format($this->properties[$i]);
+            $default_property = "Default" . $property;
+            if($this->$property !== $this->$default_property)
+            {
+                $changed_fields[] = $this->properties[$i];
+            }
         }
-        return $this->insert();
+        return $changed_fields;
+    }
+
+    public function save() {
+        $changed_properties = $this->GetChangedFields();
+        if($this->Id != null) {
+            return $this->update($changed_properties);
+        }
+        return $this->insert($changed_properties);
     }
     
-    private function insert() {
+    private function insert($changed_fields) {
         $data = [];
-        for($i = 0; $i < count($this->properties); $i++) {
-            $property = \system\libs\FormatModelPropertyName::format($this->properties[$i]);
+        if(count($changed_fields) === 0) 
+        {
+            return [1,  "Not saved data"];
+        }
+        for($i = 0; $i < count($changed_fields); $i++) {
+            $property = \system\libs\FormatModelPropertyName::format($changed_fields[$i]);
             $data[$i] = $this->$property;
         }
-        
         $constructor = QueryBuilder::constructor(static::connection());
         $operation = new $constructor(static::table(), $this->caller, static::connection());
-        $result = $operation->insert($this->properties, $data)->exec();
+        $result = $operation->insert($changed_fields, $data)->exec();
         if($result == false) {
             $error = $operation::lastError();
             return [1, $error->getMessage()];
@@ -175,16 +194,19 @@ class Model {
     }
     
     
-    private function update() {
+    private function update($changed_fields) {
         $data = [];
-        for($i = 0; $i < count($this->properties); $i++) {
-            $property = \system\libs\FormatModelPropertyName::format($this->properties[$i]);
+        if(count($changed_fields) === 0) 
+        {
+            return [0, [static::pk() => $this->Id]];
+        }
+        for($i = 0; $i < count($changed_fields); $i++) {
+            $property = \system\libs\FormatModelPropertyName::format($changed_fields[$i]);
             $data[$i] = $this->$property;
         }
-
         $constructor = QueryBuilder::constructor(static::connection());
         $operation = new $constructor(static::table(), $this->caller, static::connection());
-        $result = $operation->update($this->properties, $data)->where('id', $this->Id)->exec();
+        $result = $operation->update($changed_fields, $data)->where('id', $this->Id)->exec();
         if($result == false) {
             $error = $operation::lastError();
             return [1, $error->getMessage()];
@@ -226,10 +248,16 @@ class Model {
 
     private static function rowPopulate($instance, $row, $fields) {
         for($i = 0; $i < count($fields); $i++) {
-            if(!isset($row[$fields[$i]])) continue;
+            if(!array_key_exists($fields[$i], $row)) 
+            {
+                continue;
+            }
             static::addToModel($row['id'], $instance);
             $property = \system\libs\FormatModelPropertyName::format($fields[$i]);
             $instance->$property = $row[$fields[$i]];
+            
+            $default_property = "Default" . $property;
+            $instance->$default_property = $instance->$property;
         }
     }
     
@@ -253,8 +281,13 @@ class Model {
     private function createModelFields() {
         $fields = static::fields();
         for($i = 0; $i < count($fields); $i++) {
+            
             $property = \system\libs\FormatModelPropertyName::format($fields[$i]);
             $this->$property = null;
+            
+            $default_property = "Default" . $property;
+            $this->$default_property = null;
+            
             $this->properties[] = $fields[$i];
         }
     }

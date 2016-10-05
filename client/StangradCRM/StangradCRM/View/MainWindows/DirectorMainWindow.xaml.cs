@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 using StangradCRM.View.Controls.DirectorControls;
+using StangradCRM.View.Forms;
 using StangradCRM.ViewModel;
 using StangradCRMLibs;
 
@@ -39,7 +40,9 @@ namespace StangradCRM.View.MainWindows
 			}
 			catch {}
 			 
-			Classes.BidUpdateTask.Start(Dispatcher, updateTime, 
+			Classes.UpdateTask.Start(Dispatcher, 
+			                            new Action (() => { BidViewModel.instance().RemoteLoad(); }),
+			                            updateTime,
 			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }), 
 			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }));
 			
@@ -51,6 +54,49 @@ namespace StangradCRM.View.MainWindows
 		void MiExit_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
+		}
+		
+		void MiDataRefresh_Click(object sender, RoutedEventArgs e)
+		{
+			Classes.UpdateTask.StartSingle(Dispatcher, 
+		                               new Action (() => { 
+			                                           	BidViewModel.instance().RemoteLoad();
+			                                           	BuyerViewModel.instance().RemoteLoad();
+			                                           	ComplectationItemViewModel.instance().RemoteLoad();
+		                                           }),
+			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }), 
+			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }));
+		}
+		
+		void MiBuyerList_Click(object sender, RoutedEventArgs e)
+		{
+			SelectBuyerCreatedDateWindow window
+				= new SelectBuyerCreatedDateWindow();
+			window.ShowDialog();
+		}
+		
+		void MiTurnover_Click(object sender, RoutedEventArgs e)
+		{
+			SelectSellerAndPeriod window = new SelectSellerAndPeriod();
+			window.ShowDialog();
+		}
+		
+		void MiEquipmentShipment_Click(object sender, RoutedEventArgs e)
+		{
+			SelectShipmentPeriodWindow window = new SelectShipmentPeriodWindow();
+			window.ShowDialog();
+		}
+		
+		void MiBuyerHistory_Click(object sender, RoutedEventArgs e)
+		{
+			SelectBuyerPeriodWindow window = new SelectBuyerPeriodWindow();
+			window.ShowDialog();
+		}
+		
+		void MiIndicators_Click(object sender, RoutedEventArgs e)
+		{
+			IndicatorsPeriodWindow window = new IndicatorsPeriodWindow();
+			window.ShowDialog();
 		}
 	}
 }
