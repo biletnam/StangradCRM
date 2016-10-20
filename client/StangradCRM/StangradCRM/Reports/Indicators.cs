@@ -37,22 +37,23 @@ namespace StangradCRM.Reports
 		public override bool Save()
 		{
 			ReportRow row = new ReportRow();
-			string headerText = "Показатели за период " + year.ToString() + " г. ";
+			string headerText = "Показатели за период " + year.ToString() + " г.";
 			if(month != 0)
 			{
-				headerText += Classes.Months.getRuMonthNameByNumber(month);
+				headerText += ", " + Classes.Months.getRuMonthNameByNumber(month);
 			}
 			row.Add(new ReportCell(headerText) 
 			        {
-			        	ColumnSpan=2,
+			        	ColumnSpan=3,
 			        	Height=18.75,
 			        	Width=18.86,
 			        	TextStyle = new List<TextStyle>() { TextStyle.Bold }
 			        });
 			row.Add(new ReportCell() { Width = 35.43});
-			row.Add(new ReportCell() 
+			row.Add(new ReportCell() { Width = 15.43});
+			row.Add(new ReportCell()
 			        { 
-			        	Width = 30.43, 
+			        	Width = 15, 
 			        	HorizontalAlignment= HorizontalAlignment.Center,
 						VerticalAlignment = VerticalAlignment.Bottom
 			        });
@@ -86,7 +87,7 @@ namespace StangradCRM.Reports
 			ReportRow rowInArchive = new ReportRow();
 			rowInArchive.Add(new ReportCell("Передано заявок в архив:") { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 			rowInArchive.Add(new ReportCell());
-			rowInArchive.Add(new ReportCell(archiveBid.Count.ToString()) { BorderColor = System.Drawing.Color.Black});
+			rowInArchive.Add(new ReportCell(archiveBid.Count.ToString()) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black});
 			Rows.Add(rowInArchive);
 			
 			//Кол-во удаленных заявок
@@ -98,7 +99,7 @@ namespace StangradCRM.Reports
 			int maxId = bid.Max(x => x.Id);
 			int deletedCount = (maxId-minId)-bid.Count;
 			
-			rowDeleted.Add(new ReportCell((deletedCount).ToString()) { BorderColor = System.Drawing.Color.Black});
+			rowDeleted.Add(new ReportCell((deletedCount).ToString()) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black});
 			Rows.Add(rowDeleted);
 			
 			//Пустая строка
@@ -114,6 +115,7 @@ namespace StangradCRM.Reports
 			double sum = archiveBid.Sum(x => x.Amount);
 			closedSumRow.Add(new ReportCell(sum.ToString()) 
 			                 {
+			                 	ColumnSpan=1,
 			                 	BorderColor = System.Drawing.Color.Black
 			                 });
 			
@@ -131,6 +133,7 @@ namespace StangradCRM.Reports
 			midSumRow.Add(new ReportCell());
 			midSumRow.Add(new ReportCell(((int)(sum/archiveBid.Count)).ToString())
 			                 {
+			              		ColumnSpan=1,
 			                 	BorderColor = System.Drawing.Color.Black
 			                 });
 			
@@ -149,6 +152,7 @@ namespace StangradCRM.Reports
 			int daySum = archiveBid.Sum(x => (((DateTime)x.Shipment_date).Subtract(x.Date_created)).Days);
 			midPeriodShipmentRow.Add(new ReportCell((daySum/archiveBid.Count).ToString())
 			                 {
+	                         	ColumnSpan=1,
 			                 	BorderColor = System.Drawing.Color.Black
 			                 });
 			
@@ -183,7 +187,7 @@ namespace StangradCRM.Reports
 			ReportRow rowT = new ReportRow();
 			rowT.Add(new ReportCell("Продавец") { BorderColor = System.Drawing.Color.Black, ColumnSpan = 1 });
 			rowT.Add(null);
-			rowT.Add(new ReportCell("Сумма") { BorderColor = System.Drawing.Color.Black });
+			rowT.Add(new ReportCell("Сумма") { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 			Rows.Add(rowT);
 			
 			foreach(KeyValuePair<int, double> kv in sellerDict.OrderByDescending(x => x.Value))
@@ -194,7 +198,7 @@ namespace StangradCRM.Reports
 				ReportRow row = new ReportRow();
 				row.Add(new ReportCell(seller.Name) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				row.Add(null);
-				row.Add(new ReportCell(kv.Value.ToString()) { BorderColor = System.Drawing.Color.Black });
+				row.Add(new ReportCell(kv.Value.ToString()) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				Rows.Add(row);
 			}
 		}
@@ -202,10 +206,16 @@ namespace StangradCRM.Reports
 		//продажи менеджеров
 		private void ManagerSales ()
 		{
+			//Словарь сумм по менеджерам
 			Dictionary<int, double> managerDict 
 				= new Dictionary<int, double>();
+			//Словарь количества по менеджерам
+			Dictionary<int, int> managerBidsCountDict
+				= new Dictionary<int, int>();
+			
 			for(int i = 0; i < archiveBid.Count; i++)
 			{
+				//Подсчет суммы заявок менеджера ---->
 				if(!managerDict.ContainsKey(archiveBid[i].Id_manager))
 				{
 					managerDict.Add(archiveBid[i].Id_manager, archiveBid[i].Amount );
@@ -214,6 +224,18 @@ namespace StangradCRM.Reports
 				{
 					managerDict[archiveBid[i].Id_manager] += archiveBid[i].Amount;
 				}
+				//<----/
+				
+				//Подсчет количества заявок менеджера ---->
+				if(!managerBidsCountDict.ContainsKey(archiveBid[i].Id_manager))
+				{
+					managerBidsCountDict.Add(archiveBid[i].Id_manager, 1 );
+				}
+				else 
+				{
+					managerBidsCountDict[archiveBid[i].Id_manager]++;
+				}
+				//<----/
 			}
 			if(managerDict.Count == 0) return;
 			
@@ -225,6 +247,7 @@ namespace StangradCRM.Reports
 			rowT.Add(new ReportCell("Менеджер") { BorderColor = System.Drawing.Color.Black, ColumnSpan = 1 });
 			rowT.Add(null);
 			rowT.Add(new ReportCell("Сумма") { BorderColor = System.Drawing.Color.Black });
+			rowT.Add(new ReportCell("Кол-во") { BorderColor = System.Drawing.Color.Black });			
 			Rows.Add(rowT);
 			
 			foreach(KeyValuePair<int, double> kv in managerDict.OrderByDescending(x => x.Value))
@@ -236,6 +259,9 @@ namespace StangradCRM.Reports
 				row.Add(new ReportCell(manager.Name) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				row.Add(null);
 				row.Add(new ReportCell(kv.Value.ToString()) { BorderColor = System.Drawing.Color.Black });
+				int managerBidsCount = 0;
+				if(managerBidsCountDict.ContainsKey(kv.Key)) managerBidsCount = managerBidsCountDict[kv.Key];
+				row.Add(new ReportCell(managerBidsCount.ToString()) { BorderColor = System.Drawing.Color.Black });
 				Rows.Add(row);
 			}
 		}
@@ -267,7 +293,7 @@ namespace StangradCRM.Reports
 			ReportRow rowT = new ReportRow();
 			rowT.Add(new ReportCell("Наименование") { BorderColor = System.Drawing.Color.Black, ColumnSpan = 1 });
 			rowT.Add(null);
-			rowT.Add(new ReportCell("Кол-во раз") { BorderColor = System.Drawing.Color.Black });
+			rowT.Add(new ReportCell("Кол-во раз") { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 			Rows.Add(rowT);
 			
 			foreach(KeyValuePair<int, int> kv in transportCompanyDict.OrderByDescending(x => x.Value))
@@ -278,7 +304,7 @@ namespace StangradCRM.Reports
 				ReportRow row = new ReportRow();
 				row.Add(new ReportCell(transportCompany.Name) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				row.Add(null);
-				row.Add(new ReportCell(kv.Value.ToString()) { BorderColor = System.Drawing.Color.Black });
+				row.Add(new ReportCell(kv.Value.ToString()) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				Rows.Add(row);
 			}
 		}
@@ -314,7 +340,7 @@ namespace StangradCRM.Reports
 			ReportRow rowT = new ReportRow();
 			rowT.Add(new ReportCell("Оборудование") { BorderColor = System.Drawing.Color.Black});
 			rowT.Add(new ReportCell("Модификация") { BorderColor = System.Drawing.Color.Black });
-			rowT.Add(new ReportCell("Количество") { BorderColor = System.Drawing.Color.Black });
+			rowT.Add(new ReportCell("Количество") { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 			Rows.Add(rowT);
 			
 			ebGroup = ebGroup.OrderByDescending(x => x.Count).ToList();
@@ -340,6 +366,7 @@ namespace StangradCRM.Reports
 				        });
 				row.Add(new ReportCell(ebGroup[i].Count.ToString())
 				        {
+				        	 ColumnSpan=1, 
 				        	VerticalAlignment = VerticalAlignment.Bottom,
 				        	BorderColor = System.Drawing.Color.Black
 				        });
@@ -373,7 +400,7 @@ namespace StangradCRM.Reports
 			ReportRow rowT = new ReportRow();
 			rowT.Add(new ReportCell("Покупатель") { BorderColor = System.Drawing.Color.Black, ColumnSpan = 1 });
 			rowT.Add(null);
-			rowT.Add(new ReportCell("Кол-во заявок") { BorderColor = System.Drawing.Color.Black });
+			rowT.Add(new ReportCell("Кол-во заявок") { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 			Rows.Add(rowT);
 			
 			foreach(KeyValuePair<int, int> kv in buyerDict.OrderByDescending(x => x.Value))
@@ -384,7 +411,7 @@ namespace StangradCRM.Reports
 				ReportRow row = new ReportRow();
 				row.Add(new ReportCell(buyer.Name) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				row.Add(null);
-				row.Add(new ReportCell(kv.Value.ToString()) { BorderColor = System.Drawing.Color.Black });
+				row.Add(new ReportCell(kv.Value.ToString()) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				Rows.Add(row);
 			}
 		}
@@ -397,7 +424,7 @@ namespace StangradCRM.Reports
 			ReportRow row = new ReportRow();
 			row.Add(new ReportCell("Среднее количество позиций в заявке:") { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 			row.Add(new ReportCell());
-			row.Add(new ReportCell((equipmentBidCount/archiveBid.Count).ToString()) { BorderColor = System.Drawing.Color.Black});
+			row.Add(new ReportCell((equipmentBidCount/archiveBid.Count).ToString()) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black});
 			Rows.Add(row);
 		}
 		
@@ -433,7 +460,7 @@ namespace StangradCRM.Reports
 			ReportRow rowT = new ReportRow();
 			rowT.Add(new ReportCell("Наименование") { BorderColor = System.Drawing.Color.Black, ColumnSpan = 1 });
 			rowT.Add(null);
-			rowT.Add(new ReportCell("Кол-во комплектаций") { BorderColor = System.Drawing.Color.Black });
+			rowT.Add(new ReportCell("Кол-во комплектаций") { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 			Rows.Add(rowT);
 			
 			foreach(KeyValuePair<int, int> kv in complectationDict.OrderByDescending(x => x.Value))
@@ -444,7 +471,7 @@ namespace StangradCRM.Reports
 				ReportRow row = new ReportRow();
 				row.Add(new ReportCell(citem.Name) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				row.Add(null);
-				row.Add(new ReportCell(kv.Value.ToString()) { BorderColor = System.Drawing.Color.Black });
+				row.Add(new ReportCell(kv.Value.ToString()) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				Rows.Add(row);
 			}
 		}

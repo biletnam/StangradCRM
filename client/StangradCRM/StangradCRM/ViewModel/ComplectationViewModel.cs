@@ -37,17 +37,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private ComplectationViewModel()
-		{
-			/*TSObservableCollection<Complectation> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<Complectation>>("Complectation");
-			
-			if(collection != default(TSObservableCollection<Complectation>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}*/
-		}
+		private ComplectationViewModel() { load(); }
 		
 		public static ComplectationViewModel instance ()
 		{
@@ -105,5 +95,12 @@ namespace StangradCRM.ViewModel
 		{
 			return _collection.Where(x => x.Id == complectationId).FirstOrDefault();
 		}
+				
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load() {}
 	}
 }

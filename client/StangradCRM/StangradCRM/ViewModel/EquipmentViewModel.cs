@@ -38,18 +38,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 
-		private EquipmentViewModel() 
-		{
-			TSObservableCollection<Equipment> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<Equipment>>("Equipment");
-			
-			if(collection != default(TSObservableCollection<Equipment>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}
-			
-		}
+		private EquipmentViewModel() { load(); }
 		
 		public static EquipmentViewModel instance ()
 		{
@@ -111,6 +100,23 @@ namespace StangradCRM.ViewModel
 		public void clearNameFilter ()
 		{
 			_collection.ToList().ForEach(x => x.setFilter("Name", true));
+		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<Equipment> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<Equipment>>("Equipment");
+			
+			if(collection != default(TSObservableCollection<Equipment>))
+			{
+				collection.ToList().ForEach(x => { x.IsSaved = true; add(x); });
+			}
+			
 		}
 	}
 }

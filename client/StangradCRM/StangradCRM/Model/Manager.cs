@@ -100,9 +100,9 @@ namespace StangradCRM.Model
 		
 		public override void loadedItemInitProperty ()
 		{
-			RaisePropertyChanged("Name", Name, true);
-			RaisePropertyChanged("Login", Login, true);
-			RaisePropertyChanged("Id_role", Id_role, true);
+			oldValues["Name"] = Name;
+			oldValues["Login"] = Login;
+			oldValues["Id_role"] = Id_role;
 		}
 		
 		

@@ -45,6 +45,8 @@ namespace StangradCRM.Model
 		public int Is_archive { get; set; }
 		public int Is_shipped { get; set; }
 		
+		public string Guid { get; set; }
+		
 		//-------------------->
 		
 		public TSObservableCollection<EquipmentBid> EquipmentBid { 
@@ -58,6 +60,7 @@ namespace StangradCRM.Model
 					if(equipmentBid == null)
 					{
 						eb_vm.add(value[i]);
+						value[i].loadedItemInitProperty();
 					}
 					else
 					{
@@ -337,7 +340,7 @@ namespace StangradCRM.Model
 		public Bid() {}
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
-		{
+		{			
 			http.addParameter("id_seller", Id_seller);			
 			http.addParameter("id_buyer", Id_buyer);
 			http.addParameter("id_bid_status", Id_bid_status);
@@ -361,7 +364,10 @@ namespace StangradCRM.Model
 			http.addParameter("date_created", Date_created.ToString("yyyy-MM-dd"));
 			http.addParameter("is_archive", Is_archive);
 			http.addParameter("is_shipped", Is_shipped);
-			
+			if(Guid != null)
+			{
+				http.addParameter("guid", Guid);
+			}
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
@@ -480,7 +486,6 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("Is_archive", Is_archive);
 			RaisePropertyChanged("Is_shipped", Is_shipped);
 			
-			
 			RaisePropertyChanged("SellerName", null);			
 			RaisePropertyChanged("BuyerName", null);
 			RaisePropertyChanged("PaymentStatusName", null);
@@ -510,7 +515,7 @@ namespace StangradCRM.Model
 			
 			Id_seller = bid.Id_seller;
 			Id_buyer = bid.Id_buyer;
-			Id_bid_status = bid.Id_bid_status;			
+			Id_bid_status = bid.Id_bid_status;
 			Id_payment_status = bid.Id_payment_status;
 			Id_transport_company = bid.Id_transport_company;
 			Id_manager = bid.Id_manager;
@@ -521,7 +526,7 @@ namespace StangradCRM.Model
 			Amount = bid.Amount;
 			Is_archive = bid.Is_archive;
 			Is_shipped = bid.Is_shipped;
-
+			
 			raiseAllProperties();
 		}
 	}

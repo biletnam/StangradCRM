@@ -36,17 +36,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private SellerViewModel()
-		{
-			TSObservableCollection<Seller> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<Seller>>("Seller");
-			
-			if(collection != default(TSObservableCollection<Seller>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}
-		}
+		private SellerViewModel() { load(); }
 		
 		public static SellerViewModel instance()
 		{
@@ -95,6 +85,22 @@ namespace StangradCRM.ViewModel
 		public Seller getById(int id)
 		{
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
+		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<Seller> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<Seller>>("Seller");
+			
+			if(collection != default(TSObservableCollection<Seller>))
+			{
+				collection.ToList().ForEach(x => { x.IsSaved = true; add(x); });
+			}
 		}
 	}
 }

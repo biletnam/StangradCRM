@@ -38,7 +38,7 @@
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <OutputPath>..\..\build\Release\</OutputPath>
+    <OutputPath>..\..\..\..\..\builds\StangradCRM\Release\</OutputPath>
     <DebugSymbols>False</DebugSymbols>
     <DebugType>None</DebugType>
     <Optimize>True</Optimize>
@@ -491,24 +491,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\delete.png" />
-    <Content Include="Images\edit.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Images\add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Images\loading.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Images\save.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Images\arrow_down.png" />
     <Content Include="Images\arrow_up.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\green_check.png" />
+    <Content Include="Images\delete.png" />
+    <Content Include="Images\edit.png" />
+    <Content Include="Images\loading.png" />
+    <Content Include="Images\save.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

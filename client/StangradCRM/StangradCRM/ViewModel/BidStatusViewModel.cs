@@ -35,17 +35,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private BidStatusViewModel()
-		{
-			TSObservableCollection<BidStatus> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<BidStatus>>("BidStatus");
-			
-			if(collection != default(TSObservableCollection<BidStatus>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}
-		}
+		private BidStatusViewModel() { load(); }
 		
 		public static BidStatusViewModel instance()
 		{
@@ -94,6 +84,22 @@ namespace StangradCRM.ViewModel
 		public Core.Model getItem(int id)
 		{
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
+		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<BidStatus> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<BidStatus>>("BidStatus");
+			
+			if(collection != default(TSObservableCollection<BidStatus>))
+			{
+				collection.ToList().ForEach(x => { x.IsSaved = true; add(x); });
+			}
 		}
 	}
 }

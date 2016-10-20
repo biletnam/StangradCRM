@@ -37,17 +37,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private PaymentStatusViewModel()
-		{
-			TSObservableCollection<PaymentStatus> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<PaymentStatus>>("PaymentStatus");
-			
-			if(collection != default(TSObservableCollection<PaymentStatus>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}
-		}
+		private PaymentStatusViewModel() { load(); }
 		
 		public static PaymentStatusViewModel instance()
 		{
@@ -96,6 +86,22 @@ namespace StangradCRM.ViewModel
 		public PaymentStatus getById(int id)
 		{
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
+		}
+
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<PaymentStatus> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<PaymentStatus>>("PaymentStatus");
+			
+			if(collection != default(TSObservableCollection<PaymentStatus>))
+			{
+				collection.ToList().ForEach(x => { x.IsSaved = true; add(x); });
+			}
 		}
 	}
 }

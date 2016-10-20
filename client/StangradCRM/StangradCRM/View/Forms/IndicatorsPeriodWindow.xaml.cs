@@ -116,5 +116,10 @@ namespace StangradCRM.View.Forms
 			MessageBox.Show(indicators.LastError);
 		}
 		
+		void BtnClearSelectedMonth_Click(object sender, RoutedEventArgs e)
+		{
+			cbxMonth.SelectedIndex = -1;
+		}
+		
 	}
 }

@@ -69,17 +69,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private EquipmentBidViewModel()
-		{
-			/*TSObservableCollection<EquipmentBid> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<EquipmentBid>>("EquipmentBid");
-			
-			if(collection != default(TSObservableCollection<EquipmentBid>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}*/
-		}
+		private EquipmentBidViewModel() { load(); }
 		
 		public static EquipmentBidViewModel instance ()
 		{
@@ -139,6 +129,16 @@ namespace StangradCRM.ViewModel
 		{
 			List<EquipmentBid> equipmentBid = _collection.Where(x => x.Id_bid == bidId).ToList();
 			return new TSObservableCollection<EquipmentBid>(equipmentBid);
+		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load() 
+		{
+			ComplectationViewModel.instance().reload();
 		}
 	}
 }

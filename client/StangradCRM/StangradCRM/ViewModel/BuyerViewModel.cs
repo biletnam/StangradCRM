@@ -39,17 +39,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private BuyerViewModel()
-		{
-			TSObservableCollection<Buyer> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<Buyer>>("Buyer");
-			
-			if(collection != default(TSObservableCollection<Buyer>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}
-		}
+		private BuyerViewModel() { load(); }
 		
 		public static BuyerViewModel instance()
 		{
@@ -169,5 +159,20 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<Buyer> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<Buyer>>("Buyer");
+			
+			if(collection != default(TSObservableCollection<Buyer>))
+			{
+				collection.ToList().ForEach(x => { x.IsSaved = true; add(x); });
+			}
+		}
 	}
 }

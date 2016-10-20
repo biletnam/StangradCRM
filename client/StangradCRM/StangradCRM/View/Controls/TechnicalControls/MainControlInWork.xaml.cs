@@ -53,10 +53,22 @@ namespace StangradCRM.View.Controls.TechnicalControls
 			if(MessageBox.Show("Передать в архив?", "Передать в архив?",
 			                   MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 			equipmentBid.Is_archive = 1;
+			Bid bid = BidViewModel.instance().getById(equipmentBid.Id_bid);
 			if(!equipmentBid.save())
 			{
 				MessageBox.Show(equipmentBid.LastError);
 				return;
+			}
+			else
+			{
+				if(bid != null)
+				{
+					bid.Guid = Guid.NewGuid().ToString();
+					if(!bid.save())
+					{
+						MessageBox.Show("Не удалось обновить время модификации заявки!\nДругой специалист тех. отдела не увидит обновление\n" + bid.LastError);
+					}
+				}
 			}
 			EquipmentBidViewModel.instance().updateStatus(equipmentBid);
 		}

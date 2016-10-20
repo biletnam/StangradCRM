@@ -25,5 +25,13 @@ namespace StangradCRM.Core
 	    }
 		public event PropertyChangedEventHandler PropertyChanged;
 		
+		protected abstract void load ();
+		protected abstract void removeAllItems ();
+		
+		public void reload () 
+		{
+			removeAllItems();
+			load();
+		}
 	}
 }

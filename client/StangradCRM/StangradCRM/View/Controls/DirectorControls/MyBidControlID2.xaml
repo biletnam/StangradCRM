@@ -181,7 +181,8 @@
 			                Header="Продавец">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
-			                        <TextBlock 
+			                        <TextBlock
+										TextWrapping="Wrap"			                        	
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=SellerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -197,6 +198,7 @@
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=BuyerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -207,11 +209,13 @@
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Id_payment_status"
-			                Width="150"
+			                Width="*"
+							MaxWidth="120"
 			                Header="Статус оплаты">
 							<DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=PaymentStatusName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -222,22 +226,23 @@
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Amount"
-			                Width="150"
+			                Width="*"
+							MaxWidth="120"
 			                Header="Сумма">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                    	<Grid>
 			                    		<Grid.ColumnDefinitions>
 			                    			<ColumnDefinition Width="*"></ColumnDefinition>
-											<ColumnDefinition Width="40"></ColumnDefinition>			                    	
+											<ColumnDefinition Width="22"></ColumnDefinition>			                    	
 			                    		</Grid.ColumnDefinitions>
      			                        <TextBlock 
      			                        	HorizontalAlignment="Right"
      			                        	Grid.Column="0"
-				                        	Margin="5, 0, 15, 0"
+     			                        	TextWrapping="Wrap"
+				                        	Margin="5, 0, 5, 0"
 				                        	Text="{Binding Path=Amount, Converter={StaticResource CostConverter}}" VerticalAlignment="Center"/>
 										<Button
-											Margin="0, 0, 15, 0"
 											HorizontalAlignment="Right"
 											Style="{StaticResource AddPaymentButton}"
 											x:Name="btnAddPayment"
@@ -258,12 +263,14 @@
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Debt"
-			                Width="125"
+			                Width="*"
+							MaxWidth="100"
 			                Header="Остаток">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
-			                        <TextBlock 
-			                        	Margin="5, 0, 15, 0"
+			                        <TextBlock
+										TextWrapping="Wrap"			                        	
+			                        	Margin="5, 0, 5, 0"
 			                        	HorizontalAlignment="Right"
 			                        	Text="{Binding Path=Debt, Converter={StaticResource CostConverter}}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -273,7 +280,8 @@
 						<DataGridTemplateColumn
 			                CanUserSort="True"
 			                SortMemberPath="Planned_shipment_date"
-			                Width="120"
+			                Width="*"
+							MaxWidth="100"
 			                Header="Пл. дата отгрузки">
 							<DataGridTemplateColumn.CellStyle>
 								<Style BasedOn="{StaticResource DefaultDataGridCellStyle}" TargetType="DataGridCell">
@@ -298,7 +306,8 @@
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Shipment_date"
-			                Width="120"
+			                Width="*"
+							MaxWidth="120"
 			                Header="Отгружено">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>

@@ -103,8 +103,8 @@ namespace StangradCRM.Model
 		public override void loadedItemInitProperty()
 		{
 			base.loadedItemInitProperty();
-			RaisePropertyChanged("Complectation_count", Complectation_count, true);
-			RaisePropertyChanged("Id_complectation_item", Id_complectation_item, true);
+			oldValues["Complectation_count"] = Complectation_count;
+			oldValues["Id_complectation_item"] = Id_complectation_item;
 		}
 		
 		public override void setOldValues ()

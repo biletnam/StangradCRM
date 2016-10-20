@@ -9,3 +9,10 @@ E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\Contro
 E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\StangradCRMLibs_MarkupCompile.cache
 E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\StangradCRMLibs.g.resources
 E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\StangradCRMLibs.dll
+E:\project\c#\StangradCRM\client\libs\StangradCRMLibs.dll
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\ResolveAssemblyReference.cache
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\Controls\Loading.baml
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\Controls\Loading.g.cs
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\StangradCRMLibs_MarkupCompile.cache
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\StangradCRMLibs.g.resources
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Release\StangradCRMLibs.dll

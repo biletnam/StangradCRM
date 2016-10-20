@@ -13,3 +13,12 @@ E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\Stangrad
 E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.g.resources
 E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.dll
 E:\project\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.pdb
+E:\project\c#\StangradCRM\client\libs\StangradCRMLibs.dll
+E:\project\c#\StangradCRM\client\libs\StangradCRMLibs.pdb
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\ResolveAssemblyReference.cache
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\Controls\Loading.baml
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\Controls\Loading.g.cs
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs_MarkupCompile.cache
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.g.resources
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.dll
+E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.pdb

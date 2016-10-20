@@ -36,16 +36,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private RoleViewModel() 
-		{
-			TSObservableCollection<Role> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<Role>>("Role");
-			
-			if(collection != default(TSObservableCollection<Role>))
-			{
-				_collection = collection;
-			}
-		}
+		private RoleViewModel() { load(); }
 		
 		public static RoleViewModel instance()
 		{
@@ -94,6 +85,22 @@ namespace StangradCRM.ViewModel
 		public Role getById (int id)
 		{
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
+		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<Role> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<Role>>("Role");
+			
+			if(collection != default(TSObservableCollection<Role>))
+			{
+				collection.ToList().ForEach(x => add(x));
+			}
 		}
 	}
 }

@@ -127,6 +127,7 @@
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=SellerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -142,6 +143,7 @@
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=BuyerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -152,7 +154,7 @@
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Id_payment_status"
-			                Width="150"
+			                MaxWidth="120"
 			                Header="Статус оплаты">
 							<DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
@@ -167,13 +169,14 @@
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Amount"
-			                Width="150"
+			                MaxWidth="100"
+							Width="*"
 			                Header="Сумма">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
  			                        <TextBlock 
  			                        	HorizontalAlignment="Right"
- 			                        	Grid.Column="0"
+ 			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 15, 0"
 			                        	Text="{Binding Path=Amount, Converter={StaticResource CostConverter}}"
  			                        	VerticalAlignment="Center"/>
@@ -190,6 +193,7 @@
 							<DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=ManagerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>

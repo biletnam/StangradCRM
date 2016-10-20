@@ -17,7 +17,6 @@ namespace StangradCRM.Core
 	{
 		bool add<T>(T modelItem);
 		bool remove<T>(T modelItem);
-		
-		Model getItem(int id);
+		Model getItem(int id);		
 	}
 }

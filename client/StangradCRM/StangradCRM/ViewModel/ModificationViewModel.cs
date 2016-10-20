@@ -39,17 +39,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private ModificationViewModel() 
-		{
-			TSObservableCollection<Modification> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<Modification>>("Modification");
-			
-			if(collection != default(TSObservableCollection<Modification>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}
-		}
+		private ModificationViewModel() { load(); }
 		
 		public static ModificationViewModel instance ()
 		{
@@ -105,6 +95,22 @@ namespace StangradCRM.ViewModel
 		{
 			List<Modification> modification = _collection.Where(x => x.Id_equipment == equipmentId).ToList();
 			return new TSObservableCollection<Modification>(modification);
+		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => add(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<Modification> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<Modification>>("Modification");
+			
+			if(collection != default(TSObservableCollection<Modification>))
+			{
+				collection.ToList().ForEach(x => { x.IsSaved = true; add(x); });
+			}
 		}
 	}
 }

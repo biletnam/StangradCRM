@@ -28,7 +28,6 @@ namespace StangradCRM.ViewModel
 		private TSObservableCollection<Bid> _collection
 			= new TSObservableCollection<Bid>();
 		
-		
 		private DateTime loadDateTime = DateTime.Now;
 		
 		Dictionary<int, TSObservableCollection<Bid>> _collectionByStatus
@@ -49,6 +48,7 @@ namespace StangradCRM.ViewModel
 		public void UpdateStatus (Bid bid, int oldStatus)
 		{
 			if(bid.Id_bid_status == oldStatus) return;
+			
 			if(getCollectionByStatus(oldStatus).Contains(bid))
 			{
 				getCollectionByStatus(oldStatus).Remove(bid);
@@ -115,18 +115,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private BidViewModel()
-		{
-			TSObservableCollection<Bid> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<Bid>>("Bid");
-
-			if(collection != default(TSObservableCollection<Bid>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-				_collection.ToList().ForEach(x => { x.loadedItemInitProperty(); });
-			}
-		}
+		private BidViewModel() { load(); }
 		
 		public static BidViewModel instance()
 		{
@@ -152,7 +141,7 @@ namespace StangradCRM.ViewModel
 				return false;
 			}
 			_collection.Add(bid);
-			if(!getCollectionByStatus(bid.Id_bid_status).Contains(bid))
+			if(!getCollectionByStatus(bid.Id_bid_status).Contains(bid) && bid.Is_archive == 0)
 		   	{
 				getCollectionByStatus(bid.Id_bid_status).Add(bid);
 			}
@@ -354,6 +343,25 @@ namespace StangradCRM.ViewModel
                              	(x.BuyerInfo.ToLower().IndexOf(searchString) != -1 ) |
                              	(x.EquipmentBidStringSearch.ToLower().IndexOf(searchString) != -1 )
                              ).ToList().ForEach(y => y.setFilters(properties, true));
+		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => { remove(x); x = null; });
+		}
+		
+		protected override void load()
+		{
+			EquipmentBidViewModel.instance().reload();
+			PaymentViewModel.instance().reload();
+			
+			TSObservableCollection<Bid> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<Bid>>("Bid");
+
+			if(collection != default(TSObservableCollection<Bid>))
+			{
+				collection.ToList().ForEach(x => { x.IsSaved = true; x.loadedItemInitProperty(); add(x); });
+			}
 		}
 	}
 }

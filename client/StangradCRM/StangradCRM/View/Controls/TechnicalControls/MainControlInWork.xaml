@@ -77,6 +77,22 @@
 				<DataGridTemplateColumn
 					CellStyle="{StaticResource DefaultDataGridCellStyle}"
 					CanUserSort="True"
+					SortMemberPath="Account"
+					Width="*"
+					Header="Счет">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock
+								Margin="5, 0, 0, 0"
+								Text="{Binding Path=Account}"
+								VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>	
+				
+				<DataGridTemplateColumn
+					CellStyle="{StaticResource DefaultDataGridCellStyle}"
+					CanUserSort="True"
 					SortMemberPath="ManagerName"
 					Width="*"
 					Header="Менеджер">

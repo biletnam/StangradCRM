@@ -112,7 +112,7 @@
 						</Style>
 					</DataGrid.RowStyle>
 					<DataGrid.Columns>
-						
+
 						<DataGridTemplateColumn 
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
@@ -127,7 +127,7 @@
 			                    </DataTemplate>
 			                </DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
-							
+
 						<DataGridTemplateColumn 
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
@@ -137,6 +137,7 @@
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=Date_created, StringFormat=\{0:dd.MM.yyyy\}}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -167,6 +168,7 @@
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=SellerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -182,6 +184,7 @@
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=BuyerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -192,11 +195,13 @@
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Id_payment_status"
-			                Width="150"
+							MaxWidth="120"
+		          			Width="*"
 			                Header="Статус оплаты">
 							<DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=PaymentStatusName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
@@ -207,23 +212,24 @@
 							CellStyle="{StaticResource DefaultDataGridCellStyle}"
 			                CanUserSort="True"
 			                SortMemberPath="Amount"
-			                Width="150"
+							MaxWidth="120"
+		          			Width="*"
 			                Header="Сумма">
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                    	<Grid>
 			                    		<Grid.ColumnDefinitions>
 			                    			<ColumnDefinition Width="*"></ColumnDefinition>
-											<ColumnDefinition Width="40"></ColumnDefinition>			                    	
+											<ColumnDefinition Width="22"></ColumnDefinition>			                    	
 			                    		</Grid.ColumnDefinitions>
      			                        <TextBlock 
+     			                        	TextWrapping="Wrap"
      			                        	HorizontalAlignment="Right"
      			                        	Grid.Column="0"
-				                        	Margin="5, 0, 15, 0"
+				                        	Margin="5, 0, 5, 0"
 				                        	Text="{Binding Path=Amount, Converter={StaticResource CostConverter}}"
      			                        	VerticalAlignment="Center"/>
 										<Button
-											Margin="0, 0, 15, 0"
 											x:Name="btnAddPayment"
 											Click="BtnAddPayment_Click"
 				                        	Grid.Row="0" Grid.Column="1"

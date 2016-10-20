@@ -224,6 +224,16 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		public string Account
+		{
+			get
+			{
+				Bid bid = BidViewModel.instance().getById(Id_bid);
+				if(bid == null) return "";
+				return bid.Account;
+			}
+		}
+		
 		// <----
 		
 		protected override bool afterSave(StangradCRMLibs.ResponseParser parser)
@@ -277,6 +287,13 @@ namespace StangradCRM.Model
 		
 		public override void raiseAllProperties()
 		{
+			if(oldValues.ContainsKey("Is_archive") &&
+			   (oldValues["Is_archive"] as int?) != null &&
+			   Is_archive != (int)oldValues["Is_archive"])
+			{
+				EquipmentBidViewModel.instance().updateStatus(this);
+			}
+			
 			RaisePropertyChanged("Id_equipment", Id_equipment);
 			RaisePropertyChanged("Id_modification", Id_modification);
 			RaisePropertyChanged("Id_bid", Id_bid);
@@ -286,6 +303,12 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("EquipmentName", null);
 			RaisePropertyChanged("ModificationName", null);
 			RaisePropertyChanged("IsBlankPrint", null);
+		}
+		
+		public override void loadedItemInitProperty()
+		{
+			base.loadedItemInitProperty();
+			oldValues["Is_archive"] = Is_archive;
 		}
 	}
 }

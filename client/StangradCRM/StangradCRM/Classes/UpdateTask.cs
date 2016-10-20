@@ -40,7 +40,7 @@ namespace StangradCRM.Classes
 						dispatcher.BeginInvoke(DispatcherPriority.Background, afterCallback);
 					}
 					if(action != null)
-						dispatcher.BeginInvoke(DispatcherPriority.Background, action);
+						action();
 				}
             }, System.Threading.Tasks.TaskCreationOptions.LongRunning);
 		}
@@ -57,7 +57,7 @@ namespace StangradCRM.Classes
 					dispatcher.BeginInvoke(DispatcherPriority.Background, beforeCallback);
 				}
 				if(action != null)
-					dispatcher.BeginInvoke(DispatcherPriority.Background, action);
+					action();
 				if(afterCallback != null)
 				{
 					dispatcher.BeginInvoke(DispatcherPriority.Background, afterCallback);

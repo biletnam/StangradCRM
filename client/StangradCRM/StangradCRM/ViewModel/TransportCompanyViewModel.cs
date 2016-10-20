@@ -36,17 +36,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private TransportCompanyViewModel()
-		{
-			TSObservableCollection<TransportCompany> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<TransportCompany>>("TransportCompany");
-			
-			if(collection != default(TSObservableCollection<TransportCompany>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}
-		}
+		private TransportCompanyViewModel() { load(); }
 		
 		public static TransportCompanyViewModel instance()
 		{
@@ -95,6 +85,22 @@ namespace StangradCRM.ViewModel
 		public TransportCompany getById (int id)
 		{
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
+		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<TransportCompany> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<TransportCompany>>("TransportCompany");
+			
+			if(collection != default(TSObservableCollection<TransportCompany>))
+			{
+				collection.ToList().ForEach(x => { x.IsSaved = true; add(x);});
+			}
 		}
 	}
 }

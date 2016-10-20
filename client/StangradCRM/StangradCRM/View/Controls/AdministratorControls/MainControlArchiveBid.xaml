@@ -156,7 +156,8 @@ xmlns:converters="clr-namespace:StangradCRM.Converters"
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
-			                        	Margin="5, 0, 0, 0"
+			                        	Margin="5, 0, 15, 0"
+			                        	HorizontalAlignment="Right"
 			                        	Text="{Binding Path=Amount, Converter={StaticResource CostConverter}}" VerticalAlignment="Center"/>
 			                    </DataTemplate>
 			                </DataGridTemplateColumn.CellTemplate>
@@ -171,6 +172,7 @@ xmlns:converters="clr-namespace:StangradCRM.Converters"
 			                <DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
 			                        <TextBlock 
+			                        	TextWrapping="Wrap"
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=ManagerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>

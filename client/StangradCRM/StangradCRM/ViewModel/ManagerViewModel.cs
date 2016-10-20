@@ -38,17 +38,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private ManagerViewModel() 
-		{
-			TSObservableCollection<Manager> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<Manager>>("Manager");
-			
-			if(collection != default(TSObservableCollection<Manager>))
-			{
-				_collection = collection;
-				_collection.ToList().ForEach(x => { x.loadedItemInitProperty(); x.IsSaved = true; });
-			}
-		}
+		private ManagerViewModel() { load(); }
 		
 		public static ManagerViewModel instance ()
 		{
@@ -97,6 +87,22 @@ namespace StangradCRM.ViewModel
 		public Manager getById (int managerId)
 		{
 			return _collection.Where(x => x.Id == managerId).FirstOrDefault();
+		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<Manager> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<Manager>>("Manager");
+			
+			if(collection != default(TSObservableCollection<Manager>))
+			{
+				collection.ToList().ForEach(x => { x.loadedItemInitProperty(); x.IsSaved = true; add(x); });
+			}
 		}
 	}
 }

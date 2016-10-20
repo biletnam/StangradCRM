@@ -32,18 +32,17 @@ namespace StangradCRM.View.MainWindows
 			InitializeComponent();
 			Title += " v" + Settings.version + ". Пользователь " + Auth.getInstance().Full_name + ". Режим администратора.";
 			
-			int updateTime = 60000;
 			try
 			{
-				updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value) * 1000;
+				int updateTime = int.Parse(CRMSettingViewModel.instance().getByMashineName("bid_update_time").Setting_value) * 1000;
+				if(updateTime != 0)
+					Classes.UpdateTask.Start(Dispatcher,
+					                            new Action (() => { BidViewModel.instance().reload(); }),
+					                            updateTime,
+					                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }),
+					                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }));
 			}
 			catch {}
-			 
-			Classes.UpdateTask.Start(Dispatcher, 
-			                         	new Action (() => { BidViewModel.instance().RemoteLoad(); }),
-			                         	updateTime,
-			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }), 
-			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }));
 			
 			menuOpenEquipmentWindow.Click += delegate
 			{
@@ -107,9 +106,9 @@ namespace StangradCRM.View.MainWindows
 			Classes.UpdateTask.StartSingle(Dispatcher, 
 	                                  	new Action (() => 
 		                                           {  
-		                                           		BidViewModel.instance().RemoteLoad();
-		                                           		BuyerViewModel.instance().RemoteLoad();
-		                                           		ComplectationItemViewModel.instance().RemoteLoad();
+		                                           		BidViewModel.instance().reload();
+		                                           		BuyerViewModel.instance().reload();
+		                                           		ComplectationItemViewModel.instance().reload();
 		                                           }),
 			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }), 
 			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }));

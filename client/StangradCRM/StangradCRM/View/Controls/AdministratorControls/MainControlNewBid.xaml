@@ -189,7 +189,8 @@
 			                Header="Менеджер">
 							<DataGridTemplateColumn.CellTemplate>
 			                    <DataTemplate>
-			                        <TextBlock 
+			                        <TextBlock
+										TextWrapping="Wrap"			                        	
 			                        	Margin="5, 0, 0, 0"
 			                        	Text="{Binding Path=ManagerName}" VerticalAlignment="Center"/>
 			                    </DataTemplate>

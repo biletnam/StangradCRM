@@ -37,7 +37,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private PaymentViewModel() {}
+		private PaymentViewModel() { load(); }
 		
 		public static PaymentViewModel instance ()
 		{
@@ -114,5 +114,12 @@ namespace StangradCRM.ViewModel
 		{
 			return _collection.Where(x => (x.Payment_date >= start) && (x.Payment_date <= end)).ToList();
 		}
+		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().ForEach(x => remove(x) );
+		}
+		
+		protected override void load() {}
 	}
 }

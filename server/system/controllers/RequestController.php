@@ -45,12 +45,19 @@ class RequestController implements IController {
         return;
     }
 
-    protected function error ($code, $message) {
-        $this->response([1, [$code, $message]]);
+    protected function error ($message, $code = null) {
+        if($code === null)
+        {
+            $this->response([1, $message]);
+        }
+        else 
+        {
+            $this->response([$code, $message]);
+        }
     }
 
     function indexAction($frontController) {
-        $params = $frontController->getParams();
+        $params = $frontController->getParams();        
         if(isset($params['post'])) {
             $params = $params['post'];
         }
@@ -59,22 +66,24 @@ class RequestController implements IController {
                 $params = $params['get'];
             }
         }
+        if(!array_key_exists('entity', $params))
+        {
+            return $this->error('Class name not exist');;
+        }
         $entity = explode('/', $params['entity']);
         $class = ReflectionOperations::createClass($entity[0] . 'Controller', ClassPaths::paths());
         if($class === null) {
-            $this->error(1, 'Class ' . $entity[0] . ' not exist');
-            return;
+            return $this->error('Class ' . $entity[0] . ' not exist');
+            
         }
         $method = ReflectionOperations::createMethod($class, $entity[1] . 'Action');
         if($method === null) {
-            $this->error(1, 'Method ' . $entity[1] . ' not exist');
-            return;
+            return $this->error('Method ' . $entity[1] . ' not exist');
         }
         unset($params['entity']);
         $result = ReflectionOperations::invoke($class, $method, $params);
         if($result instanceof ReflectionException) {
-            $this->error($result->getCode(), $result->getMessage());
-            return;
+            return $this->error($result->getMessage(), $result->getCode());
         }
         return $this->response($result);
     }

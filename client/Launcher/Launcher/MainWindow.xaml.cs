@@ -60,9 +60,12 @@ namespace Launcher
 			else {
 				this.toggleHostSettingsVisible(true);
 			}
-			if(this.settings.KeyExists("pass"))
-				this.tbxPassword.Password = PasswordDecrypt(this.settings.Read("pass"), tbxHost.Text + "-" + tbxLogin.Text);
-			
+			if(this.settings.KeyExists("pass")) {
+				try
+				{
+					this.tbxPassword.Password = PasswordDecrypt(this.settings.Read("pass"), tbxHost.Text + "-" + tbxLogin.Text);
+				} catch {}
+			}
 			tbxLogin.TextChanged += 
 				delegate { tbxLogin.Background = defaultBrush; };
 			tbxPassword.PasswordChanged +=

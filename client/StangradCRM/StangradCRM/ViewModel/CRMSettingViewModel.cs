@@ -34,18 +34,7 @@ namespace StangradCRM.ViewModel
 			}
 		}
 		
-		private CRMSettingViewModel()
-		{
-			TSObservableCollection<CRMSetting> collection =
-			StangradCRM.Core.Model.load<TSObservableCollection<CRMSetting>>("CRMSetting");
-			
-			if(collection != default(TSObservableCollection<CRMSetting>))
-			{
-				_collection = collection;
-				
-				_collection.ToList().ForEach(x => { x.IsSaved = true; });
-			}
-		}
+		private CRMSettingViewModel() { load();	}
 		
 		public static CRMSettingViewModel instance()
 		{
@@ -101,5 +90,20 @@ namespace StangradCRM.ViewModel
 			return _collection.Where(x => x.Id == id).FirstOrDefault();
 		}
 		
+		protected override void removeAllItems()
+		{
+			_collection.ToList().Where(x => remove(x));
+		}
+		
+		protected override void load()
+		{
+			TSObservableCollection<CRMSetting> collection =
+			StangradCRM.Core.Model.load<TSObservableCollection<CRMSetting>>("CRMSetting");
+			
+			if(collection != default(TSObservableCollection<CRMSetting>))
+			{				
+				collection.ToList().ForEach(x => { x.IsSaved = true; add(x); });
+			}
+		}
 	}
 }

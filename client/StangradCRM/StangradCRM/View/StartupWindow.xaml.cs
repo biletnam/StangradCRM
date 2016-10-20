@@ -35,7 +35,7 @@ namespace StangradCRM.View
 	{
 		
 		private IniFile settings = new IniFile("Settings.ini");
-		private string version = "0.11";
+		private string version = "0.15";
 		
 		public StartupWindow()
 		{
@@ -61,8 +61,8 @@ namespace StangradCRM.View
       		                                  	failSessionRestore();
       		                                  	return;
   		                                   }));
-              	}         	
-              	if(loadModels()) 
+              	}
+              	if(loadModels())
               	{
               		Dispatcher.BeginInvoke(DispatcherPriority.Background,
               		                       new Action( () => {

@@ -7,3 +7,13 @@ E:\project\StangradCRM\client\Launcher\Launcher\obj\Release\Launcher_Content.g.c
 E:\project\StangradCRM\client\Launcher\Launcher\obj\Release\Launcher_MarkupCompile.cache
 E:\project\StangradCRM\client\Launcher\Launcher\obj\Release\Launcher.g.resources
 E:\project\StangradCRM\client\Launcher\Launcher\obj\Release\Launcher.exe
+E:\project\c#\StangradCRM\client\build\Release\Launcher.exe
+E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Release\ResolveAssemblyReference.cache
+E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Release\MainWindow.baml
+E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Release\MainWindow.g.cs
+E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Release\App.g.cs
+E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Release\Launcher_Content.g.cs
+E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Release\Launcher_MarkupCompile.cache
+E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Release\Launcher.g.resources
+E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Release\Launcher.exe
+E:\project\builds\StangradCRM\Release\Launcher.exe

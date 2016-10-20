@@ -180,7 +180,7 @@ namespace StangradCRM.Core
 		
 		public virtual void loadedItemInitProperty ()
 		{
-			RaisePropertyChanged("Id", Id, true);
+			oldValues["Id"] = Id;
 		}
 		
 		public virtual void setOldValues ()
@@ -192,12 +192,11 @@ namespace StangradCRM.Core
 			catch {}
 		}
 		
-	    protected void RaisePropertyChanged(string name, object v, bool p = false) {
-			if(p) oldValues[name] = v;
-	        if (PropertyChanged != null) {
-				oldValues[name] = v;
+	    protected void RaisePropertyChanged(string name, object v) {
+			if (PropertyChanged != null) {
 	            PropertyChanged(this, new PropertyChangedEventArgs(name));
 	        }
+			oldValues[name] = v;
 	    }
 		
 		public event PropertyChangedEventHandler PropertyChanged;
