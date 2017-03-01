@@ -118,5 +118,6 @@
 			HorizontalAlignment="Left"
 			VerticalAlignment="Bottom"
 			Visibility="Hidden"></libs:Loading>	
+
 	</Grid>
 </Window>

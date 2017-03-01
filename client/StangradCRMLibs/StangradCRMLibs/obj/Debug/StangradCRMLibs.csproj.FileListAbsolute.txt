@@ -22,3 +22,12 @@ E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\Stang
 E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.g.resources
 E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.dll
 E:\project\c#\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.pdb
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\libs\StangradCRMLibs.dll
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\libs\StangradCRMLibs.pdb
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.csprojResolveAssemblyReference.cache
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\Controls\Loading.baml
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\Controls\Loading.g.cs
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs_MarkupCompile.cache
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.g.resources
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.dll
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\StangradCRMLibs\StangradCRMLibs\obj\Debug\StangradCRMLibs.pdb

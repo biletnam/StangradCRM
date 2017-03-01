@@ -59,11 +59,9 @@ namespace StangradCRM.View.MainWindows
 		{
 			Classes.UpdateTask.StartSingle(Dispatcher, 
 		                               new Action (() => {
-
-			                                           	BidViewModel.instance().reload();
 			                                           	BuyerViewModel.instance().reload();
 			                                           	ComplectationItemViewModel.instance().reload();
-			                                           	
+			                                           	BidViewModel.instance().reload();
 			                                           	//BidViewModel.instance().RemoteLoad();
 			                                           	//BuyerViewModel.instance().RemoteLoad();
 			                                           	//ComplectationItemViewModel.instance().RemoteLoad();

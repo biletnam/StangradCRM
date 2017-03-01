@@ -60,10 +60,9 @@ namespace StangradCRM.View.MainWindows
 		{
 			Classes.UpdateTask.StartSingle(Dispatcher, 
 	                                  	new Action (() => { 
-
-			                                           	BidViewModel.instance().reload();
 			                                           	BuyerViewModel.instance().reload();
 			                                           	ComplectationItemViewModel.instance().reload();
+			                                           	BidViewModel.instance().reload();
 		                                           }),
 			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }), 
 			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }));

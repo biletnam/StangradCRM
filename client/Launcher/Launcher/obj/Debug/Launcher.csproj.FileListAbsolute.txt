@@ -25,3 +25,14 @@ E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher_MarkupComp
 E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher.g.resources
 E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher.exe
 E:\project\c#\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher.pdb
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher.csprojResolveAssemblyReference.cache
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\Launcher\Launcher\obj\Debug\App.g.cs
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher_Content.g.cs
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher_MarkupCompile.cache
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher.exe
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher.pdb
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\build\Debug\Launcher.exe
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\build\Debug\Launcher.pdb
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\Launcher\Launcher\obj\Debug\MainWindow.baml
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\Launcher\Launcher\obj\Debug\MainWindow.g.cs
+D:\Projects\MailCloud\SharedProject\StangradCRM\client\Launcher\Launcher\obj\Debug\Launcher.g.resources
