@@ -1,13 +1,16 @@
 /server/nbproject/
 /server/configs/DBConnection.php
+
+/client/build
+
 /client/StangradCRM/StangradCRM/bin
 /client/StangradCRM/StangradCRM/obj
 
-/client/StangradCRM/StangradCRMLibs/bin
-/client/StangradCRM/StangradCRMLibs/obj
+/client/StangradCRMLibs/StangradCRMLibs/bin
+/client/StangradCRMLibs/StangradCRMLibs/obj
 
-/client/StangradCRM/Launcher/bin
-/client/StangradCRM/Launcher/obj
+/client/Launcher/Launcher/bin
+/client/Launcher/Launcher/obj
 
 /client/StangradCRM/libs
 

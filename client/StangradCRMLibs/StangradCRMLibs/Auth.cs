@@ -9,7 +9,6 @@
 using System;
 using System.Collections.Generic;
 using HTTPManager;
-using Newtonsoft.Json.Linq;
 
 namespace StangradCRMLibs
 {
