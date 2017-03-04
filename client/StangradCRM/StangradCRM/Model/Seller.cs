@@ -20,12 +20,20 @@ namespace StangradCRM.Model
 	public class Seller : Core.Model
 	{
 		public string Name { get; set; }
+		public int Hidden { get; set; }
+		
+		public string InverseHiddenText {
+			get {
+				return (Hidden == 0) ? "Да" : "Нет";
+			}
+		}
 		
 		public Seller() {}
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
 		{
 			http.addParameter("name", Name);
+			http.addParameter("hidden", Hidden);
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
@@ -73,6 +81,8 @@ namespace StangradCRM.Model
 		public override void raiseAllProperties()
 		{
 			RaisePropertyChanged("Name", Name);
+			RaisePropertyChanged("Hidden", Hidden);
+			RaisePropertyChanged("InverseHiddenText", InverseHiddenText);
 		}
 	}
 }

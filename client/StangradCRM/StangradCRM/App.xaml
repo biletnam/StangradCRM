@@ -5,13 +5,12 @@
 	<Application.Resources>
 		
 		<Style TargetType="DataGrid" x:Key="DefaultDataGridStyle">
-            <Setter Property="Margin" Value="5" />
             <Setter Property="SelectionMode" Value="Single" />
             <Setter Property="GridLinesVisibility" Value="Horizontal" />
             <Setter Property="IsReadOnly" Value="True" />
             <Setter Property="AutoGenerateColumns" Value="False" />
             <Setter Property="CanUserResizeColumns" Value="False" />
-            <Setter Property="MinRowHeight" Value="30" />
+            <Setter Property="MinRowHeight" Value="35" />
             <Setter Property="HorizontalGridLinesBrush" Value="Silver" />
 			<Setter Property="FontSize" Value="12" />
 		</Style>
@@ -130,6 +129,39 @@
 			<Setter Property="Height" Value="25"></Setter>
 			<Setter Property="Margin" Value="0, 2, 0, 2"></Setter>
 		</Style>
+	
+	    <Style x:Key="PlaceHolder" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+	        <Setter Property="Template">
+	            <Setter.Value>
+	                <ControlTemplate TargetType="{x:Type TextBox}">
+	                    <Grid>
+	                        <TextBox Text="{Binding Path=Text,
+	                                                RelativeSource={RelativeSource TemplatedParent}, 
+	                                                Mode=TwoWay,
+	                                                UpdateSourceTrigger=PropertyChanged}"
+	                                 x:Name="textSource"
+	                                 Background="Transparent"
+	                                 VerticalContentAlignment="Center"
+	                                 Panel.ZIndex="2" />
+	                        <TextBox Text="{TemplateBinding Tag}" Background="{TemplateBinding Background}" Panel.ZIndex="1">
+	                            <TextBox.Style>
+	                                <Style TargetType="{x:Type TextBox}">
+	                                    <Setter Property="Foreground" Value="Transparent"/>
+	                                    <Style.Triggers>
+	                                        <DataTrigger Binding="{Binding Path=Text, Source={x:Reference textSource}}" Value="">
+	                                            <Setter Property="Foreground" Value="LightGray"/>
+	                                    		<Setter Property="VerticalContentAlignment" Value="Center" />
+	                                    		<Setter Property="FontStyle" Value="Italic" />
+	                                        </DataTrigger>
+	                                    </Style.Triggers>
+	                                </Style>
+	                            </TextBox.Style>
+	                        </TextBox>
+	                    </Grid>
+	                </ControlTemplate>
+	            </Setter.Value>
+	        </Setter>
+	    </Style>
 	
 	</Application.Resources>
 </Application>

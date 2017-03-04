@@ -44,6 +44,7 @@ namespace StangradCRM.Model
 		public double Amount { get; set; }
 		public int Is_archive { get; set; }
 		public int Is_shipped { get; set; }
+		public string Comment { get; set; }
 		
 		public string Guid { get; set; }
 		
@@ -372,6 +373,10 @@ namespace StangradCRM.Model
 			{
 				http.addParameter("id", Id);
 			}
+			if(Comment != null)
+			{
+				http.addParameter("comment", Comment);
+			}
 		}
 		
 		protected override void prepareRemoveData(HTTPManager.HTTPRequest http)
@@ -485,6 +490,7 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("Amount", Amount);
 			RaisePropertyChanged("Is_archive", Is_archive);
 			RaisePropertyChanged("Is_shipped", Is_shipped);
+			RaisePropertyChanged("Comment", Comment);
 			
 			RaisePropertyChanged("SellerName", null);			
 			RaisePropertyChanged("BuyerName", null);

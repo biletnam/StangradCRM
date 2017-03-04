@@ -3,25 +3,42 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     WindowStartupLocation="CenterScreen"
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
-	Title="" Height="100" Width="400">
+	Title="" Height="600" Width="800">
 	<Grid Margin="5">
+		
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 0, 0, 30" >
+			
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="170"></ColumnDefinition>
+				<ColumnDefinition Width="210"></ColumnDefinition>
 				<ColumnDefinition Width="*"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
-			<Label Grid.Row="0" Grid.Column="0" 
-			       Content="Пр. дата отгрузки"></Label>
+			
+			<Label Grid.Row="0" Grid.Column="0"
+			       VerticalAlignment="Stretch"
+			       VerticalContentAlignment="Center"
+			       Content="Предполагаемая дата отгрузки"></Label>
 			<DatePicker
 				Style="{StaticResource DefaultDatePickerStyle}"
 				Grid.Row="0"
 				Grid.Column="1"
+				VerticalAlignment="Stretch"
 				VerticalContentAlignment="Center"
-				x:Name="dpPlannedShipmentDate"></DatePicker>	
+				Background="Red"
+				x:Name="dpPlannedShipmentDate"></DatePicker>
+		
+			<Label Grid.Row="1" Grid.Column="0"  Content="Коментарий" />
+			
+			<TextBox Height="150" Grid.Row="1" Grid.Column="1"
+	         	x:Name="tbxComment"
+         		TextWrapping="Wrap"
+				AcceptsReturn="True"
+				HorizontalScrollBarVisibility="Disabled"
+				VerticalScrollBarVisibility="Auto" ></TextBox>	
+		
 		</Grid>
 
 		<libs:Loading

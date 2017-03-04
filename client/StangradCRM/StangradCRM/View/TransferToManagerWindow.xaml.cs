@@ -9,13 +9,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
@@ -41,8 +36,11 @@ namespace StangradCRM.View
 			{
 				manager.Remove(currentManager);
 			}
-
-			manager.RemoveAll(x => x.Id_role != (int)Classes.Role.Manager);
+		
+			//Удаление всех пользователей, роль которых != менеджер или директор
+			manager.RemoveAll(x => (x.Id_role != (int)Classes.Role.Manager) && (x.Id_role != (int)Classes.Role.Director));
+			
+			tbxComment.Text = bid.Comment;
 			
 			DataContext = new
 			{
@@ -72,6 +70,7 @@ namespace StangradCRM.View
 			                   "Передать заявку другому менеджеру?", 
 			                   MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 			bid.Id_manager = manager.Id;
+			bid.Comment = tbxComment.Text;
 			if(!bid.save())
 			{
 				MessageBox.Show(bid.LastError);

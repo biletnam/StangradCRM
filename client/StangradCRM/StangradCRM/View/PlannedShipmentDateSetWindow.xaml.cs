@@ -7,13 +7,7 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 
 using StangradCRM.Model;
@@ -60,6 +54,8 @@ namespace StangradCRM.View
 			}
 			dpPlannedShipmentDate.SelectedDateChanged += delegate { dpPlannedShipmentDate.Background = defaultBrush; };
 			
+			tbxComment.Text = bid.Comment;
+			
 			this.bid = bid;
 			this.okCallback = okCallback;
 			this.cancelCallback = cancelCallback;
@@ -68,6 +64,7 @@ namespace StangradCRM.View
 		void BtnSave_Click(object sender, RoutedEventArgs e)
 		{
 			if(!validate()) return;
+			bid.Comment = tbxComment.Text;
 			if(okCallback != null)
 			{
 				okCallback((DateTime)dpPlannedShipmentDate.SelectedDate);

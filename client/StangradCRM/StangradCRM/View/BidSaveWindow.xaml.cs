@@ -7,21 +7,16 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-using StangradCRM.Classes;
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 using StangradCRMLibs;
@@ -66,7 +61,7 @@ namespace StangradCRM.View
 		public BidSaveWindow(Bid bid, Action saveCallback = null)
 		{
 			InitializeComponent();
-			setBindings();
+			setBindings(bid);
 			setControlsBehavior();
 		
 			//Set bid data
@@ -74,7 +69,8 @@ namespace StangradCRM.View
 			tbxAmount.Text = bid.Amount.ToString();
 			dpDateCreated.SelectedDate = bid.Date_created;
 			cbxSeller.SelectedItem = SellerViewModel.instance().getById(bid.Id_seller);
-			dpPlannedShipmentDate.SelectedDate  = bid.Planned_shipment_date; 
+			dpPlannedShipmentDate.SelectedDate  = bid.Planned_shipment_date;
+			tbxComment.Text = bid.Comment;
 			
 			//Set buyer data
 			currentBuyer = BuyerViewModel.instance().getById(bid.Id_buyer);
@@ -101,9 +97,28 @@ namespace StangradCRM.View
 		}
 		
 		//Set collections in controls
-		private void setBindings ()
+		private void setBindings (Bid currentBid = null)
 		{
-			cbxSeller.ItemsSource = SellerViewModel.instance().Collection;
+			CollectionViewSource viewSource = new CollectionViewSource();
+			if(Auth.getInstance().IdRole != (int)StangradCRM.Classes.Role.Manager)
+			{
+				viewSource.Source = SellerViewModel.instance().Collection;
+			}
+			else
+			{
+				if(currentBid != null)
+				{
+					viewSource.Source = SellerViewModel.instance().Collection.Where(x => (x.Id == currentBid.Id_seller) || (x.Hidden == 0)).ToList();
+				}
+				else
+				{
+					viewSource.Source = SellerViewModel.instance().Collection.Where(x => x.Hidden == 0).ToList();
+				}
+			}
+			cbxSeller.ItemsSource = viewSource.View;
+			viewSource.SortDescriptions.Add(new SortDescription("Row_order", ListSortDirection.Descending));
+			
+			cbxSeller.SelectedIndex = -1;
 		}
 		
 		//Behaivior controls
@@ -177,6 +192,7 @@ namespace StangradCRM.View
 			bid.Id_seller = (int)cbxSeller.SelectedValue;
 			bid.Id_manager = Auth.getInstance().Id;
 			bid.Planned_shipment_date = dpPlannedShipmentDate.SelectedDate;
+			bid.Comment = tbxComment.Text;
 			
 			//Если новая заявка - устанавливаем статусы "новая" и  "неоплачено"
 			if(bid.Id == 0)

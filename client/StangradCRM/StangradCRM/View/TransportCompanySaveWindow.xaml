@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
     WindowStartupLocation="CenterScreen"
-	Title="Добавление транспортной компании" Height="120" Width="400">
+	Title="Добавление транспортной компании" Height="600" Width="800">
 	<Grid Margin="5">
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 0, 0, 30" >
 			<Grid.RowDefinitions>
@@ -11,7 +11,7 @@
 				<RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="170"></ColumnDefinition>
+				<ColumnDefinition Width="200"></ColumnDefinition>
 				<ColumnDefinition Width="*"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
 			<Label Grid.Row="0" Grid.Column="0" 

@@ -1,18 +1,20 @@
-﻿<Window x:Class="StangradCRM.View.BidShipmentSaveWindow"
+<Window x:Class="StangradCRM.View.BidShipmentSaveWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs" 
     WindowStartupLocation="CenterScreen"
-	Title="Установить статус 'Отгружено' для заявки №" Height="200" Width="400">
+	Title="Установить статус 'Отгружено' для заявки №" Height="600" Width="800">
 	<Grid Margin="5">
+		
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 0, 0, 30" >
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="150"></ColumnDefinition>
+				<ColumnDefinition Width="190"></ColumnDefinition>
 				<ColumnDefinition Width="*"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
 						
@@ -32,10 +34,21 @@
 			
 			<ComboBox 
 				Grid.Row="1" Grid.Column="1" 
+				Margin="0, 0, 0, 2"
 				Style="{StaticResource DefaultComboBoxStyle}"
 				DisplayMemberPath="Name"
 				SelectedValuePath="Id"
 		        x:Name="cbxTransportCompany"></ComboBox>
+		
+			<Label Grid.Row="2" Grid.Column="0"  Content="Коментарий" />
+			
+			<TextBox Height="150" Grid.Row="2" Grid.Column="1"
+	         	x:Name="tbxComment"
+         		TextWrapping="Wrap"
+				AcceptsReturn="True"
+				HorizontalScrollBarVisibility="Disabled"
+				VerticalScrollBarVisibility="Auto" ></TextBox>	
+		
 		</Grid>
 
 		<libs:Loading

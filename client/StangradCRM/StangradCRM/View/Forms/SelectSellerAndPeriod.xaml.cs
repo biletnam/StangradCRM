@@ -8,14 +8,10 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 using StangradCRM.Model;
@@ -31,10 +27,13 @@ namespace StangradCRM.View.Forms
 		public SelectSellerAndPeriod()
 		{
 			InitializeComponent();
-			DataContext = new
-			{
-				SellerCollection = SellerViewModel.instance().Collection
-			};
+			
+			CollectionViewSource viewSource = new CollectionViewSource();
+			viewSource.Source = SellerViewModel.instance().Collection;
+			cbxSeller.ItemsSource = viewSource.View;
+			viewSource.SortDescriptions.Add(new SortDescription("Row_order", ListSortDirection.Descending));
+			
+			cbxSeller.SelectedIndex = -1;
 		}
 		
 		void BtnCancel_Click(object sender, RoutedEventArgs e)

@@ -1,8 +1,8 @@
-﻿<Window x:Class="StangradCRM.View.EquipmentSelectWindow"
+<Window x:Class="StangradCRM.View.EquipmentSelectWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStartupLocation="CenterScreen"
-	Title="Выбор оборудования" Height="600" Width="500">
+	Title="Выбор оборудования" Height="600" Width="800">
 	<Grid Margin="5">
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 0, 0, 30" >
 			<Grid.RowDefinitions>

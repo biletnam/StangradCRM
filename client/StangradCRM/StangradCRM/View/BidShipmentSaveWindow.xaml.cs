@@ -7,14 +7,10 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -42,11 +38,16 @@ namespace StangradCRM.View
 			
 			Title += bid.Id.ToString();
 			current_archive = bid.Is_archive;
+			tbxComment.Text = bid.Comment;
 			this.bid = bid;
 			
 			this.callback = callback;
 			
-			cbxTransportCompany.ItemsSource = TransportCompanyViewModel.instance().Collection;
+			CollectionViewSource viewSource = new CollectionViewSource();
+			viewSource.Source = TransportCompanyViewModel.instance().Collection;
+			cbxTransportCompany.ItemsSource = viewSource.View;
+			viewSource.SortDescriptions.Add(new SortDescription("Row_order", ListSortDirection.Descending));
+			cbxTransportCompany.SelectedIndex = -1;
 		}
 		
 		void BtnSave_Click(object sender, RoutedEventArgs e)
@@ -55,6 +56,7 @@ namespace StangradCRM.View
 			bid.Id_transport_company = (int)cbxTransportCompany.SelectedValue;
 			bid.Is_shipped = 1;
 			bid.Shipment_date = dpShipmentDate.SelectedDate;
+			bid.Comment = tbxComment.Text;
 			loadingProgress.Visibility = Visibility.Visible;
 			IsEnabled = false;
 			

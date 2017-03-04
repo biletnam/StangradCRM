@@ -7,15 +7,11 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 
+using System.Windows.Data;
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 
@@ -26,10 +22,20 @@ namespace StangradCRM.View
 	/// </summary>
 	public partial class TransportCompanyWindow : Window
 	{
+		CollectionViewSource viewSource = new CollectionViewSource();
 		public TransportCompanyWindow()
 		{
 			InitializeComponent();
-			DataContext = new {TransportCompanyCollection = TransportCompanyViewModel.instance().Collection};
+			viewSource.Source = TransportCompanyViewModel.instance().Collection;
+			
+			viewSource.Filter += delegate(object sender, FilterEventArgs e) 
+			{
+				TransportCompany transportCompany = e.Item as TransportCompany;
+				if(transportCompany == null) return;
+				e.Accepted = transportCompany.IsVisible;
+			};
+			viewSource.SortDescriptions.Add(new SortDescription("Row_order", ListSortDirection.Descending));
+			DataContext = new {TransportCompanyCollection = viewSource.View};
 		}
 		
 		void BtnAdd_Click(object sender, RoutedEventArgs e)
@@ -57,6 +63,43 @@ namespace StangradCRM.View
 			TransportCompany transportCompany = dgvTransportCompany.SelectedItem as TransportCompany;
 			if(transportCompany == null) return;
 			if(!transportCompany.remove())
+			{
+				MessageBox.Show(transportCompany.LastError);
+			}
+		}
+		void TbxSearch_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			TransportCompanyViewModel.instance().search(tbxSearch.Text);
+			viewSource.View.Refresh();
+		}
+		void BtnSearchClear_Click(object sender, RoutedEventArgs e)
+		{
+			tbxSearch.Text = "";
+		}
+		void BtnRowUp_Click(object sender, RoutedEventArgs e)
+		{
+			TransportCompany transportCompany = dgvTransportCompany.SelectedItem as TransportCompany;
+			if(transportCompany == null) return;
+			
+			if(transportCompany.rowUp())
+			{
+				viewSource.View.Refresh();
+			}
+			else
+			{
+				MessageBox.Show(transportCompany.LastError);
+			}
+		}
+		void BtnRowDown_Click(object sender, RoutedEventArgs e)
+		{
+			TransportCompany transportCompany = dgvTransportCompany.SelectedItem as TransportCompany;
+			if(transportCompany == null) return;
+			
+			if(transportCompany.rowDown())
+			{
+				viewSource.View.Refresh();
+			}
+			else
 			{
 				MessageBox.Show(transportCompany.LastError);
 			}

@@ -7,15 +7,10 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 
+using System.Windows.Data;
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 
@@ -26,10 +21,19 @@ namespace StangradCRM.View
 	/// </summary>
 	public partial class ComplectationItemWindow : Window
 	{
+		CollectionViewSource viewSource = new CollectionViewSource();
 		public ComplectationItemWindow()
 		{
 			InitializeComponent();
-			DataContext = new { ComplectationItemCollection = ComplectationItemViewModel.instance().Collection };
+			viewSource.Source = ComplectationItemViewModel.instance().Collection;
+			
+			viewSource.Filter += delegate(object sender, FilterEventArgs e) 
+			{
+				ComplectationItem complectationItem = e.Item as ComplectationItem;
+				if(complectationItem == null) return;
+				e.Accepted = complectationItem.IsVisible;
+			};
+			DataContext = new { ComplectationItemCollection = viewSource.View };
 		}
 		
 		void BtnAdd_Click(object sender, RoutedEventArgs e)
@@ -61,6 +65,15 @@ namespace StangradCRM.View
 			{
 				MessageBox.Show(complectationItem.LastError);
 			}
+		}
+		void TbxSearch_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			ComplectationItemViewModel.instance().search(tbxSearch.Text);
+			viewSource.View.Refresh();
+		}
+		void BtnSearchClear_Click(object sender, RoutedEventArgs e)
+		{
+			tbxSearch.Text = "";
 		}
 		
 

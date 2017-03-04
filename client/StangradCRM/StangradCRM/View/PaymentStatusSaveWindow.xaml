@@ -4,7 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
     WindowStartupLocation="CenterScreen"
-	Title="Добавление статуса оплаты" Height="120" Width="400">
+	Title="Добавление статуса оплаты" Height="600" Width="800">
 	<Grid Margin="5">
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 0, 0, 30" >
 			<Grid.RowDefinitions>

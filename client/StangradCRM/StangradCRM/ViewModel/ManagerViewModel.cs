@@ -104,5 +104,12 @@ namespace StangradCRM.ViewModel
 				collection.ToList().ForEach(x => { x.loadedItemInitProperty(); x.IsSaved = true; add(x); });
 			}
 		}
+		
+		public void search (string search_string)
+		{
+			_collection.ToList().ForEach(x => x.setFilter("Name", false));
+			_collection.Where(x => x.Name.ToLower().IndexOf(search_string.ToLower()) != -1)
+				.ToList().ForEach(y => y.setFilter("Name", true));
+		}
 	}
 }

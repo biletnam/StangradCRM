@@ -3,8 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
 	WindowStartupLocation="CenterScreen"
-    Title="Формирование отчета оборота" Height="200" Width="400">
-	<Grid Margin="15, 5, 5, 5">
+    Title="Формирование отчета оборота" Height="600" Width="800">
+	<Grid Margin="5">
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 0, 0, 30" >
 			<Grid.RowDefinitions>
 				<RowDefinition Height="30"></RowDefinition>
@@ -18,36 +18,41 @@
 			<Label 
 				VerticalAlignment="Center" 
 				Content="Выберите продавца" 
+				Margin="0, 0, 0, 5"
 				Grid.Row="0" Grid.Column="0"></Label>
 			
 			<ComboBox 
 				x:Name="cbxSeller"
-				ItemsSource="{Binding SellerCollection}"
 				DisplayMemberPath="Name"
 				SelectedValuePath="Id"
-				VerticalAlignment="Center"
+				VerticalAlignment="Stretch"
+				Margin="0, 0, 0, 5"
 				Grid.Row="0" Grid.Column="1"></ComboBox>
 
 			<Label
 				VerticalAlignment="Center"
+				Margin="0, 0, 0, 5"
 				Grid.Row="1" Grid.Column="0"
 	            Content="Выбрать дату с">
 			</Label>
 			
 			<DatePicker 
 				x:Name="dpSelectDateStart"
-				VerticalAlignment="Center"
+				VerticalAlignment="Stretch"
+				Margin="0, 0, 0, 5"
 				Grid.Row="1" Grid.Column="1"></DatePicker>
 		
 			<Label
 				VerticalAlignment="Center"
 				Grid.Row="2" Grid.Column="0"
+				Margin="0, 0, 0, 5"
 	            Content="Выбрать дату по">
 			</Label>
 			
 			<DatePicker 
 				x:Name="dpSelectDateEnd"
-				VerticalAlignment="Center"
+				VerticalAlignment="Stretch"
+				Margin="0, 0, 0, 5"
 				Grid.Row="2" Grid.Column="1"></DatePicker>
 		</Grid>
 

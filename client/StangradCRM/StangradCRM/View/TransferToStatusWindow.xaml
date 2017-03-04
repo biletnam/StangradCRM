@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
 	WindowStartupLocation="CenterScreen"
-	Title="" Height="400" Width="600">
+	Title="" Height="600" Width="800">
 	<Grid Margin="5">
 		
 		<GroupBox Margin="0, 0, 0, 30" Header="Статусы">

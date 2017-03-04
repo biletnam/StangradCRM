@@ -5,39 +5,41 @@
     WindowState="Maximized"
 	Title="Выбор покупателя" Height="600" Width="800">
 	<Grid Margin="5">
+		
 		<Grid.RowDefinitions>
-			<RowDefinition Height="30"></RowDefinition>
+			<RowDefinition Height="28"></RowDefinition>
 			<RowDefinition></RowDefinition>
 			<RowDefinition Height="30"></RowDefinition>
 		</Grid.RowDefinitions>
+		
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition></ColumnDefinition>
 			<ColumnDefinition Width="35"></ColumnDefinition>
 		</Grid.ColumnDefinitions>
 		
-		<TextBox 
-			VerticalContentAlignment="Center"
-			Margin="5, 0, 5, 0"
-			TextChanged="TbxSearch_TextChanged"
-			Height="23"
-			x:Name="tbxSearch"
-			Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></TextBox>
-		<Button 
-			HorizontalAlignment="Right"
-			Margin="0, 0, 5, 0"
-			Click="BtnSearchClear_Click"
-			Height="23"
-			Width="30"
-			Grid.Row="0" Grid.Column="1"
-			Content="X"
-			x:Name="btnSearchClear">
-		</Button>
+		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition></ColumnDefinition>
+				<ColumnDefinition Width="35"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<TextBox 
+				x:Name="tbxSearch"
+				Tag="Поиск продавца..."
+				TextChanged="TbxSearch_TextChanged"
+				Grid.Row="0" Grid.Column="0"
+				VerticalAlignment="Stretch"
+				VerticalContentAlignment="Center"
+		        Style="{StaticResource PlaceHolder}"></TextBox>
+			<Button 
+				VerticalAlignment="Stretch"
+				x:Name="btnSearchClear"
+				Click="BtnSearchClear_Click"
+				Grid.Column="1" 
+				Content="X"></Button>
+		</Grid>
 		
-		<DataGrid
-			Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-			x:Name="dgvBuyer"
-			ItemsSource="{Binding BuyerCollection}"
-			Style="{StaticResource DefaultDataGridStyle}">
+		<DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0, 5, 0, 5"
+			x:Name="dgvBuyer" ItemsSource="{Binding BuyerCollection}" Style="{StaticResource DefaultDataGridStyle}">
 			<DataGrid.Columns>
 
 				<DataGridTemplateColumn
@@ -136,7 +138,8 @@
 				VerticalAlignment="Stretch" 
 				HorizontalAlignment="Stretch"
 				Click="BtnCancel_Click"
-		        Width="120" x:Name="btnCancel"></Button>
+		        Width="135" x:Name="btnCancel"></Button>
 		</Grid>
+	
 	</Grid>
 </Window>

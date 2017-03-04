@@ -144,6 +144,7 @@
     <Compile Include="Reports\Receipts.cs" />
     <Compile Include="Reports\ShipmentPeriod.cs" />
     <Compile Include="Reports\Sticker.cs" />
+    <Compile Include="Reports\TurnoverAllSeller.cs" />
     <Compile Include="ViewModel\BidStatusViewModel.cs" />
     <Compile Include="ViewModel\BidViewModel.cs" />
     <Compile Include="ViewModel\BuyerViewModel.cs" />
@@ -315,6 +316,10 @@
       <DependentUpon>SelectShipmentPeriodWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\Forms\TurnoverForAllSellerPeriodWindow.xaml.cs">
+      <DependentUpon>TurnoverForAllSellerPeriodWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="View\Helpers\DirectorManagerBidControlHelper.cs" />
     <Compile Include="View\Helpers\DirectorMyBidControlHelper.cs" />
     <Compile Include="View\Helpers\ManagerMainWindowHelper.cs" />
@@ -432,9 +437,7 @@
     <Page Include="View\Controls\TechnicalControls\MainControlArchive.xaml" />
     <Page Include="View\Controls\TechnicalControls\MainControlInWork.xaml" />
     <Page Include="View\EquipmentBidSaveWindow.xaml" />
-    <Page Include="View\EquipmentSaveWindow.xaml">
-      <DependentUpon>EquipmentSelectWindow.xaml</DependentUpon>
-    </Page>
+    <Page Include="View\EquipmentSaveWindow.xaml" />
     <Page Include="View\EquipmentSelectWindow.xaml" />
     <Page Include="View\EquipmentWindow.xaml" />
     <Page Include="View\Forms\BuyerListWindow.xaml" />
@@ -443,6 +446,7 @@
     <Page Include="View\Forms\SelectBuyerPeriodWindow.xaml" />
     <Page Include="View\Forms\SelectSellerAndPeriod.xaml" />
     <Page Include="View\Forms\SelectShipmentPeriodWindow.xaml" />
+    <Page Include="View\Forms\TurnoverForAllSellerPeriodWindow.xaml" />
     <Page Include="View\MainWindows\AccountantMainWindow.xaml" />
     <Page Include="View\MainWindows\AdministratorMainWindow.xaml" />
     <Page Include="View\MainWindows\DirectorMainWindow.xaml" />

@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
     WindowStartupLocation="CenterScreen"
-	Title="Добавление продавца" Height="120" Width="400">
+	Title="Добавление продавца" Height="600" Width="800">
 	<Grid Margin="5">
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 0, 0, 30" >
 			<Grid.RowDefinitions>
@@ -14,11 +14,19 @@
 				<ColumnDefinition Width="170"></ColumnDefinition>
 				<ColumnDefinition Width="*"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
+			
 			<Label Grid.Row="0" Grid.Column="0" 
 			       Content="Название продавца"></Label>
 			<TextBox Grid.Row="0" Grid.Column="1" 
 			         Style="{StaticResource DefaultTextBoxStyle}"
 			         x:Name="tbxName"></TextBox>
+			
+			<Label Grid.Row="1" Grid.Column="0" Content="Показывать менеджеру"></Label>
+			<ComboBox Grid.Row="1" Grid.Column="1" x:Name="cbxHidden">
+				<ComboBoxItem>Да</ComboBoxItem>
+				<ComboBoxItem>Нет</ComboBoxItem>
+			</ComboBox>
+		
 		</Grid>
 
 		<libs:Loading

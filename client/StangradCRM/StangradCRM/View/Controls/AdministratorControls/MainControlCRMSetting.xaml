@@ -12,7 +12,7 @@
 					CellStyle="{StaticResource DefaultDataGridCellStyle}"
 					CanUserSort="True"
 					SortMemberPath="Id"
-					Width="100"
+					Width="50"
 					Header="Код">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
@@ -33,7 +33,7 @@
 											<Setter Property="FontSize" Value="14"></Setter>
 											<Setter Property="Foreground" Value="Red"></Setter>
 											<Setter Property="VerticalAlignment" Value="Center"></Setter>
-											<Setter Property="HorizontalAlignment" Value="Center"></Setter>
+											<Setter Property="HorizontalAlignment" Value="Left"></Setter>
 											<Style.Triggers>
 												<DataTrigger Binding="{Binding Path=IsSaved}" Value="True">
 													<Setter Property="Visibility" Value="Hidden"></Setter>
@@ -79,9 +79,10 @@
                         	<TextBox 
                         		x:Name="tbxSettingValue"
                         		TextWrapping="Wrap"
-                        	         TextChanged="TbxSettingValue_TextChanged"
-                        	         VerticalAlignment="Center"
-                        	         Text="{Binding Path=Setting_value}">
+                	         	TextChanged="TbxSettingValue_TextChanged"
+                	         	VerticalAlignment="Stretch"
+            					VerticalContentAlignment="Center"
+                	         	Text="{Binding Path=Setting_value}">
                         	</TextBox>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>

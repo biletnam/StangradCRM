@@ -43,6 +43,11 @@
 					Header="Показатели за период"
 					x:Name="miIndicators">
 				</MenuItem>
+				<MenuItem
+					Click="MiTurnoverForAllSeller_Click"
+					Header="Поступления по продавцам"
+					x:Name="miTurnoverForAllSeller">
+				</MenuItem>
 			</MenuItem>
 			<MenuItem 
 				Click="MiDataRefresh_Click"

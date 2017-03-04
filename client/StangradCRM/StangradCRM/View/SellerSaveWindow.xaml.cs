@@ -7,14 +7,9 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -41,11 +36,20 @@ namespace StangradCRM.View
 			{
 				Title = "Редактирование продавца (" + seller.Name + ")";
 				tbxName.Text = seller.Name;
+				if(seller.Hidden == 0)
+				{
+					cbxHidden.SelectedIndex = 0;
+				}
+				else
+				{
+					cbxHidden.SelectedIndex = 1;
+				}
 				this.seller = seller;
 			}
 			else
 			{
 				this.seller = new Seller();
+				cbxHidden.SelectedIndex = 0;
 			}
 			tbxName.TextChanged += delegate { tbxName.Background = defaultBrush; };
 		}
@@ -58,6 +62,7 @@ namespace StangradCRM.View
 		void BtnSave_Click(object sender, RoutedEventArgs e)
 		{
 			if(!validate()) return;
+			seller.Hidden = cbxHidden.SelectedIndex;
 			seller.Name = tbxName.Text;
 			
 			loadingProgress.Visibility = Visibility.Visible;

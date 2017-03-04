@@ -7,15 +7,11 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
+
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 
+using System.Windows.Data;
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 
@@ -26,10 +22,19 @@ namespace StangradCRM.View
 	/// </summary>
 	public partial class BuyerWindow : Window
 	{
+		CollectionViewSource viewSource = new CollectionViewSource();
 		public BuyerWindow()
 		{
 			InitializeComponent();
-			DataContext = new { BuyerCollection = BuyerViewModel.instance().Collection };
+			viewSource.Source = BuyerViewModel.instance().Collection;
+			
+			viewSource.Filter += delegate(object sender, FilterEventArgs e) 
+			{
+				Buyer buyer = e.Item as Buyer;
+				if(buyer == null) return;
+				e.Accepted = buyer.IsVisible;
+			};
+			DataContext = new { BuyerCollection =  viewSource.View};
 		}
 		
 		void BtnAdd_Click(object sender, RoutedEventArgs e)
@@ -61,6 +66,15 @@ namespace StangradCRM.View
 			{
 				MessageBox.Show(buyer.LastError);
 			}
+		}
+		void TbxSearch_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			BuyerViewModel.instance().search(tbxSearch.Text);
+			viewSource.View.Refresh();
+		}
+		void BtnSearchClear_Click(object sender, RoutedEventArgs e)
+		{
+			tbxSearch.Text = "";
 		}
 	}
 }
