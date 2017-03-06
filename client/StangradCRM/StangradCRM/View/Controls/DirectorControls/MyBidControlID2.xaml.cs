@@ -10,19 +10,15 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 using Microsoft.Win32;
 using StangradCRM.Core;
-using StangradCRM.Extensions;
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 using StangradCRMLibs;
@@ -56,6 +52,7 @@ namespace StangradCRM.View.Controls.DirectorControls
 				//Удаляем из списка
 				manager.Remove(currentManager);
 			}
+			manager.RemoveAll(x => (x.Id_role != (int)Classes.Role.Manager) && (x.Id_role != (int)Classes.Role.Director));
 			
 			//Установка сортировки ---->
 			//1: По статусу оплаты в порядке убывания (по id статусов)

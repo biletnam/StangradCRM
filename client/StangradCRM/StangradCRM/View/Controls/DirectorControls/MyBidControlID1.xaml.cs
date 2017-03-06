@@ -10,13 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 
 using StangradCRM.Core;
 using StangradCRM.Model;
@@ -48,6 +45,7 @@ namespace StangradCRM.View.Controls.DirectorControls
 			{
 				manager.Remove(currentManager);
 			}
+			manager.RemoveAll(x => (x.Id_role != (int)Classes.Role.Manager) && (x.Id_role != (int)Classes.Role.Director));
 			
 			List<BidStatus> status = BidStatusViewModel.instance().Collection.ToList();
 			status.Remove(BidStatusViewModel.instance().getById((int)Classes.BidStatus.New));
@@ -221,9 +219,8 @@ namespace StangradCRM.View.Controls.DirectorControls
 			Bid bid = dgvBid.SelectedItem as Bid;
 			if(bid == null) return;
 			
-			bid.Id_bid_status = (int)Classes.BidStatus.InWork;
 			PlannedShipmentDateSetWindow window 
-				= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { SetPlannedShipmentDateAndSave(bid, planned_shipment_date); }));
+				= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { SetPlannedShipmentDateChangeStatusAndSave(bid, planned_shipment_date); }));
 			window.ShowDialog();
 		}
 		
@@ -338,9 +335,8 @@ namespace StangradCRM.View.Controls.DirectorControls
 				return;
 			}
 			
-			bid.Id_bid_status = (int)Classes.BidStatus.InWork;
 			PlannedShipmentDateSetWindow window 
-				= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { SetPlannedShipmentDateAndSave(bid, planned_shipment_date); }));
+				= new PlannedShipmentDateSetWindow(bid, new Action<DateTime>( (planned_shipment_date) => { SetPlannedShipmentDateChangeStatusAndSave(bid, planned_shipment_date); }));
 			window.ShowDialog();
 		}
 		
@@ -424,6 +420,17 @@ namespace StangradCRM.View.Controls.DirectorControls
 		//Установка предполагаемой даты отгрузки и сохранение заявки
 		private void SetPlannedShipmentDateAndSave (Bid bid, DateTime plannedShipmentDate)
 		{
+			bid.Planned_shipment_date = plannedShipmentDate;
+			if(!bid.save())
+			{
+				MessageBox.Show(bid.LastError);
+			}
+		}
+		
+		//Установка предполагаемой даты отгрузки, смена статуса и сохранение заявки
+		private void SetPlannedShipmentDateChangeStatusAndSave (Bid bid, DateTime plannedShipmentDate)
+		{
+			bid.Id_bid_status = (int)Classes.BidStatus.InWork;
 			bid.Planned_shipment_date = plannedShipmentDate;
 			if(!bid.save())
 			{

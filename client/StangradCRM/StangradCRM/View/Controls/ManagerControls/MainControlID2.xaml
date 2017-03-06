@@ -89,15 +89,7 @@
 							Header="Передать менеджеру:">
 							<MenuItem.ItemContainerStyle>
 								<Style TargetType="MenuItem">
-									<Style.Triggers>
-										<DataTrigger							
-											Binding="{Binding Path = CurrentRole}"
-											Value="{x:Static enum:Role.Manager}">
-											<Setter	Property="Visibility" Value="Visible" />
-										</DataTrigger>
-									</Style.Triggers>
-									<Setter	Property="Header" Value="{Binding Path=Name}" />
-									<Setter	Property="Visibility" Value="Collapsed" />
+									<Setter Property="Header" Value="{Binding Path=Name}" />
 									<EventSetter Event="Click"
 											Handler="contextMenuItemTransferByManagerClick" />
 								</Style>

@@ -26,7 +26,7 @@ namespace StangradCRM.View
 	{
 		
 		private IniFile settings = new IniFile("Settings.ini");
-		private string version = "0.16";
+		private string version = "0.17";
 		
 		public StartupWindow()
 		{

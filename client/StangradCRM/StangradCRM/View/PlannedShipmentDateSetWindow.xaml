@@ -1,8 +1,9 @@
-﻿<Window x:Class="StangradCRM.View.PlannedShipmentDateSetWindow"
+<Window x:Class="StangradCRM.View.PlannedShipmentDateSetWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     WindowStartupLocation="CenterScreen"
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
+    Closing="Window_Closing"
 	Title="" Height="600" Width="800">
 	<Grid Margin="5">
 		

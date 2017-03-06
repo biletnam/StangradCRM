@@ -90,5 +90,12 @@ namespace StangradCRM.View
 			}
 			Close();
 		}
+		void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			if(cancelCallback != null)
+			{
+				cancelCallback();
+			}
+		}
 	}
 }
