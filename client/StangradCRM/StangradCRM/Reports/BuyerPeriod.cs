@@ -63,7 +63,7 @@ namespace StangradCRM.Reports
 			bottomRow.Add(new ReportCell());
 			bottomRow.Add(new ReportCell("Итоговая сумма:") { ColumnSpan=1 });
 			bottomRow.Add(new ReportCell() {HorizontalAlignment = HorizontalAlignment.Right});
-			bottomRow.Add(new ReportCell(sum.ToString()) { BorderColor = System.Drawing.Color.Black, Format= Format.Money });
+			bottomRow.Add(new ReportCell(sum.ToString().Replace(',', '.')) { BorderColor = System.Drawing.Color.Black, Format= Format.Money });
 			
 			Rows.Add(bottomRow);
 			

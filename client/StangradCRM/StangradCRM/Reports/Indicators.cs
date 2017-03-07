@@ -198,7 +198,7 @@ namespace StangradCRM.Reports
 				ReportRow row = new ReportRow();
 				row.Add(new ReportCell(seller.Name) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				row.Add(null);
-				row.Add(new ReportCell(kv.Value.ToString()) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
+				row.Add(new ReportCell(kv.Value.ToString().Replace(',', '.')) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				Rows.Add(row);
 			}
 		}
@@ -258,7 +258,7 @@ namespace StangradCRM.Reports
 				ReportRow row = new ReportRow();
 				row.Add(new ReportCell(manager.Name) { ColumnSpan=1, BorderColor = System.Drawing.Color.Black });
 				row.Add(null);
-				row.Add(new ReportCell(kv.Value.ToString()) { BorderColor = System.Drawing.Color.Black });
+				row.Add(new ReportCell(kv.Value.ToString().Replace(',', '.')) { BorderColor = System.Drawing.Color.Black });
 				int managerBidsCount = 0;
 				if(managerBidsCountDict.ContainsKey(kv.Key)) managerBidsCount = managerBidsCountDict[kv.Key];
 				row.Add(new ReportCell(managerBidsCount.ToString()) { BorderColor = System.Drawing.Color.Black });

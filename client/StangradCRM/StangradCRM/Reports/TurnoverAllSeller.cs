@@ -67,14 +67,14 @@ namespace StangradCRM.Reports
 					BorderColor = System.Drawing.Color.Black
 				});
 				row.Cells.Add(new ReportCell (sellers[i].Name) { BorderColor = System.Drawing.Color.Black });
-				row.Cells.Add(new ReportCell (currentSellerSum.ToString()) { BorderColor = System.Drawing.Color.Black, HorizontalAlignment = HorizontalAlignment.Right, Format = Format.Money });
+				row.Cells.Add(new ReportCell (currentSellerSum.ToString().Replace(',', '.')) { BorderColor = System.Drawing.Color.Black, HorizontalAlignment = HorizontalAlignment.Right, Format = Format.Money });
 				Rows.Add(row);
 			}
 			
 			ReportRow sumRow = new ReportRow();
 			sumRow.Add(new ReportCell());
 			sumRow.Add(new ReportCell("Итого:") {HorizontalAlignment = HorizontalAlignment.Right, BorderColor = System.Drawing.Color.Black});
-			sumRow.Add(new ReportCell(sum.ToString()) { HorizontalAlignment = HorizontalAlignment.Right, BorderColor = System.Drawing.Color.Black, Format = Format.Money });
+			sumRow.Add(new ReportCell(sum.ToString().Replace(',', '.')) { HorizontalAlignment = HorizontalAlignment.Right, BorderColor = System.Drawing.Color.Black, Format = Format.Money });
 			Rows.Add(sumRow);
 		}
 		

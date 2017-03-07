@@ -78,7 +78,7 @@ namespace StangradCRM.Reports
 			ReportRow sumRow = new ReportRow();
 			sumRow.Add(new ReportCell());
 			sumRow.Add(new ReportCell("Итого:") {HorizontalAlignment = HorizontalAlignment.Right});
-			sumRow.Add(new ReportCell(sum.ToString()) { HorizontalAlignment = HorizontalAlignment.Right, BorderColor = System.Drawing.Color.Black, Format = Format.Money });
+			sumRow.Add(new ReportCell(sum.ToString().Replace(',', '.')) { HorizontalAlignment = HorizontalAlignment.Right, BorderColor = System.Drawing.Color.Black, Format = Format.Money });
 			Rows.Add(sumRow);
 		}
 	}
