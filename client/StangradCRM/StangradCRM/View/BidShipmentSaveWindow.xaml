@@ -40,7 +40,7 @@
 				SelectedValuePath="Id"
 		        x:Name="cbxTransportCompany"></ComboBox>
 		
-			<Label Grid.Row="2" Grid.Column="0"  Content="Коментарий" />
+			<Label Grid.Row="2" Grid.Column="0"  Content="Комментарий" />
 			
 			<TextBox Height="150" Grid.Row="2" Grid.Column="1"
 	         	x:Name="tbxComment"

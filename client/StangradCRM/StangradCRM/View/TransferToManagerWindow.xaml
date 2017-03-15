@@ -57,7 +57,7 @@
 			
 			</GroupBox>
 			
-			<GroupBox VerticalAlignment="Stretch" Height="150" Header="Коментарий" Grid.Row="1">
+			<GroupBox VerticalAlignment="Stretch" Height="150" Header="Комментарий" Grid.Row="1">
 				<TextBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="tbxComment"
 	     			TextWrapping="Wrap" AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"></TextBox>
 			</GroupBox>

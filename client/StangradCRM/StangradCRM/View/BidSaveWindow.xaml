@@ -10,7 +10,7 @@
 	xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
 	WindowStartupLocation="CenterScreen"
 	Title="Добавление заявки"
-	Height="768" Width="1024">
+	Height="600" Width="1024">
 	
 	<Window.Resources>
 		<converters:CostConverter x:Key="CostConverter"></converters:CostConverter>
@@ -178,7 +178,7 @@
 			
 			</GroupBox>
 			
-			<GroupBox VerticalAlignment="Stretch" Height="150" Header="Коментарий" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+			<GroupBox VerticalAlignment="Stretch" Height="150" Header="Комментарий" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
 				<TextBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="tbxComment"
          			TextWrapping="Wrap" AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"></TextBox>
 			</GroupBox>
