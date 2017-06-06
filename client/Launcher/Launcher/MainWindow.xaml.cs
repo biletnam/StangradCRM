@@ -202,5 +202,24 @@ namespace Launcher
 			return Crypto.DecryptStringAES(password, key);
 		}
 		
+		void Window_KeyUp(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				if(tbxLogin.Text == "") {
+					MessageBox.Show("Введите логин пользователя!");
+					return;
+				}
+				if(tbxPassword.Password == "") {
+					MessageBox.Show("Введите пароль пользователя!");
+					return;
+				}
+				if(tbxHost.Text == "") {
+					MessageBox.Show("Введите адрес сервера!");
+					return;
+				}
+				login();
+			}
+		}
+		
 	}
 }

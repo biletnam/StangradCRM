@@ -180,5 +180,17 @@ namespace StangradCRM.View.Controls.AccountantControls
 		{
 			complectationViewSource.View.Refresh();
 		}		
+		
+		void ContextCopy_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem mi = sender as MenuItem;
+			if(mi == null) return;
+			
+			TextBlock textBlock = ((ContextMenu)mi.Parent).PlacementTarget as TextBlock;
+			if(textBlock == null) return;
+			
+			Clipboard.SetText(textBlock.Text);
+		}
+		
 	}
 }

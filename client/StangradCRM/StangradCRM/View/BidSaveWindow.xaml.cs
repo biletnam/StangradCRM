@@ -8,7 +8,10 @@
  */
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,7 +19,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-
+using Microsoft.Win32;
+using StangradCRM.Classes;
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 using StangradCRMLibs;
@@ -46,6 +50,7 @@ namespace StangradCRM.View
 			setBindings();
 			setControlsBehavior();
 			gbxEquipmentBid.Visibility = Visibility.Collapsed;
+			gbxBidFiles.Visibility = Visibility.Collapsed;
 			
 			bid = new Bid();
 			
@@ -53,9 +58,16 @@ namespace StangradCRM.View
 			DataContext = new 
 			{
 				EquipmentBidCollection = bid.EquipmentBidCollection,
+				BidFilesCollection = bid.BidFilesCollection,
 				BuyerCollection = BuyerViewModel.instance().Collection,
+				
 				BID = bid
 			};
+			
+			if(Auth.getInstance().IdRole == (int)StangradCRM.Classes.Role.Logistician) {
+				Close();
+			}
+			
 		}
 		
 		public BidSaveWindow(Bid bid, Action saveCallback = null)
@@ -70,6 +82,7 @@ namespace StangradCRM.View
 			dpDateCreated.SelectedDate = bid.Date_created;
 			cbxSeller.SelectedItem = SellerViewModel.instance().getById(bid.Id_seller);
 			dpPlannedShipmentDate.SelectedDate  = bid.Planned_shipment_date;
+			cbxPlannedTransportCompany.SelectedValue = bid.Id_transport_company;
 			tbxComment.Text = bid.Comment;
 			
 			//Set buyer data
@@ -81,11 +94,19 @@ namespace StangradCRM.View
 				tbxBuyerPhone.Text = currentBuyer.Phone;
 				tbxBuyerEmail.Text = currentBuyer.Email;
 				tbxBuyerCity.Text = currentBuyer.City;
+				tbxBuyerPassportSerialNumber.Text = currentBuyer.Passport_serial_number;
+				try
+				{
+					dpPassportIssueDate.SelectedDate = DateTime.Parse(currentBuyer.Passport_issue_date);
+				} catch {};
+
+				tbxBuyerInn.Text = currentBuyer.Inn;
 			}
 			//Set bid data context
 			DataContext = new 
 			{
 				EquipmentBidCollection = bid.EquipmentBidCollection,
+				BidFilesCollection = bid.BidFilesCollection,
 				BuyerCollection = BuyerViewModel.instance().Collection,
 				BID = bid
 			};			
@@ -94,6 +115,10 @@ namespace StangradCRM.View
 			this.saveCallback = saveCallback;
 			
 			EditBidInitialize();
+
+			if(Auth.getInstance().IdRole == (int)StangradCRM.Classes.Role.Logistician) {
+				InitializeLogistician();
+			}
 		}
 		
 		//Set collections in controls
@@ -117,8 +142,14 @@ namespace StangradCRM.View
 			}
 			cbxSeller.ItemsSource = viewSource.View;
 			viewSource.SortDescriptions.Add(new SortDescription("Row_order", ListSortDirection.Descending));
-			
 			cbxSeller.SelectedIndex = -1;
+			
+			CollectionViewSource transportCompanyViewSource = new CollectionViewSource();
+			transportCompanyViewSource.Source = TransportCompanyViewModel.instance().Collection;
+			cbxPlannedTransportCompany.ItemsSource = transportCompanyViewSource.View;
+			transportCompanyViewSource.SortDescriptions.Add(new SortDescription("Row_order", ListSortDirection.Descending));
+			cbxPlannedTransportCompany.SelectedIndex = -1;
+			
 		}
 		
 		//Behaivior controls
@@ -141,6 +172,7 @@ namespace StangradCRM.View
 		void EditBidInitialize ()
 		{
 			gbxEquipmentBid.Visibility = Visibility.Visible;
+			gbxBidFiles.Visibility = Visibility.Visible;
 			Title = "Редактирование заявки №" + bid.Id.ToString();
 			isNew = false;
 
@@ -155,11 +187,28 @@ namespace StangradCRM.View
 		//if bid status = is_work
 		void InitializeIfIsWork ()
 		{
-			lblPlannedShopmentDate.Visibility = Visibility.Visible;
-			dpPlannedShipmentDate.Visibility = Visibility.Visible;
+			grdPlanned.Visibility = Visibility.Visible;
 			
 			btnIsShipped.Visibility = Visibility.Visible;
 			setShippedControlsVisibility();
+		}
+		
+		// Для логиста
+		void InitializeLogistician () 
+		{
+			dpDateCreated.IsEnabled = false;
+			cbxSeller.IsEnabled = false;
+			tbxAmount.IsReadOnly = true;
+			btnShowPaymentHistory.IsEnabled = false;
+			tbxAccount.IsReadOnly = true;
+			dpPlannedShipmentDate.IsEnabled = false;
+			cbxPlannedTransportCompany.IsEnabled = false;
+
+			gbxBidFiles.IsEnabled = false;
+			
+			btnBuyerClear.IsEnabled = false;
+			
+			gbxEquipmentBid.IsEnabled = false;
 		}
 		
 		//Close window
@@ -185,14 +234,36 @@ namespace StangradCRM.View
 			currentBuyer.Email = tbxBuyerEmail.Text;
 			currentBuyer.City = tbxBuyerCity.Text;
 			
+			if(tbxBuyerPassportSerialNumber.Text != "____ ______")
+				currentBuyer.Passport_serial_number = tbxBuyerPassportSerialNumber.Text;
+			else
+				currentBuyer.Passport_serial_number = "";
+			
+			if(dpPassportIssueDate.SelectedDate != null)
+				currentBuyer.Passport_issue_date = dpPassportIssueDate.SelectedDate.Value.ToString("dd.MM.yyyy");
+			else
+				currentBuyer.Passport_issue_date = "";				
+
+			currentBuyer.Inn = tbxBuyerInn.Text;
+			
 			//set bid data
 			bid.Date_created = (DateTime)dpDateCreated.SelectedDate.Value;
 			bid.Account = tbxAccount.Text;
 			bid.Amount = double.Parse(tbxAmount.Text);
 			bid.Id_seller = (int)cbxSeller.SelectedValue;
-			bid.Id_manager = Auth.getInstance().Id;
+			
+			if(Auth.getInstance().IdRole != (int)StangradCRM.Classes.Role.Logistician) {
+				bid.Id_manager = Auth.getInstance().Id;
+			}
+			
 			bid.Planned_shipment_date = dpPlannedShipmentDate.SelectedDate;
 			bid.Comment = tbxComment.Text;
+			//
+			if(cbxPlannedTransportCompany.SelectedIndex != -1)
+			{
+				bid.Id_transport_company =
+					(int)cbxPlannedTransportCompany.SelectedValue;
+			}
 			
 			//Если новая заявка - устанавливаем статусы "новая" и  "неоплачено"
 			if(bid.Id == 0)
@@ -267,6 +338,14 @@ namespace StangradCRM.View
 				tbxBuyerPhone.Text = buyer.Phone;
 				tbxBuyerEmail.Text = buyer.Email;
 				tbxBuyerCity.Text = buyer.City;
+				tbxBuyerPassportSerialNumber.Text = buyer.Passport_serial_number;
+				
+				try
+				{
+					dpPassportIssueDate.SelectedDate = DateTime.Parse(buyer.Passport_issue_date);
+				} catch {};
+				
+				tbxBuyerInn.Text = buyer.Inn;
 				
 				currentBuyer = buyer;
 				
@@ -281,6 +360,10 @@ namespace StangradCRM.View
 			tbxBuyerPhone.Text = "";
 			tbxBuyerEmail.Text = "";
 			tbxBuyerCity.Text = "";
+			tbxBuyerPassportSerialNumber.Text = "";
+			dpPassportIssueDate.SelectedDate = null;
+			tbxBuyerInn.Text = "";
+				
 			dlcBuyer.Clear();
 			
 			currentBuyer = null;
@@ -296,6 +379,9 @@ namespace StangradCRM.View
 			tbxBuyerPhone.IsReadOnly = isReadOnly;
 			tbxBuyerEmail.IsReadOnly = isReadOnly;
 			tbxBuyerCity.IsReadOnly = isReadOnly;
+			tbxBuyerPassportSerialNumber.IsReadOnly = isReadOnly;
+			dpPassportIssueDate.IsEnabled = !isReadOnly;
+			tbxBuyerInn.IsReadOnly = isReadOnly;
 			if(!isReadOnly)
 			{
 				SetBuyerControlsColor();
@@ -311,13 +397,14 @@ namespace StangradCRM.View
 		{
 			if(brush == null) brush = defaultBrush;
 			
-			
-			
 			dlcBuyer.Background = brush;
 			tbxBuyerContactPerson.Background = brush;
 			tbxBuyerPhone.Background = brush;
 			tbxBuyerEmail.Background = brush;
 			tbxBuyerCity.Background = brush;
+			tbxBuyerPassportSerialNumber.Background = brush;
+			dpPassportIssueDate.Background = brush;
+			tbxBuyerInn.Background = brush;
 		}
 		
 		//Validate controls values before save
@@ -358,23 +445,28 @@ namespace StangradCRM.View
 				cbxSeller.Background = errorBrush;
 				return false;
 			}
-			if(dpPlannedShipmentDate.Visibility == Visibility.Visible)
+			if(grdPlanned.Visibility == Visibility.Visible)
 			{
 				if(dpPlannedShipmentDate.SelectedDate == null)
 				{
 					dpPlannedShipmentDate.Background = errorBrush;
 					return false;
 				}
-				if(dpPlannedShipmentDate.SelectedDate <= DateTime.Now)
+				//УБИРАЕМ ПРОВЕРКУ НА ДАТУ ПРЕДПОЛАГАЕМОЙ ОТГРУЗКИ - НЕ АКТУАЛЬНО
+				/*if(dpPlannedShipmentDate.SelectedDate <= DateTime.Now && (bid == null || bid.IsShipped == false))
 				{
 					MessageBox.Show("Дата предполагаемой отгрузки должна быть больше текущей даты!");
 					dpPlannedShipmentDate.Background = errorBrush;
 					return false;
-				}
+				}*/
 			}
 			if(dlcBuyer.Text == "")
 			{
 				dlcBuyer.Background = errorBrush;
+				return false;
+			}
+			if(tbxBuyerEmail.Text != "" && !IsEmail.Valid(tbxBuyerEmail.Text)) {
+				tbxBuyerEmail.Background = errorBrush;
 				return false;
 			}
 			return true;
@@ -413,6 +505,7 @@ namespace StangradCRM.View
 		{
 			if(bid != null && bid.Is_shipped == 1)
 			{
+				grdPlanned.Visibility = Visibility.Collapsed;
 				btnIsShipped.Visibility = Visibility.Collapsed;
 				tbIsShipped.Visibility = Visibility.Visible;					
 				if(bid.Shipment_date != null && bid.Id_transport_company != null)
@@ -420,7 +513,6 @@ namespace StangradCRM.View
 					tbIsShipped.Text = "Отгружено, " +
 						((DateTime)bid.Shipment_date).ToString("dd.MM.yyyy") + ", " + bid.TransportCompanyName;
 				}
-				
 			}
 		}
 		
@@ -462,6 +554,86 @@ namespace StangradCRM.View
 				DgvEquipmentBid_RowDoubleClick(sender, null);
 				e.Handled = true; //Отмена обработки по умолчанию
 			}
+		}
+		
+		void Btn_add_file_Click(object sender, RoutedEventArgs e)
+		{
+			OpenFileDialog dialog = new OpenFileDialog();
+			dialog.Multiselect = true;
+			if(dialog.ShowDialog() != true) return;
+			
+			for(int i = 0; i < dialog.FileNames.Length; i++) {
+				saveFile(dialog.FileNames[i], dialog.SafeFileNames[i]);
+			}
+		}
+		
+		void BtnDownload_Click(object sender, RoutedEventArgs e)
+		{
+			BidFiles bidFile = dgvBidFiles.SelectedItem as BidFiles;
+			if(bidFile == null) return;
+			
+			SaveFileDialog dialog = new SaveFileDialog();
+			dialog.Filter = bidFile.Ext + " |*" + bidFile.Ext;
+			dialog.FileName = bidFile.Name;
+			
+			if(dialog.ShowDialog() == false) return;
+
+			WebClient webClient = new WebClient();
+			webClient.DownloadFile(Settings.uri.GetLeftPart(UriPartial.Authority) + "/" + bidFile.Path, dialog.FileName);
+
+		}
+		
+		void BtnDeleteFile_Click(object sender, RoutedEventArgs e)
+		{
+			BidFiles bidFile = dgvBidFiles.SelectedItem as BidFiles;
+			if(bidFile == null) return;
+			if(MessageBox.Show("Удалить файл?", "Удалить файл?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
+			if(!bidFile.remove()) {
+				MessageBox.Show(bidFile.LastError);
+			}
+		}
+		
+		
+		void saveFile (string fileName, string safeFileName) {
+			
+			if(new FileInfo(fileName).Length > 6500000)
+			{
+				MessageBox.Show("Файл " + safeFileName + " не может быть сохранен.\nРазмер больше 6.5 мегабайт.");
+				return;
+			}
+			
+			BidFiles bidFile = new BidFiles();
+			bidFile.Name = safeFileName;
+			bidFile.Id_bid = bid.Id;
+			bidFile.FileBody = File.ReadAllBytes(fileName);
+			bidFile.Ext = Path.GetExtension(fileName);
+			
+			//start task
+			Task.Factory.StartNew(() => {
+				//save file
+				if(!bidFile.save()) {
+					MessageBox.Show(bidFile.LastError);
+					return;
+				}
+				else {
+					Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action( () => {  } ));
+				}
+			});
+		}
+		
+		void TbxPassportSerial_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			e.Handled = !IsNumberic.Valid(e.Text);
+		}
+		
+		void TbxPassportNumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			e.Handled = !IsNumberic.Valid(e.Text);
+		}
+		
+		void TbxInn_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			e.Handled = !IsNumberic.Valid(e.Text);
 		}
 	}
 }

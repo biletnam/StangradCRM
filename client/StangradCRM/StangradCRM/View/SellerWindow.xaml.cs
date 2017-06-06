@@ -7,12 +7,12 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
-
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-
 using System.Windows.Data;
+using System.Windows.Input;
+
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 
@@ -106,5 +106,31 @@ namespace StangradCRM.View
 				MessageBox.Show(seller.LastError);
 			}
 		}
+		
+		//Дабл клик по строке таблицы - открывает окно редактирования		
+		private void RowDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			
+			Seller seller = row.Item as Seller;
+			if(seller == null) return;
+			
+			SellerSaveWindow window = new SellerSaveWindow(seller);
+			window.ShowDialog();
+
+			
+			viewSource.View.Refresh();
+          	dgvSeller.CurrentCell = new DataGridCellInfo(row.Item, dgvSeller.CurrentCell.Column);
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void RowPreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				RowDoubleClick(sender, null);
+				e.Handled = true;
+			}
+		}
+		
 	}
 }

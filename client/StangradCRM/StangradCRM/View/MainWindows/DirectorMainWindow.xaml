@@ -50,6 +50,10 @@
 				</MenuItem>
 			</MenuItem>
 			<MenuItem 
+				Click="MiOpenBuyerWindow_Click"
+				Header="Покупатели" 
+				x:Name="miOpenBuyerWindow"></MenuItem>
+			<MenuItem 
 				Click="MiDataRefresh_Click"
 				Header="Обновить" 
 				x:Name="miDataRefresh"></MenuItem>

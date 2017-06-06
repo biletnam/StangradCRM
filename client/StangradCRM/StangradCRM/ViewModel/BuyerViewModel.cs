@@ -100,7 +100,7 @@ namespace StangradCRM.ViewModel
 			searchString = searchString.ToLower();
 			string[] properties = new string[] 
 			{
-				"Name", "Contact_person", "Phone", "Email", "City"
+				"Name", "Contact_person", "Phone", "Email", "City", "Passport_serial_number", "Inn"
 			};
             _collection.ToList().ForEach(x => x.setFilters(properties, false));
             
@@ -108,7 +108,9 @@ namespace StangradCRM.ViewModel
                              (x.Contact_person.ToLower().IndexOf(searchString) != -1) |
                              	(x.Phone.ToString().ToLower().IndexOf(searchString) != -1) |
                              	(x.Email.ToLower().IndexOf(searchString) != -1 ) |
-                             	(x.City.ToLower().IndexOf(searchString) != -1 )
+                             	(x.City.ToLower().IndexOf(searchString) != -1 ) |
+                             	(x.Passport_serial_number.ToLower().IndexOf(searchString) != -1 ) |
+                             	(x.Inn.ToLower().IndexOf(searchString) != -1 )
                              ).ToList().ForEach(y => y.setFilters(properties, true));
 		}
 		

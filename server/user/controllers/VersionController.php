@@ -31,7 +31,7 @@ class VersionController {
         {
             if(file_exists($result['path']))
             {
-                return [0, 'http://' . $_SERVER['SERVER_NAME'] . '/' . $result['path']];
+                return [0, 'http://' . $_SERVER['HTTP_HOST'] . '/' . $result['path']];
             }
             return [1, "Server error. File not exist."];
         }

@@ -98,5 +98,11 @@ namespace StangradCRM.View.MainWindows
 			TurnoverForAllSellerPeriodWindow window = new TurnoverForAllSellerPeriodWindow();
 			window.ShowDialog();
 		}
+		
+		void MiOpenBuyerWindow_Click(object sender, RoutedEventArgs e)
+		{
+			BuyerWindow w = new BuyerWindow();
+			w.ShowDialog();
+		}
 	}
 }

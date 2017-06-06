@@ -2,17 +2,11 @@
 <html>
     <head></head>
     <body>
-        <h1>Stangrad CRM</h1>
+        <h1>Stangrad CRM Test Server</h1>
+        <?php
+            //$versionsController = new user\controllers\VersionController();
+            //var_dump($versionsController->checkAction(['current' => 0.19]));
+        ?>
     </body>
 </html>
 
-
-<?php
-    use debug\FirePHPCore\FirePHP;
-    $firephp = FirePHP::getInstance(true);
-    $firephp -> fb("message", FirePHP::LOG);
-
-    
-    $v = new user\controllers\VersionController();
-    
-    var_dump($v->checkAction(['current' => '0.00']));

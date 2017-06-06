@@ -41,6 +41,9 @@
 					Header="Транспортные компании"
 					x:Name="menuOpenTransportCompanyWindow"></MenuItem>
 				<MenuItem
+					Header="Шаблоны сообщений"
+					x:Name="menuOpenMessageTemplatesWindow"></MenuItem>
+				<MenuItem
 					Header="Менеджеры"
 					x:Name="menuOpenManagerWindow"></MenuItem>
 			</MenuItem>

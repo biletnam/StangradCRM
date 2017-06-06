@@ -19,6 +19,7 @@ using System.Windows.Media;
 using StangradCRM.Core;
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
+using StangradCRMLibs;
 
 namespace StangradCRM.View.Controls.ManagerControls
 {
@@ -28,6 +29,10 @@ namespace StangradCRM.View.Controls.ManagerControls
 	public partial class MainControlArchive : UserControl
 	{
 		CollectionViewSource viewSource;
+		CollectionViewSource equipmentBidViewSource = new CollectionViewSource();
+		CollectionViewSource complectationViewSource = new CollectionViewSource();
+		CollectionViewSource buyerViewSource = new CollectionViewSource();
+		
 		public MainControlArchive()
 		{
 			InitializeComponent();
@@ -38,87 +43,107 @@ namespace StangradCRM.View.Controls.ManagerControls
 			{
 				Bid bid = e.Item as Bid;
 				if(bid == null) return;
+				if(bid.Id_manager != Auth.getInstance().Id)
+				{
+					e.Accepted = false;
+					return;
+				}
 				e.Accepted = bid.IsVisible;
 			};
 			
+			SetViewSources();
+			
 			DataContext = new
 			{
-				BidCollection = this.viewSource.View
+				BidCollection = viewSource.View,
+				EquipmentBidCollection = equipmentBidViewSource.View,
+				ComplectationCollection = complectationViewSource.View,
+				BuyerCollection = buyerViewSource.View
+			};
+		}
+		
+		//Фильтры отображени/сокрытия строк таблиц
+		private void SetViewSources ()
+		{		
+			equipmentBidViewSource.Source = EquipmentBidViewModel.instance().Collection;
+			equipmentBidViewSource.Filter += delegate(object sender, FilterEventArgs e) 
+			{
+				EquipmentBid equipmentBid = e.Item as EquipmentBid;
+				if(equipmentBid == null) return;
+				
+				Bid bid = dgvBid.SelectedItem as Bid;
+				if(bid == null)
+				{
+					e.Accepted = false;
+					return;
+				}
+				if(bid.Id == equipmentBid.Id_bid)
+				{
+					e.Accepted = true;
+				}
+				else
+				{
+					e.Accepted = false;
+				}
 			};
 			
+			complectationViewSource.Source = ComplectationViewModel.instance().Collection;
+			complectationViewSource.Filter += delegate(object sender, FilterEventArgs e) 
+			{
+				Complectation complectation = e.Item as Complectation;
+				if(complectation == null) return;
+				
+				EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
+				if(equipmentBid == null)
+				{
+					e.Accepted = false;
+					return;
+				}
+				if(complectation.Id_equipment_bid == equipmentBid.Id)
+				{
+					e.Accepted = true;
+				}
+				else
+				{
+					e.Accepted = false;
+				}
+			};
+			
+			buyerViewSource.Source = BuyerViewModel.instance().Collection;
+			buyerViewSource.Filter += delegate(object sender, FilterEventArgs e) 
+			{
+				Buyer buyer = e.Item as Buyer;
+				if(buyer == null) return;
+				
+				Bid bid = dgvBid.SelectedItem as Bid;
+				if(bid == null)
+				{
+					e.Accepted = false;
+					return;
+				}
+				if(buyer.Id == bid.Id_buyer)
+				{
+					e.Accepted = true;
+				}
+				else
+				{
+					e.Accepted = false;
+				}
+			};
 		}
 		
 		void DgvBid_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			SetEquipmentBidSource();
-			SetBuyerSource();
-		}
-		
-		private void SetEquipmentBidSource ()
-		{
-			Bid bid = dgvBid.SelectedItem as Bid;
-			Binding binding = new Binding();
-			if(bid == null)
-			{
-				binding.Source = null;
-			}
-			else 
-			{
-				binding.Source = bid.EquipmentBidCollection;
-			}
-			dgvEquipmentBid.SetBinding(DataGrid.ItemsSourceProperty, binding);
-			
-			if(dgvEquipmentBid.Items.Count > 0)
-			{
-				dgvEquipmentBid.SelectedIndex = 0;
-			}
-			SetComplectationSource();
-		}
-		
-		private void SetBuyerSource ()
-		{
-			Bid bid = dgvBid.SelectedItem as Bid;
-			Binding binding = new Binding();
-			if(bid == null)
-			{
-				binding.Source = null;
-			}
-			else 
-			{
-				List<Buyer> buyerList = new List<Buyer>();
-				Buyer buyer = BuyerViewModel.instance().getById(bid.Id_buyer);
-				if(buyer != null)
-				{
-					buyerList.Add(buyer);
-					binding.Source = buyerList;
-				}
-				else
-				{
-					binding.Source = null;
-				}
-			}
-			dgvBuyer.SetBinding(DataGrid.ItemsSourceProperty, binding);
+			equipmentBidViewSource.View.Refresh();
+			buyerViewSource.View.Refresh();
 		}
 		
 		void DgvEquipmentBid_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			SetComplectationSource();
+			complectationViewSource.View.Refresh();
 		}
 		
-		private void SetComplectationSource ()
-		{
-			EquipmentBid equipmentBid = dgvEquipmentBid.SelectedItem as EquipmentBid;
-			Binding binding = new Binding();
-			if(equipmentBid == null)
-			{
-				binding.Source = null;
-			}
-			else
-			{
-				binding.Source = equipmentBid.ComplectationCollection;
-			}
-			dgvComplectation.SetBinding(DataGrid.ItemsSourceProperty, binding);
-		}
+
 		
 		void TbxFastSearch_TextChanged(object sender, TextChangedEventArgs e)
 		{
@@ -171,6 +196,29 @@ namespace StangradCRM.View.Controls.ManagerControls
 				return;
 			}
 			PaymentHistoryWindow window = new PaymentHistoryWindow(bid);
+			window.ShowDialog();
+		}
+		
+		void ContextCopy_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem mi = sender as MenuItem;
+			if(mi == null) return;
+			
+			TextBlock textBlock = ((ContextMenu)mi.Parent).PlacementTarget as TextBlock;
+			if(textBlock == null) return;
+			
+			Clipboard.SetText(textBlock.Text);
+		}		
+		
+		void ContextBidFiles_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Заявка не выбрана!");
+				return;
+			}
+			BidFilesWindow window = new BidFilesWindow(bid);
 			window.ShowDialog();
 		}
 		

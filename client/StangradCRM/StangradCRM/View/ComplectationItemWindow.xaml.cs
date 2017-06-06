@@ -9,8 +9,9 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-
 using System.Windows.Data;
+using System.Windows.Input;
+
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 
@@ -76,6 +77,30 @@ namespace StangradCRM.View
 			tbxSearch.Text = "";
 		}
 		
+		//Дабл клик по строке таблицы - открывает окно редактирования		
+		private void RowDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			
+			ComplectationItem complectationItem = row.Item as ComplectationItem;
+			if(complectationItem == null) return;
+			
+			ComplectationItemSaveWindow window = new ComplectationItemSaveWindow(complectationItem);
+			window.ShowDialog();
+
+			
+			viewSource.View.Refresh();
+          	dgvComplectationItem.CurrentCell = new DataGridCellInfo(row.Item, dgvComplectationItem.CurrentCell.Column);
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void RowPreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				RowDoubleClick(sender, null);
+				e.Handled = true;
+			}
+		}
 
 	}
 }

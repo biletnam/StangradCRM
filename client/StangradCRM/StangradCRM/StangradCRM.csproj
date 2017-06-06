@@ -93,6 +93,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\BidStatus.cs" />
+    <Compile Include="Classes\IsEmail.cs" />
+    <Compile Include="Classes\IsNumberic.cs" />
     <Compile Include="Classes\ReplaceSpecialCharsFileName.cs" />
     <Compile Include="Classes\UpdateTask.cs" />
     <Compile Include="Classes\FindItem.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="Core\TSObservableCollection.cs" />
     <Compile Include="Extensions\DataGridExtension.cs" />
     <Compile Include="Model\Bid.cs" />
+    <Compile Include="Model\BidFiles.cs" />
     <Compile Include="Model\BidStatus.cs" />
     <Compile Include="Model\Buyer.cs" />
     <Compile Include="Model\Complectation.cs" />
@@ -129,6 +132,7 @@
     <Compile Include="Model\Equipment.cs" />
     <Compile Include="Model\EquipmentBid.cs" />
     <Compile Include="Model\Manager.cs" />
+    <Compile Include="Model\MessageTemplates.cs" />
     <Compile Include="Model\Modification.cs" />
     <Compile Include="Model\Payment.cs" />
     <Compile Include="Model\PaymentStatus.cs" />
@@ -145,6 +149,7 @@
     <Compile Include="Reports\ShipmentPeriod.cs" />
     <Compile Include="Reports\Sticker.cs" />
     <Compile Include="Reports\TurnoverAllSeller.cs" />
+    <Compile Include="ViewModel\BidFilesViewModel.cs" />
     <Compile Include="ViewModel\BidStatusViewModel.cs" />
     <Compile Include="ViewModel\BidViewModel.cs" />
     <Compile Include="ViewModel\BuyerViewModel.cs" />
@@ -154,12 +159,17 @@
     <Compile Include="ViewModel\EquipmentBidViewModel.cs" />
     <Compile Include="ViewModel\EquipmentViewModel.cs" />
     <Compile Include="ViewModel\ManagerViewModel.cs" />
+    <Compile Include="ViewModel\MessageTemplatesViewModel.cs" />
     <Compile Include="ViewModel\ModificationViewModel.cs" />
     <Compile Include="ViewModel\PaymentStatusViewModel.cs" />
     <Compile Include="ViewModel\PaymentViewModel.cs" />
     <Compile Include="ViewModel\RoleViewModel.cs" />
     <Compile Include="ViewModel\SellerViewModel.cs" />
     <Compile Include="ViewModel\TransportCompanyViewModel.cs" />
+    <Compile Include="View\BidFilesWindow.xaml.cs">
+      <DependentUpon>BidFilesWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="View\BidSaveWindow.xaml.cs">
       <DependentUpon>BidSaveWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -256,6 +266,22 @@
       <DependentUpon>MainControlMyBid.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\Controls\LogisticianControls\ArchiveControl.xaml.cs">
+      <DependentUpon>ArchiveControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\LogisticianControls\ForShipmentControl.xaml.cs">
+      <DependentUpon>ForShipmentControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\LogisticianControls\InWorkControl.xaml.cs">
+      <DependentUpon>InWorkControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\LogisticianControls\NewsControl.xaml.cs">
+      <DependentUpon>NewsControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="View\Controls\ManagerControls\MainControlArchive.xaml.cs">
       <DependentUpon>MainControlArchive.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -266,6 +292,14 @@
     </Compile>
     <Compile Include="View\Controls\ManagerControls\MainControlID2.xaml.cs">
       <DependentUpon>MainControlID2.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\ManagerControls\OtherControl.xaml.cs">
+      <DependentUpon>OtherControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\Controls\ManagerControls\OtherManagerArchiveControl.xaml.cs">
+      <DependentUpon>OtherManagerArchiveControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\Controls\TechnicalControls\MainControlArchive.xaml.cs">
@@ -335,6 +369,10 @@
       <DependentUpon>DirectorMainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\MainWindows\LogisticianMainWindow.xaml.cs">
+      <DependentUpon>LogisticianMainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="View\MainWindows\ManagerMainWindow.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>ManagerMainWindow.xaml</DependentUpon>
@@ -349,6 +387,14 @@
     </Compile>
     <Compile Include="View\ManagerWindow.xaml.cs">
       <DependentUpon>ManagerWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\MessageTemplatesSaveWindow.xaml.cs">
+      <DependentUpon>MessageTemplatesSaveWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\MessageTemplatesWindow.xaml.cs">
+      <DependentUpon>MessageTemplatesWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\ModificationSaveWindow.xaml.cs">
@@ -407,6 +453,7 @@
   <ItemGroup>
     <Page Include="Controls\DownListControl.xaml" />
     <Page Include="Controls\ProcessControl.xaml" />
+    <Page Include="View\BidFilesWindow.xaml" />
     <Page Include="View\BidSaveWindow.xaml" />
     <Page Include="View\BidShipmentSaveWindow.xaml" />
     <Page Include="View\BidStatusSaveWindow.xaml" />
@@ -431,9 +478,15 @@
     <Page Include="View\Controls\DirectorControls\MyBidControlID2.xaml" />
     <Page Include="View\Controls\DirectorControls\MainControlManagerBid.xaml" />
     <Page Include="View\Controls\DirectorControls\MainControlMyBid.xaml" />
+    <Page Include="View\Controls\LogisticianControls\ArchiveControl.xaml" />
+    <Page Include="View\Controls\LogisticianControls\ForShipmentControl.xaml" />
+    <Page Include="View\Controls\LogisticianControls\InWorkControl.xaml" />
+    <Page Include="View\Controls\LogisticianControls\NewsControl.xaml" />
     <Page Include="View\Controls\ManagerControls\MainControlArchive.xaml" />
     <Page Include="View\Controls\ManagerControls\MainControlID1.xaml" />
     <Page Include="View\Controls\ManagerControls\MainControlID2.xaml" />
+    <Page Include="View\Controls\ManagerControls\OtherControl.xaml" />
+    <Page Include="View\Controls\ManagerControls\OtherManagerArchiveControl.xaml" />
     <Page Include="View\Controls\TechnicalControls\MainControlArchive.xaml" />
     <Page Include="View\Controls\TechnicalControls\MainControlInWork.xaml" />
     <Page Include="View\EquipmentBidSaveWindow.xaml" />
@@ -450,10 +503,13 @@
     <Page Include="View\MainWindows\AccountantMainWindow.xaml" />
     <Page Include="View\MainWindows\AdministratorMainWindow.xaml" />
     <Page Include="View\MainWindows\DirectorMainWindow.xaml" />
+    <Page Include="View\MainWindows\LogisticianMainWindow.xaml" />
     <Page Include="View\MainWindows\ManagerMainWindow.xaml" />
     <Page Include="View\MainWindows\TechnicalMainWindow.xaml" />
     <Page Include="View\ManagerSaveWindow.xaml" />
     <Page Include="View\ManagerWindow.xaml" />
+    <Page Include="View\MessageTemplatesSaveWindow.xaml" />
+    <Page Include="View\MessageTemplatesWindow.xaml" />
     <Page Include="View\ModificationSaveWindow.xaml" />
     <Page Include="View\PaymentHistoryWindow.xaml" />
     <Page Include="View\PaymentSaveWindow.xaml" />
@@ -480,6 +536,7 @@
     <Folder Include="View\Controls\AdministratorControls" />
     <Folder Include="View\Controls\DirectorControls" />
     <Folder Include="View\Controls\AccountantControls" />
+    <Folder Include="View\Controls\LogisticianControls" />
     <Folder Include="View\Controls\TechnicalControls" />
     <Folder Include="View\MainWindows" />
     <Folder Include="View\Controls" />
@@ -495,13 +552,27 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\add.png" />
-    <Content Include="Images\arrow_down.png" />
-    <Content Include="Images\arrow_up.png" />
-    <Content Include="Images\delete.png" />
-    <Content Include="Images\edit.png" />
-    <Content Include="Images\loading.png" />
-    <Content Include="Images\save.png" />
+    <Content Include="Images\add.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\arrow_down.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\arrow_up.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\delete.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\edit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\loading.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\save.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

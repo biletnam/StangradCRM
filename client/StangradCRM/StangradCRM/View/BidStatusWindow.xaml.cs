@@ -9,8 +9,9 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-
 using System.Windows.Data;
+using System.Windows.Input;
+
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 
@@ -75,5 +76,31 @@ namespace StangradCRM.View
 		{
 			tbxSearch.Text = "";
 		}
+		
+		//Дабл клик по строке таблицы - открывает окно редактирования		
+		private void RowDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			
+			BidStatus bidStatus = row.Item as BidStatus;
+			if(bidStatus == null) return;
+			
+			BidStatusSaveWindow window = new BidStatusSaveWindow(bidStatus);
+			window.ShowDialog();
+			
+			viewSource.View.Refresh();
+          	dgvBidStatus.CurrentCell = new DataGridCellInfo(row.Item, dgvBidStatus.CurrentCell.Column);
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void RowPreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				RowDoubleClick(sender, null);
+				e.Handled = true;
+			}
+		}
+		
+		
 	}
 }

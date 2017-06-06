@@ -1,12 +1,16 @@
 ﻿<Window x:Class="StangradCRM.View.BuyerSaveWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:libs="clr-namespace:StangradCRMLibs.Controls;assembly=StangradCRMLibs"
     WindowStartupLocation="CenterScreen"
 	Title="Добавление покупателя" Height="600" Width="800">
 	<Grid Margin="5">
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 0, 0, 30" >
 			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
@@ -46,6 +50,37 @@
 			<TextBox Grid.Row="4" Grid.Column="1" 
 			         Style="{StaticResource DefaultTextBoxStyle}"
 			         x:Name="tbxCity"></TextBox>
+		
+			<Label Grid.Row="5" Grid.Column="0" 
+			       Content="Паспортные данные"></Label>
+			<Grid Grid.Row="5" Grid.Column="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="100"></ColumnDefinition>
+					<ColumnDefinition></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				
+				<xctk:MaskedTextBox 
+					x:Name="tbxPassportSerialNumber"
+					Grid.Column="0"
+					Mask="0000 000000"
+					CaretIndex="0"
+					ValueDataType="{x:Type sys:String}"
+					VerticalAlignment="Stretch"
+					MaxLength="11"
+					VerticalContentAlignment="Center">
+				</xctk:MaskedTextBox>
+				<DatePicker x:Name="dpPassportIssueDate" Grid.Column="1" >
+				</DatePicker>
+			</Grid>
+			
+			<Label Grid.Row="6" Grid.Column="0" 
+			       Content="ИНН"></Label>
+			<TextBox Grid.Row="6" Grid.Column="1" 
+			        	MaxLength="12"
+			         PreviewTextInput="TbxInn_PreviewTextInput"
+			         Style="{StaticResource DefaultTextBoxStyle}"
+			         x:Name="tbxInn"></TextBox>
+		
 		</Grid>
 		
 		<libs:Loading

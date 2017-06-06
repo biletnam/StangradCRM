@@ -16,7 +16,7 @@ namespace system\models;
 
 use libs\classes\file\Base64Operations;
 
-define('ROOT_PATH_CONTENT', 'content');
+define('ROOT_PATH_CONTENT', 'files');
 
 class FileSystem {
             

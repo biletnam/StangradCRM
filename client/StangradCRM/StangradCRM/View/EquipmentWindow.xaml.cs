@@ -233,6 +233,54 @@ namespace StangradCRM.View
 		}
 		
 		
+		//Дабл клик по строке таблицы - открывает окно редактирования		
+		private void EquipmentRowDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			
+			Equipment equipment = row.Item as Equipment;
+			if(equipment == null) return;
+			
+			EquipmentSaveWindow window = new EquipmentSaveWindow(equipment);
+			window.ShowDialog();
+			
+			viewSource.View.Refresh();
+          	dgvEquipment.CurrentCell = new DataGridCellInfo(row.Item, dgvEquipment.CurrentCell.Column);
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void EquipmentRowPreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				EquipmentRowDoubleClick(sender, null);
+				e.Handled = true;
+			}
+		}
+		
+		//Дабл клик по строке таблицы - открывает окно редактирования		
+		private void ModificationRowDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			
+			Modification modification = row.Item as Modification;
+			if(modification == null) return;
+			
+			ModificationSaveWindow window = new ModificationSaveWindow(null, modification);
+			window.ShowDialog();
+			
+			modificationViewSource.View.Refresh();
+          	dgvModification.CurrentCell = new DataGridCellInfo(row.Item, dgvModification.CurrentCell.Column);
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void ModificationRowPreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				ModificationRowDoubleClick(sender, null);
+				e.Handled = true;
+			}
+		}
+		
 		
 	}
 }

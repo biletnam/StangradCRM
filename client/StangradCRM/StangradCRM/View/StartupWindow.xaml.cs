@@ -26,7 +26,7 @@ namespace StangradCRM.View
 	{
 		
 		private IniFile settings = new IniFile("Settings.ini");
-		private string version = "0.19";
+		private string version = "0.23";
 		
 		public StartupWindow()
 		{
@@ -135,6 +135,11 @@ namespace StangradCRM.View
 						new ManagerMainWindow();
 					managerWindow.Show();
 					break;
+				case 6:
+					LogisticianMainWindow logisticanWindow = 
+						new LogisticianMainWindow();
+					logisticanWindow.Show();
+					break;
 			}
 			Close();
 		}
@@ -152,6 +157,7 @@ namespace StangradCRM.View
 			BuyerViewModel.instance();
 			BidStatusViewModel.instance();
 			PaymentStatusViewModel.instance();
+			MessageTemplatesViewModel.instance();
 			
 			RoleViewModel.instance();
 			ManagerViewModel.instance();
@@ -221,6 +227,6 @@ namespace StangradCRM.View
 			Close();
 			return;
 		}
-		
+
 	}
 }

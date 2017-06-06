@@ -277,6 +277,7 @@ namespace StangradCRM.ViewModel
 				//Если старая заявка = null
 				if(oldBid == null)
 				{
+					/* НЕ АКТУАЛЬНО, ТАК КАК ТЕПЕРЬ МЕНЕДЖЕР ВИДИТ ЗАЯВКИ ВСЕХ ПОЛЬЗОВАТЕЛЕЙ 
 					//Если текущий пользователь менеджер
 					if(auth.IdRole == (int)Classes.Role.Manager)
 					{
@@ -293,10 +294,10 @@ namespace StangradCRM.ViewModel
 						}
 					}
 					else
-					{
+					{*/
 						//добавляем новую заявку в коллекцию
 						add(newBid);
-					}
+					//}
 				}
 				else //если старая заявка не null
 				{
@@ -330,7 +331,7 @@ namespace StangradCRM.ViewModel
 			searchString = searchString.ToLower();
 			string[] properties = new string[] 
 			{
-				"Account", "Amount", "BuyerName", "EquipmentBidStringSearch"
+				"Account", "Amount", "BuyerName", "EquipmentBidStringSearch", "ManagerName"
 			};
 			
 			if(collection == null) collection = _collection;
@@ -341,7 +342,8 @@ namespace StangradCRM.ViewModel
                              (x.Id.ToString().ToLower().IndexOf(searchString) != -1) |
                              	(x.Amount.ToString().ToLower().IndexOf(searchString) != -1) |
                              	(x.BuyerInfo.ToLower().IndexOf(searchString) != -1 ) |
-                             	(x.EquipmentBidStringSearch.ToLower().IndexOf(searchString) != -1 )
+                             	(x.EquipmentBidStringSearch.ToLower().IndexOf(searchString) != -1 ) |
+                             	(x.ManagerName.ToLower().IndexOf(searchString) != -1)
                              ).ToList().ForEach(y => y.setFilters(properties, true));
 		}
 		
@@ -354,6 +356,7 @@ namespace StangradCRM.ViewModel
 		{
 			EquipmentBidViewModel.instance().reload();
 			PaymentViewModel.instance().reload();
+			BidFilesViewModel.instance().reload();
 			
 			TSObservableCollection<Bid> collection =
 			StangradCRM.Core.Model.load<TSObservableCollection<Bid>>("Bid");

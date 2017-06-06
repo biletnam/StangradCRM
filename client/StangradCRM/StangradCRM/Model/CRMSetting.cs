@@ -14,6 +14,25 @@ namespace StangradCRM.Model
 	/// <summary>
 	/// Description of CRMSetting.
 	/// </summary>
+	/// 
+	
+	/// <summary>
+	/// CRMSetting Mashine Names:
+	/// 
+	/// new_bid_remove_day_count - Количество дней с момента создания заявки, по истечении которых можно удалять заявку, если она со статусом 'Новая';
+	/// bid_update_time - Период обновления заявок (в секундах). Если 0 - обновление отключено;
+	/// planned_shipment_day_count - Количество дней, которые добавляются к текущей дате, чтобы получить планируемую дату отгрузки по умолчанию ;
+	/// warning_shipment_date_day_count - Количество дней до планируемой даты отгрузги для предупреждения;
+	/// smtp_server - SMTP сервер (например smtp.yandex.ru);
+	/// smtp_port - SMTP порт
+	/// mail_user - Логин пользователя почты;
+	/// mail_password - Пароль пользователя почты;
+	/// mail_use_ssl - Использовать ssl (1 - использовать, другое значение - не использовать);
+	/// email - E-mail отправителя;
+	/// </summary>
+	
+	
+	
 	public class CRMSetting : Core.Model
 	{
 		

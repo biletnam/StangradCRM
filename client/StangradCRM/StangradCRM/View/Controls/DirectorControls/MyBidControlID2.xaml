@@ -301,6 +301,15 @@
 										<RowDefinition></RowDefinition>
 		                    			<RowDefinition></RowDefinition>
 		                    		</Grid.RowDefinitions>
+		                    		<Grid.Style>
+		                    			<Style TargetType="Grid">
+		                    				<Style.Triggers>
+		                    					<DataTrigger Binding="{Binding Path=IsShipped}" Value="False">
+		                    						<Setter Property="Visibility" Value="Collapsed" />
+		                    					</DataTrigger>
+		                    				</Style.Triggers>
+		                    			</Style>
+		                    		</Grid.Style>
 		                    		<TextBlock 		
 										Text="{Binding Path=TransportCompanyName}"			                    			
 		                    			Grid.Row="0"
@@ -601,25 +610,33 @@
 		
 		<GroupBox Grid.Row="3" Header="Информация о покупателе" Padding="0, 3, 0, 0">
 			
-			<DataGrid 
-				ItemsSource="{Binding BuyerCollection}"
-				x:Name="dgvBuyer"	
-				Style="{StaticResource DefaultDataGridStyle}">
+			<DataGrid x:Name="dgvBuyer"	ItemsSource="{Binding BuyerCollection}" 
+			          Style="{StaticResource DefaultDataGridStyle}">
+
 				<DataGrid.Columns>
 					
 					<DataGridTemplateColumn
 						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
-						CanUserSort="True"
-						SortMemberPath="Name"
-						Width="*"
-						Header="Наименование">
+						CanUserSort="True" SortMemberPath="Name" Width="*" Header="Наименование">
 						<DataGridTemplateColumn.CellTemplate>
 	                        <DataTemplate>
 	                        	<TextBlock 
 	                        		TextWrapping="Wrap"
 	                        		Margin="5, 0, 0, 0"
 	                        		Text="{Binding Path=Name}" 
-	                        		VerticalAlignment="Center"></TextBlock>
+	                        		VerticalAlignment="Center">
+	                        		
+	                        		<TextBlock.ContextMenu>
+										<ContextMenu>
+											<MenuItem 
+												Click="ContextCopy_Click"
+												x:Name="contextCopy"
+												Header="Копировать">
+											</MenuItem>
+										</ContextMenu>
+	                        		</TextBlock.ContextMenu>
+	                        	
+	                        	</TextBlock>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -636,11 +653,81 @@
 	                        		TextWrapping="Wrap"
 	                        		Margin="5, 0, 0, 0"
 	                        		Text="{Binding Path=Contact_person}" 
-	                        		VerticalAlignment="Center"></TextBlock>
+	                        		VerticalAlignment="Center">
+	                        	
+	                        		<TextBlock.ContextMenu>
+										<ContextMenu>
+											<MenuItem 
+												Click="ContextCopy_Click"
+												x:Name="contextCopy"
+												Header="Копировать">
+											</MenuItem>
+										</ContextMenu>
+	                        		</TextBlock.ContextMenu>
+	                        	
+	                        	</TextBlock>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
 				
+					<DataGridTemplateColumn
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
+						CanUserSort="True"
+						SortMemberPath="PassportData"
+						Width="*"
+						Header="Паспортные данные">
+						<DataGridTemplateColumn.CellTemplate>
+	                        <DataTemplate>
+	                        	<TextBlock 
+	                        		TextWrapping="Wrap"
+	                        		Margin="5, 0, 0, 0"
+	                        		Text="{Binding Path=PassportData}" 
+	                        		VerticalAlignment="Center">
+	                        	
+	                        		<TextBlock.ContextMenu>
+										<ContextMenu>
+											<MenuItem 
+												Click="ContextCopy_Click"
+												x:Name="contextCopy"
+												Header="Копировать">
+											</MenuItem>
+										</ContextMenu>
+	                        		</TextBlock.ContextMenu>
+	                        	
+	                        	</TextBlock>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					
+					<DataGridTemplateColumn
+						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
+						CanUserSort="True"
+						SortMemberPath="Inn"
+						Width="*"
+						Header="ИНН">
+						<DataGridTemplateColumn.CellTemplate>
+	                        <DataTemplate>
+	                        	<TextBlock 
+	                        		TextWrapping="Wrap"
+	                        		Margin="5, 0, 0, 0"
+	                        		Text="{Binding Path=Inn}" 
+	                        		VerticalAlignment="Center">
+	                        	
+	                        		<TextBlock.ContextMenu>
+										<ContextMenu>
+											<MenuItem 
+												Click="ContextCopy_Click"
+												x:Name="contextCopy"
+												Header="Копировать">
+											</MenuItem>
+										</ContextMenu>
+	                        		</TextBlock.ContextMenu>
+	                        	
+	                        	</TextBlock>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					
 					<DataGridTemplateColumn
 						CellStyle="{StaticResource NoIsSelectedDataGridCellStyle}"
 						CanUserSort="True"
@@ -653,7 +740,19 @@
 	                        		TextWrapping="Wrap"
 	                        		Margin="5, 0, 0, 0"
 	                        		Text="{Binding Path=Phone}" 
-	                        		VerticalAlignment="Center"></TextBlock>
+	                        		VerticalAlignment="Center">
+	                        	
+	                        		<TextBlock.ContextMenu>
+										<ContextMenu>
+											<MenuItem 
+												Click="ContextCopy_Click"
+												x:Name="contextCopy"
+												Header="Копировать">
+											</MenuItem>
+										</ContextMenu>
+	                        		</TextBlock.ContextMenu>
+	                        	
+	                        	</TextBlock>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -670,7 +769,19 @@
 	                        		TextWrapping="Wrap"
 	                        		Margin="5, 0, 0, 0"
 	                        		Text="{Binding Path=Email}" 
-	                        		VerticalAlignment="Center"></TextBlock>
+	                        		VerticalAlignment="Center">
+	                        	
+	                        		<TextBlock.ContextMenu>
+										<ContextMenu>
+											<MenuItem 
+												Click="ContextCopy_Click"
+												x:Name="contextCopy"
+												Header="Копировать">
+											</MenuItem>
+										</ContextMenu>
+	                        		</TextBlock.ContextMenu>
+	                        	
+	                        	</TextBlock>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -687,14 +798,25 @@
 	                        		TextWrapping="Wrap"
 	                        		Margin="5, 0, 0, 0"
 	                        		Text="{Binding Path=City}" 
-	                        		VerticalAlignment="Center"></TextBlock>
+	                        		VerticalAlignment="Center">
+	                        	
+	                        		<TextBlock.ContextMenu>
+										<ContextMenu>
+											<MenuItem 
+												Click="ContextCopy_Click"
+												x:Name="contextCopy"
+												Header="Копировать">
+											</MenuItem>
+										</ContextMenu>
+	                        		</TextBlock.ContextMenu>
+	                        	
+	                        	</TextBlock>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
 				
 				</DataGrid.Columns>
 			</DataGrid>
-		
 		</GroupBox>
 			
 		<controls:ProcessControl 

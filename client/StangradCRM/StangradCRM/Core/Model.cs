@@ -131,6 +131,9 @@ namespace StangradCRM.Core
 		
 		protected abstract IViewModel CurrentViewModel { get; }
 		
+		public virtual void beforeSave () {}
+		public virtual void beforeRemove() {}
+		
 		protected virtual bool afterSave(ResponseParser parser)
 		{
 			if(parser.ServerErrorFlag != 0)
@@ -226,6 +229,8 @@ namespace StangradCRM.Core
 		
 		public bool save ()
 		{
+			beforeSave();
+			
 			HTTPRequest http = Request();
 			http.addParameter("entity", Entity + "/save");
 			prepareSaveData(http);
@@ -249,6 +254,7 @@ namespace StangradCRM.Core
 		
 		public bool remove (bool soft = false)
 		{
+			beforeRemove();
 			
 			if(soft) return afterRemove(null, soft);
 			
@@ -273,14 +279,14 @@ namespace StangradCRM.Core
 			return afterRemove(parser);
 		}
 		
-		private static HTTPRequest Request ()
+		protected static HTTPRequest Request ()
 		{
 			HTTPRequest http = HTTPRequest.Create(Settings.uri);
 			http.UseCookie = true;
 			return http;
 		}
 		
-		private static bool exec (HTTPRequest http, Model model = null)
+		protected static bool exec (HTTPRequest http, Model model = null)
 		{
 			if(!http.post())
 			{

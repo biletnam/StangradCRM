@@ -40,13 +40,16 @@ namespace StangradCRM.Model
 		public DateTime Date_created { get; set;	}
 		public DateTime? Shipment_date { get; set; }
 		public DateTime? Planned_shipment_date { get; set; }
+		public string Waybill { get; set; }
 		public string Account { get; set; }
 		public double Amount { get; set; }
 		public int Is_archive { get; set; }
 		public int Is_shipped { get; set; }
 		public string Comment { get; set; }
+		public int? Logistician_status { get; set; }
 		
 		public string Guid { get; set; }
+		
 		
 		//-------------------->
 		
@@ -101,14 +104,21 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		public Buyer BidBuyer 
+		{
+			get
+			{
+				return BuyerViewModel.instance().getById(Id_buyer);
+			}
+		}
+		
 		public string BuyerName
 		{
 			get
 			{
-				Buyer buyer = BuyerViewModel.instance().getById(Id_buyer);
-				if(buyer != null)
+				if(BidBuyer != null)
 				{
-					return buyer.Name;
+					return BidBuyer.Name;
 				}
 				return "<Не выбрано>";
 			}
@@ -118,10 +128,9 @@ namespace StangradCRM.Model
 		{
 			get
 			{
-				Buyer buyer = BuyerViewModel.instance().getById(Id_buyer);
-				if(buyer != null)
+				if(BidBuyer != null)
 				{
-					return buyer.BuyerInfo;
+					return BidBuyer.BuyerInfo;
 				}
 				return "";
 			}
@@ -232,6 +241,25 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		public string TransportCompanyNameWithWaybill
+		{
+			get
+			{
+				if(Id_transport_company != null
+				   && Id_transport_company != 0)
+				{
+					TransportCompany transportCompany =
+						TransportCompanyViewModel.instance().getById((int)Id_transport_company);
+					if(transportCompany == null)
+					{
+						return "";
+					}
+					return transportCompany.Name + " " + Waybill;
+				}
+				return "";
+			}
+		}
+		
 		public bool IsDelayShipment
 		{
 			get
@@ -257,6 +285,23 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		public bool IsComment
+		{
+			get {
+				if(Comment.Length > 0) return true;
+				return false;
+			}
+		}
+		
+		public string IsCommentText 
+		{
+			get
+			{
+				if(IsComment) return "Да";
+				return "Нет";
+			}
+		}
+		
 		private TSObservableCollection<EquipmentBid> equipmentBidCollection = null;
 		public TSObservableCollection<EquipmentBid> EquipmentBidCollection
 		{
@@ -270,6 +315,21 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		
+		private TSObservableCollection<BidFiles> bidFilesCollection = null;
+		public TSObservableCollection<BidFiles> BidFilesCollection
+		{
+			get 
+			{
+				if(bidFilesCollection == null)
+				{
+					bidFilesCollection = BidFilesViewModel.instance().getByBidId(Id);
+				}
+				return bidFilesCollection;
+			}
+		}
+	
+ 		
 		//For search ---->
 		
 		public string EquipmentBidStringSearch
@@ -338,6 +398,30 @@ namespace StangradCRM.Model
 			}
 		}
 		
+		public bool IsShipped 
+		{
+			get
+			{
+				return Is_shipped == 1;
+			}
+		}
+		
+		public bool IsLogisticianInWork
+		{
+			get
+			{
+				return Logistician_status == 1;
+			}
+		}
+		
+		public bool IsLogisticianShpped
+		{
+			get
+			{
+				return Logistician_status == 2;
+			}
+		}
+		
 		public Bid() {}
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
@@ -376,6 +460,14 @@ namespace StangradCRM.Model
 			if(Comment != null)
 			{
 				http.addParameter("comment", Comment);
+			}
+			if(Waybill != null) 
+			{
+				http.addParameter("waybill", Waybill);
+			}
+			if(Logistician_status == 1 || Logistician_status == 2)
+			{
+				http.addParameter("logistician_status", Logistician_status);
 			}
 		}
 		
@@ -455,9 +547,12 @@ namespace StangradCRM.Model
 			if(result)
 			{
 				EquipmentBidCollection.ToList().ForEach(x => {x.remove(true);});
+				BidFilesCollection.ToList().ForEach(x => {x.remove(true);});
+				
 				PaymentCollection.ToList().ForEach(x => {x.remove(true);});
 				
 				equipmentBidCollection = null;
+				bidFilesCollection = null;
 			}
 			return result;
 		}
@@ -491,6 +586,9 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("Is_archive", Is_archive);
 			RaisePropertyChanged("Is_shipped", Is_shipped);
 			RaisePropertyChanged("Comment", Comment);
+			RaisePropertyChanged("Waybill", Waybill);
+			RaisePropertyChanged("Logistician_status", Logistician_status);
+			
 			
 			RaisePropertyChanged("SellerName", null);			
 			RaisePropertyChanged("BuyerName", null);
@@ -501,8 +599,11 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("ManagerName", null);
 			RaisePropertyChanged("Debt", null);
 			RaisePropertyChanged("TransportCompanyName", null);
+			RaisePropertyChanged("TransportCompanyNameWithWaybill", null);
 			RaisePropertyChanged("Planned_shipment_date", null);
 			RaisePropertyChanged("IsDelayShipment", null);
+			RaisePropertyChanged("IsComment", null);
+			RaisePropertyChanged("IsCommentText", null);
 			
 			RaisePropertyChanged("PaymentCollection", null);
 		}
@@ -532,6 +633,8 @@ namespace StangradCRM.Model
 			Amount = bid.Amount;
 			Is_archive = bid.Is_archive;
 			Is_shipped = bid.Is_shipped;
+			Waybill = bid.Waybill;
+			Logistician_status = bid.Logistician_status;
 			
 			raiseAllProperties();
 		}

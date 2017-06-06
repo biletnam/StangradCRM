@@ -9,11 +9,11 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows;
-
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-
 using StangradCRM.Model;
+using StangradCRM.ViewModel;
 
 namespace StangradCRM.View
 {
@@ -31,10 +31,16 @@ namespace StangradCRM.View
 		{
 			InitializeComponent();
 			defaultBrush = tbxName.Background;
+			
+			cbxMessageTemplate.ItemsSource = MessageTemplatesViewModel.instance().Collection;
+			
 			if(transportCompany != null)
 			{
 				Title = "Редактирование транспортной компании (" + transportCompany.Name + ")";
 				tbxName.Text = transportCompany.Name;
+				tbxSite.Text = transportCompany.Site;
+				cbxMessageTemplate.SelectedValue = transportCompany.Id_message_template;
+				
 				this.transportCompany = transportCompany;
 			}
 			else
@@ -42,6 +48,10 @@ namespace StangradCRM.View
 				this.transportCompany = new TransportCompany();
 			}
 			tbxName.TextChanged += delegate { tbxName.Background = defaultBrush; };
+			cbxMessageTemplate.SelectionChanged += delegate { cbxMessageTemplate.Background = defaultBrush; };
+			
+			
+			
 		}
 		
 		void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -53,6 +63,9 @@ namespace StangradCRM.View
 		{
 			if(!validate()) return;
 			transportCompany.Name = tbxName.Text;
+			transportCompany.Id_message_template = (int)cbxMessageTemplate.SelectedValue;
+			transportCompany.Site = tbxSite.Text;
+			
 			
 			loadingProgress.Visibility = Visibility.Visible;
 			IsEnabled = false;
@@ -86,6 +99,11 @@ namespace StangradCRM.View
 			if(tbxName.Text == "")
 			{
 				tbxName.Background = errorBrush;
+				return false;
+			}
+			if(cbxMessageTemplate.SelectedIndex == -1)
+			{
+				cbxMessageTemplate.Background = errorBrush;
 				return false;
 			}
 			return true;

@@ -13,6 +13,7 @@ using System.Windows.Data;
 using StangradCRM.Model;
 using StangradCRM.View.Controls.ManagerControls;
 using StangradCRM.ViewModel;
+using StangradCRMLibs;
 
 namespace StangradCRM.View.Helpers
 {
@@ -30,6 +31,11 @@ namespace StangradCRM.View.Helpers
 			{
 				Bid bid = e.Item as Bid;
 				if(bid == null) return;
+				if(bid.Id_manager != Auth.getInstance().Id)
+				{
+					e.Accepted = false;
+					return;
+				}
 				e.Accepted = bid.IsVisible;
 			};
 

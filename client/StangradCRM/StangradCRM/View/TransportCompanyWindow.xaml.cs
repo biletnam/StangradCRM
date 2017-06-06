@@ -10,8 +10,9 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-
 using System.Windows.Data;
+using System.Windows.Input;
+
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
 
@@ -104,5 +105,31 @@ namespace StangradCRM.View
 				MessageBox.Show(transportCompany.LastError);
 			}
 		}
+		
+		//Дабл клик по строке таблицы - открывает окно редактирования		
+		private void RowDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			
+			TransportCompany transportCompany = row.Item as TransportCompany;
+			if(transportCompany == null) return;
+			
+			TransportCompanySaveWindow window = new TransportCompanySaveWindow(transportCompany);
+			window.ShowDialog();
+
+			
+			viewSource.View.Refresh();
+          	dgvTransportCompany.CurrentCell = new DataGridCellInfo(row.Item, dgvTransportCompany.CurrentCell.Column);
+		}
+		
+		//Обработка события нажатия клавиш на строке таблице
+		void RowPreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter) {
+				RowDoubleClick(sender, null);
+				e.Handled = true;
+			}
+		}
+		
 	}
 }

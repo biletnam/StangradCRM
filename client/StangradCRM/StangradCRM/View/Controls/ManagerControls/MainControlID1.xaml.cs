@@ -14,8 +14,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-
-
 using StangradCRM.Core;
 using StangradCRM.Model;
 using StangradCRM.ViewModel;
@@ -196,7 +194,11 @@ namespace StangradCRM.View.Controls.ManagerControls
 				MessageBox.Show("Выберите удаляемую заявку!");
 				return;
 			}
-			
+			if(bid.BidFilesCollection.Count > 0)
+			{
+				MessageBox.Show("Перед удалением заявки необходимо удалить прикрепленные файлы!");
+				return;
+			}
 			if(MessageBox.Show("Удалить заявку?", "Удалить заявку?", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
 			if(!bid.remove())
 			{
@@ -438,6 +440,18 @@ namespace StangradCRM.View.Controls.ManagerControls
 			{
 				MessageBox.Show(bid.LastError);
 			}
+		}
+		
+		
+		void ContextCopy_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem mi = sender as MenuItem;
+			if(mi == null) return;
+			
+			TextBlock textBlock = ((ContextMenu)mi.Parent).PlacementTarget as TextBlock;
+			if(textBlock == null) return;
+			
+			Clipboard.SetText(textBlock.Text);
 		}
 	}
 }

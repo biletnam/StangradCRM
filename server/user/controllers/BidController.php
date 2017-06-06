@@ -23,11 +23,11 @@ class BidController extends \system\controllers\ModelController {
         $user = \system\auth\Auth::getAuthUser("system_user");
         $query = "select * from bid";
         $equipmentBidSubQuery = "select id from bid";
-        if($user->role() === 5)
+        /*if($user->role() === 5)
         {
             $query = "select * from bid where id_manager = " . $user->id();
             $equipmentBidSubQuery = "select id from bid where id_manager = " . $user->id();
-        }
+        }*/
         return $this->loadBid($query, $equipmentBidSubQuery);
     }
     

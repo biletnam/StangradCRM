@@ -7,13 +7,12 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
-
 using System.Threading.Tasks;
 using System.Windows;
-
 using System.Windows.Media;
 using System.Windows.Threading;
 
+using StangradCRM.Classes;
 using StangradCRM.Model;
 
 namespace StangradCRM.View
@@ -41,6 +40,13 @@ namespace StangradCRM.View
 				tbxPhone.Text = buyer.Phone;
 				tbxEmail.Text = buyer.Email;
 				tbxCity.Text = buyer.City;
+				tbxPassportSerialNumber.Text = buyer.Passport_serial_number;
+				try
+				{
+					dpPassportIssueDate.SelectedDate = DateTime.Parse(buyer.Passport_issue_date);
+				} catch {}
+				
+				tbxInn.Text = buyer.Inn;
 				this.buyer = buyer;
 			}
 			else
@@ -55,13 +61,33 @@ namespace StangradCRM.View
 		}
 		
 		void BtnSave_Click(object sender, RoutedEventArgs e)
-		{
+		{			
 			if(!validate()) return;
 			buyer.Name = tbxName.Text;
 			buyer.Contact_person = tbxContactPerson.Text;
 			buyer.Phone = tbxPhone.Text;
 			buyer.Email = tbxEmail.Text;
 			buyer.City = tbxCity.Text;
+			
+			if(tbxPassportSerialNumber.Text != "____ ______")
+			{
+				buyer.Passport_serial_number = tbxPassportSerialNumber.Text;
+			}
+			else
+			{
+				buyer.Passport_serial_number = "";
+			}
+			
+			if(dpPassportIssueDate.SelectedDate != null)
+			{
+				buyer.Passport_issue_date = dpPassportIssueDate.SelectedDate.Value.ToString("dd.MM.yyyy");
+			}
+			else
+			{
+				buyer.Passport_issue_date = "";
+			}
+			
+			buyer.Inn = tbxInn.Text;
 			
 			loadingProgress.Visibility = Visibility.Visible;
 			IsEnabled = false;
@@ -97,7 +123,26 @@ namespace StangradCRM.View
 				tbxName.Background = errorBrush;
 				return false;
 			}
+			if(tbxEmail.Text != "" && !IsEmail.Valid(tbxEmail.Text)) {
+				tbxEmail.Background = errorBrush;
+				return false;
+			}
 			return true;
+		}
+		
+		void TbxPassportSerial_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			e.Handled = !IsNumberic.Valid(e.Text);
+		}
+		
+		void TbxPassportNumber_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			e.Handled = !IsNumberic.Valid(e.Text);
+		}
+		
+		void TbxInn_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			e.Handled = !IsNumberic.Valid(e.Text);
 		}
 	}
 }

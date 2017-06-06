@@ -38,6 +38,14 @@
 				x:Name="dgvBidStatus"
 				ItemsSource="{Binding BidStatusCollection}"
 				Style="{StaticResource DefaultDataGridStyle}">
+				
+				<DataGrid.RowStyle>
+					<Style TargetType="DataGridRow">
+						<EventSetter Event="MouseDoubleClick" Handler="RowDoubleClick"></EventSetter>
+						<EventSetter Event="PreviewKeyDown" Handler="RowPreviewKeyDown"></EventSetter>
+					</Style>
+				</DataGrid.RowStyle>
+				
 				<DataGrid.Columns>
 					<DataGridTemplateColumn 
 						CellStyle="{StaticResource DefaultDataGridCellStyle}"

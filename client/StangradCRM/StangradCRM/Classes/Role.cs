@@ -15,6 +15,7 @@ namespace StangradCRM.Classes
 		Director,
 		Accountant,
 		Technical,
-		Manager
+		Manager,
+		Logistician
 	};
 }

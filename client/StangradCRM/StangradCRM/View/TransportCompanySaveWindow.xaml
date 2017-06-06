@@ -9,6 +9,7 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="200"></ColumnDefinition>
@@ -19,6 +20,19 @@
 			<TextBox Grid.Row="0" Grid.Column="1" 
 			         Style="{StaticResource DefaultTextBoxStyle}"
 			         x:Name="tbxName"></TextBox>
+		
+			<Label Grid.Row="1" Grid.Column="0" 
+			       Content="Шаблон сообщения"></Label>
+			<ComboBox Grid.Row="1" Grid.Column="1" 
+			         Style="{StaticResource DefaultComboBoxStyle}"
+			          SelectedValuePath="Id" DisplayMemberPath="Name"
+			         x:Name="cbxMessageTemplate"></ComboBox>
+		
+			<Label Grid.Row="2" Grid.Column="0" 
+			       Content="Сайт компании"></Label>
+			<TextBox Grid.Row="2" Grid.Column="1" 
+			         Style="{StaticResource DefaultTextBoxStyle}"
+			         x:Name="tbxSite"></TextBox>
 		</Grid>
 
 		<libs:Loading

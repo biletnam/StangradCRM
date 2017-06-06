@@ -92,6 +92,12 @@ namespace StangradCRM.View.MainWindows
 				window.ShowDialog();
 			};
 			
+			menuOpenMessageTemplatesWindow.Click += delegate 
+			{
+				MessageTemplatesWindow window = new MessageTemplatesWindow();
+				window.ShowDialog();
+			};
+			
 			tiCRMSetting.Content = new MainControlCRMSetting();
 			tiBid.Content = new MainControlBid();
 		}

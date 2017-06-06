@@ -48,11 +48,11 @@ class Base64Operations {
         try {
             fwrite($ifp, base64_decode($data[1])); 
             fclose($ifp);
-            return array(0, $file_name . '.' . $extension);
+            return [0, $file_name . '.' . $extension];
         }
         catch (Exception $ex) {
             self::$lastError = $ex;
-            return array(1, 0, $ex);
+            return [1, $ex];
         }
     }
     

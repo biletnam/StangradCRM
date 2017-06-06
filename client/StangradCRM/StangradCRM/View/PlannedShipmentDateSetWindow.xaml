@@ -1,4 +1,4 @@
-<Window x:Class="StangradCRM.View.PlannedShipmentDateSetWindow"
+﻿<Window x:Class="StangradCRM.View.PlannedShipmentDateSetWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     WindowStartupLocation="CenterScreen"
@@ -12,6 +12,7 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="210"></ColumnDefinition>
@@ -21,7 +22,7 @@
 			<Label Grid.Row="0" Grid.Column="0"
 			       VerticalAlignment="Stretch"
 			       VerticalContentAlignment="Center"
-			       Content="Предполагаемая дата отгрузки"></Label>
+			       Content="Планируемая дата отгрузки"></Label>
 			<DatePicker
 				Style="{StaticResource DefaultDatePickerStyle}"
 				Grid.Row="0"
@@ -31,9 +32,19 @@
 				Background="Red"
 				x:Name="dpPlannedShipmentDate"></DatePicker>
 		
-			<Label Grid.Row="1" Grid.Column="0"  Content="Комментарий" />
+			<Label Grid.Row="1" Grid.Column="0"
+			       VerticalAlignment="Stretch"
+			       VerticalContentAlignment="Center"
+			       Content="Планируемая транспортная компания"></Label>
+			<ComboBox Grid.Row="1" Grid.Column="1"
+						Margin="0, 0, 0, 2"
+						Style="{StaticResource DefaultComboBoxStyle}"
+						DisplayMemberPath="Name"
+						SelectedValuePath="Id"
+			          x:Name="cbxPlannedTransportCompany" />
 			
-			<TextBox Height="150" Grid.Row="1" Grid.Column="1"
+			<Label Grid.Row="2" Grid.Column="0"  Content="Комментарий" />
+			<TextBox Height="150" Grid.Row="2" Grid.Column="1"
 	         	x:Name="tbxComment"
          		TextWrapping="Wrap"
 				AcceptsReturn="True"

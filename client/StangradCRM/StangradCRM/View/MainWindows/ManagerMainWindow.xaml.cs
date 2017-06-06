@@ -69,6 +69,11 @@ namespace StangradCRM.View.MainWindows
 			archiveTabItem.Header = "Архив заявок";
 			tcMain.Items.Add(archiveTabItem);
 			archiveTabItem.Content = new MainControlArchive();
+			
+			TabItem otherTabItem = new TabItem();
+			otherTabItem.Header = "Заявки других менеджеров";
+			tcMain.Items.Add(otherTabItem);
+			otherTabItem.Content = new OtherControl();
 		}
 		
 		void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -87,5 +92,12 @@ namespace StangradCRM.View.MainWindows
 			                            new Action (() => { updateNotification.Visibility = Visibility.Visible; }), 
 			                            new Action (() => { updateNotification.Visibility = Visibility.Hidden; }));
 		}
+		
+		void MiOpenBuyerWindow_Click(object sender, RoutedEventArgs e)
+		{
+			BuyerWindow w = new BuyerWindow();
+			w.ShowDialog();
+		}
+		
 	}
 }

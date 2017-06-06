@@ -22,6 +22,9 @@ namespace StangradCRM.Model
 		public string Phone { get; set; }
 		public string Email { get; set; }
 		public string City { get; set; }
+		public string Passport_serial_number { get; set; }
+		public string Passport_issue_date { get; set; }
+		public string Inn { get; set; }
 		public DateTime? Date_created { get; set; }
 
 		public string SecondColumnValue //Кастыль 
@@ -47,9 +50,16 @@ namespace StangradCRM.Model
 			get
 			{
 				return Name + " " + Contact_person + " " + Phone
-					+ " " + Email + " " + City;
+					+ " " + Email + " " + City + " " + Passport_serial_number
+					+ " " + Passport_issue_date + " " + Inn;
 			}
 		}
+		
+		public string PassportData {
+			get {
+				return Passport_serial_number + " " + Passport_issue_date;
+			}
+		}		
 		
 		public Buyer() {}
 		
@@ -60,6 +70,9 @@ namespace StangradCRM.Model
 			http.addParameter("phone", Phone);
 			http.addParameter("email", Email);
 			http.addParameter("city", City);
+			http.addParameter("passport_serial_number", Passport_serial_number);
+			http.addParameter("passport_issue_date", Passport_issue_date);
+			http.addParameter("inn", Inn);
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
@@ -109,6 +122,9 @@ namespace StangradCRM.Model
 			Phone = buyer.Phone;
 			Email = buyer.Email;
 			City = buyer.City;
+			Passport_serial_number = buyer.Passport_serial_number;
+			Passport_issue_date = buyer.Passport_issue_date;
+			Inn = buyer.Inn;
 			
 			raiseAllProperties();
 		}
@@ -120,6 +136,11 @@ namespace StangradCRM.Model
 			RaisePropertyChanged("Phone", Phone);
 			RaisePropertyChanged("Email", Email);
 			RaisePropertyChanged("City", City);
+			RaisePropertyChanged("Passport_serial_number", Passport_serial_number);
+			RaisePropertyChanged("Passport_issue_date", Passport_issue_date);
+			RaisePropertyChanged("Inn", Inn);
+			
+			RaisePropertyChanged("PassportData", null);
 		}
 	}
 }

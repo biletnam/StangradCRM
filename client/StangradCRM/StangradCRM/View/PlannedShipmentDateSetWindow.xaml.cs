@@ -7,7 +7,9 @@
  * Для изменения этого шаблона используйте Сервис | Настройка | Кодирование | Правка стандартных заголовков.
  */
 using System;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 
 using StangradCRM.Model;
@@ -59,12 +61,23 @@ namespace StangradCRM.View
 			this.bid = bid;
 			this.okCallback = okCallback;
 			this.cancelCallback = cancelCallback;
+			
+			
+			CollectionViewSource viewSource = new CollectionViewSource();
+			viewSource.Source = TransportCompanyViewModel.instance().Collection;
+			cbxPlannedTransportCompany.ItemsSource = viewSource.View;
+			viewSource.SortDescriptions.Add(new SortDescription("Row_order", ListSortDirection.Descending));
+			cbxPlannedTransportCompany.SelectedIndex = -1;
+			
 		}
 		
 		void BtnSave_Click(object sender, RoutedEventArgs e)
 		{
 			if(!validate()) return;
 			bid.Comment = tbxComment.Text;
+			if(cbxPlannedTransportCompany.SelectedIndex != -1)
+				bid.Id_transport_company = (int)cbxPlannedTransportCompany.SelectedValue;
+			
 			if(okCallback != null)
 			{
 				okCallback((DateTime)dpPlannedShipmentDate.SelectedDate);

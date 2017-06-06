@@ -133,7 +133,12 @@
 	    <Style x:Key="PlaceHolder" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
 	        <Setter Property="Template">
 	            <Setter.Value>
-	                <ControlTemplate TargetType="{x:Type TextBox}">
+	                <ControlTemplate TargetType="{x:Type TextBox}"  >
+	                	<ControlTemplate.Triggers>
+	                		<Trigger Property="IsFocused" Value="True">
+	                			<Setter TargetName="textSource" Property="FocusManager.FocusedElement" Value="{Binding ElementName=textSource}" />
+	                		</Trigger>
+	                	</ControlTemplate.Triggers>
 	                    <Grid>
 	                        <TextBox Text="{Binding Path=Text,
 	                                                RelativeSource={RelativeSource TemplatedParent}, 
@@ -141,16 +146,22 @@
 	                                                UpdateSourceTrigger=PropertyChanged}"
 	                                 x:Name="textSource"
 	                                 Background="Transparent"
-	                                 VerticalContentAlignment="Center"
-	                                 Panel.ZIndex="2" />
-	                        <TextBox Text="{TemplateBinding Tag}" Background="{TemplateBinding Background}" Panel.ZIndex="1">
+	                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+	                                 Margin="{TemplateBinding Margin}"
+	                                 MaxLength="{TemplateBinding MaxLength}"
+	                                 Panel.ZIndex="2" >
+	                    	</TextBox>
+	                        <TextBox 
+	                        	x:Name="placeholder"
+	                        	Text="{TemplateBinding Tag}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+	                        	Margin="{TemplateBinding Margin}" Background="{TemplateBinding Background}" 
+	                        	Panel.ZIndex="1">
 	                            <TextBox.Style>
 	                                <Style TargetType="{x:Type TextBox}">
 	                                    <Setter Property="Foreground" Value="Transparent"/>
 	                                    <Style.Triggers>
 	                                        <DataTrigger Binding="{Binding Path=Text, Source={x:Reference textSource}}" Value="">
 	                                            <Setter Property="Foreground" Value="LightGray"/>
-	                                    		<Setter Property="VerticalContentAlignment" Value="Center" />
 	                                    		<Setter Property="FontStyle" Value="Italic" />
 	                                        </DataTrigger>
 	                                    </Style.Triggers>

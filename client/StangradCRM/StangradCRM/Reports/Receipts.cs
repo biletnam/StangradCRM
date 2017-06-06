@@ -34,13 +34,17 @@ namespace StangradCRM.Reports
 		public override bool Save()
 		{
 			ReportRow headerRow = new ReportRow();
+			headerRow.Cells.Add(new ReportCell() { Width = 10.29, ColumnSpan = 5});
 			headerRow.Cells.Add(new ReportCell() { Width = 11.71});
-			headerRow.Cells.Add(new ReportCell("Отчет поступлений " + seller.Name + " c " + start.ToString("dd.MM.yyyy") + " по " + end.ToString("dd.MM.yyyy")) { Width = 58.57, HorizontalAlignment = HorizontalAlignment.Center });
-			headerRow.Cells.Add(new ReportCell() { Width = 14.43});
+			headerRow.Cells.Add(new ReportCell() { Width = 11.43});
+			headerRow.Cells.Add(new ReportCell() { Width = 36.14});
+			headerRow.Cells.Add(new ReportCell("Отчет поступлений " + seller.Name + " c " + start.ToString("dd.MM.yyyy") + " по " + end.ToString("dd.MM.yyyy")) { Width = 14.00, HorizontalAlignment = HorizontalAlignment.Center});
 			Rows.Add(headerRow);
 			
 			ReportRow titleRow = new ReportRow();
 			titleRow.Cells.Add(new ReportCell("Код заявки"));
+			titleRow.Cells.Add(new ReportCell("Номер счета"));
+			titleRow.Cells.Add(new ReportCell("Дата"));
 			titleRow.Cells.Add(new ReportCell("Покупатель"));
 			titleRow.Cells.Add(new ReportCell("Сумма"));
 			Rows.Add(titleRow);
@@ -66,6 +70,11 @@ namespace StangradCRM.Reports
 				              	HorizontalAlignment = HorizontalAlignment.Center,
 				              	BorderColor = System.Drawing.Color.Black
 				              });
+				
+				row.Cells.Add(new ReportCell (bid.Account) { BorderColor = System.Drawing.Color.Black  });
+
+				row.Cells.Add(new ReportCell (payment[i].Payment_date.ToString("dd.MM.yyyy")) { BorderColor = System.Drawing.Color.Black  });
+				
 				row.Cells.Add(new ReportCell (buyer.Name) { BorderColor = System.Drawing.Color.Black });
 				
 				row.Cells.Add(new ReportCell (payment[i].Paying.ToString()) { BorderColor = System.Drawing.Color.Black, HorizontalAlignment = HorizontalAlignment.Right, Format = Format.Money });
@@ -76,6 +85,8 @@ namespace StangradCRM.Reports
 			}
 			
 			ReportRow sumRow = new ReportRow();
+			sumRow.Add(new ReportCell());
+			sumRow.Add(new ReportCell());
 			sumRow.Add(new ReportCell());
 			sumRow.Add(new ReportCell("Итого:") {HorizontalAlignment = HorizontalAlignment.Right});
 			sumRow.Add(new ReportCell(sum.ToString().Replace(',', '.')) { HorizontalAlignment = HorizontalAlignment.Right, BorderColor = System.Drawing.Color.Black, Format = Format.Money });

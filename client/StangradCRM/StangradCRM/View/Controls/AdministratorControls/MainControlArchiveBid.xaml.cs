@@ -195,5 +195,28 @@ namespace StangradCRM.View.Controls.AdministratorControls
 			BidViewModel.instance().UpdateArchive(bid);
 		}
 		
+		void ContextCopy_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem mi = sender as MenuItem;
+			if(mi == null) return;
+			
+			TextBlock textBlock = ((ContextMenu)mi.Parent).PlacementTarget as TextBlock;
+			if(textBlock == null) return;
+			
+			Clipboard.SetText(textBlock.Text);
+		}
+		
+		void ContextBidFiles_Click(object sender, RoutedEventArgs e)
+		{
+			Bid bid = dgvBid.SelectedItem as Bid;
+			if(bid == null) 
+			{
+				MessageBox.Show("Заявка не выбрана!");
+				return;
+			}
+			BidFilesWindow window = new BidFilesWindow(bid);
+			window.ShowDialog();
+		}
+		
 	}
 }

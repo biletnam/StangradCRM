@@ -17,12 +17,17 @@ namespace StangradCRM.Model
 	public class TransportCompany : Core.Model
 	{
 		public string Name { get; set; }
+		public int Id_message_template { get; set; }
+		public string Site { get; set; }
 		
 		public TransportCompany() {}
 		
 		protected override void prepareSaveData(HTTPManager.HTTPRequest http)
 		{
 			http.addParameter("name", Name);
+			http.addParameter("id_message_template", Id_message_template);
+			http.addParameter("site", Site);
+			
 			if(Id != 0)
 			{
 				http.addParameter("id", Id);
@@ -67,6 +72,8 @@ namespace StangradCRM.Model
 		public override void raiseAllProperties()
 		{
 			RaisePropertyChanged("Name", Name);
+			RaisePropertyChanged("Id_message_template", Id_message_template);
+			RaisePropertyChanged("Site", Site);
 		}
 	}
 }
