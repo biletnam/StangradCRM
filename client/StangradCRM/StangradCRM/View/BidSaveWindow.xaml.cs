@@ -201,8 +201,8 @@ namespace StangradCRM.View
 			tbxAmount.IsReadOnly = true;
 			btnShowPaymentHistory.IsEnabled = false;
 			tbxAccount.IsReadOnly = true;
-			dpPlannedShipmentDate.IsEnabled = false;
-			cbxPlannedTransportCompany.IsEnabled = false;
+			//dpPlannedShipmentDate.IsEnabled = false;
+			//cbxPlannedTransportCompany.IsEnabled = false;
 
 			gbxBidFiles.IsEnabled = false;
 			
@@ -233,11 +233,7 @@ namespace StangradCRM.View
 			currentBuyer.Phone = tbxBuyerPhone.Text;
 			currentBuyer.Email = tbxBuyerEmail.Text;
 			currentBuyer.City = tbxBuyerCity.Text;
-			
-			if(tbxBuyerPassportSerialNumber.Text != "____ ______")
-				currentBuyer.Passport_serial_number = tbxBuyerPassportSerialNumber.Text;
-			else
-				currentBuyer.Passport_serial_number = "";
+			currentBuyer.Passport_serial_number = tbxBuyerPassportSerialNumber.Text;
 			
 			if(dpPassportIssueDate.SelectedDate != null)
 				currentBuyer.Passport_issue_date = dpPassportIssueDate.SelectedDate.Value.ToString("dd.MM.yyyy");

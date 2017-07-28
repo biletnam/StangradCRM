@@ -59,16 +59,13 @@
 					<ColumnDefinition></ColumnDefinition>
 				</Grid.ColumnDefinitions>
 				
-				<xctk:MaskedTextBox 
+				<TextBox 
 					x:Name="tbxPassportSerialNumber"
 					Grid.Column="0"
-					Mask="0000 000000"
-					CaretIndex="0"
-					ValueDataType="{x:Type sys:String}"
 					VerticalAlignment="Stretch"
 					MaxLength="11"
 					VerticalContentAlignment="Center">
-				</xctk:MaskedTextBox>
+				</TextBox>
 				<DatePicker x:Name="dpPassportIssueDate" Grid.Column="1" >
 				</DatePicker>
 			</Grid>

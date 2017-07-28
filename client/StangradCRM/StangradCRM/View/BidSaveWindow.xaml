@@ -215,15 +215,12 @@
 									<ColumnDefinition></ColumnDefinition>
 								</Grid.ColumnDefinitions>
 							
-								<xctk:MaskedTextBox 
+								<TextBox 
 									x:Name="tbxBuyerPassportSerialNumber"
 									VerticalAlignment="Stretch"
-									Mask="0000 000000"
-									CaretIndex="0"
-									ValueDataType="{x:Type sys:String}"
-									MaxLength="11"
+									MaxLength="30"
 									Height="23"
-									VerticalContentAlignment="Center"></xctk:MaskedTextBox>
+									VerticalContentAlignment="Center"></TextBox>
 								
 								<DatePicker x:Name="dpPassportIssueDate" Height="23" Grid.Column="1" />
 							
